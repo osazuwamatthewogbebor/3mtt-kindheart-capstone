@@ -1,16 +1,38 @@
-# How to Contribute to KindHeart
+# Contributing to KindHeart
 
-### 1. Clone the repo
-`git clone https://github.com/osazuwamatthewogbebor/3mtt-kindheart-capstone.git`
+Welcome to the KindHeart team! To keep our code clean and manageable for everyone, please follow these guidelines.
 
-### 2. Create a branch for your page
-**Never work on main.** Create a branch named after your page and name:
-`git checkout -b feature/bola/about-page`
+## 📂 Folder Rules
+- **Frontend developers**: Only work inside our `client/` folder.
+- **Backend developers**: Only work inside our `server/` folder. Remember to `cd server` before running any commands!
+- **Root configuration**: Do not modify files in the root (like `.gitignore`) without consulting our team lead.
 
-### 3. Follow the Naming Rules
-- HTML: `public/yourpage.html`
-- CSS: `public/css/yourpage.css` (Class names must start with `yourpage-`)
-- JS: `public/js/yourpage.js` (Wrap code in `{ }`)
+## 🎨 CSS Naming Convention (Simple Prefixing)
+To avoid clashing styles, we use a simple **prefixing** strategy instead of BEM for now.
+- Always start your class names with the page or component name.
+- Example for a campaign card:
+  - ✅ `.campaign-card { ... }`
+  - ✅ `.campaign-title { ... }`
+  - ❌ `.title { ... }`
 
-### 4. Push and PR
-When done, push your branch and open a **Pull Request** on GitHub for review.
+## 📜 JavaScript Guidelines
+- **External modules**: Use `js/api.js` for all backend interactions.
+- **Page scripts**: Every JS file should be wrapped in an **IIFE** (Immediately Invoked Function Expression) to prevent global variable leaks, unless using `<script type="module">`.
+- Template:
+  ```javascript
+  (function () {
+    document.addEventListener("DOMContentLoaded", function () {
+      // Your code here
+    });
+  })();
+  ```
+
+## 🔐 Git & Branching
+1. Always create a new branch for your feature: `git checkout -b feature/your-feature-name`.
+2. Commit your changes with clear messages: `git commit -m "Add login validation"`.
+3. Push to your branch and create a Pull Request.
+
+## 🛠 Development Workflow
+1. Pull the latest changes from `main` daily.
+2. Run `npm install` in the `server` folder whenever someone adds a new package.
+3. Use the `assets/js/api.js` file for all fetch requests to the backend.
