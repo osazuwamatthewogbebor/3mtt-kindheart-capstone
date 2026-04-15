@@ -2,6 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import passport from 'passport';
+import './config/passport.js';
+import authRoutes from './routes/authRoutes.js';
+import projectRoutes from './routes/projectRoutes.js';
 import notFoundMiddleware from './middlewares/notFoundMiddleware.js';
 import errorMiddleware from './middlewares/errorMiddleware.js';
 
@@ -13,6 +17,7 @@ app.use(cors({
   origin: 'http://localhost:5500',
   credentials: true
 }));
+app.use(passport.initialize());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,6 +32,9 @@ app.use('/api', limiter);
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to KindHeart API' });
 });
+
+app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
 
 // Error Handlers
 app.use(notFoundMiddleware);
