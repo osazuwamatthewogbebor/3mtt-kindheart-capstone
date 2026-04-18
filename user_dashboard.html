@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KindHeart Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/dashboard_style.css">
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+    <div class="container nav-inner">
+        <div class="nav-left">
+            <span class="logo">KindHeart</span>
+            <div class="nav-links">
+                <a href="#">Discover</a>
+                <a href="#">How it Works</a>
+                <a href="#">About</a>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <button class="btn-link">Start a Campaign</button>
+            <img class="avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDm9eZAHYQ7U24FI4irT-NVpN-8dc3QhO4XqBl0XduGObcvwwaYh4oQ22pWLupXqBy37BurbuJrpoQ1xyjE4xAVS3ANdH3QpuMj8GyjuPMbmfMEALU11PH_XTTBK-JsVI-z7qSTb7buXjXl4P0RBEcuMAecOyNHlTVb-fQpdtaEsgPlIvlalnPFyl4OemPMnCPB8rV_4BFlK0YTUMjJliU_LjWOGgeG_hMnA00JMuJlWLgl1lvZWC8bZSj5x5k72lbRoh5LFIhXPuY">
+        </div>
+    </div>
+</nav>
+
+<main class="container main">
+
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+            <aside class="sidebar">
+
+            <div class="card profile-card">
+            <img class="profile-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdo-LgkQ1q7k454_84ZFJFVzH2Ozx5TU2JUz-xRQ_jBMjO-ascLhgSP3HO5ETVr9QdKPN87JIJUmdTBMwqYnewBS8XTsn0gkrnZD28AY8ZjBu3bNcuTSFDPKVSEXHywus8SPJuB36LXNTPu3RGcdUVbKzxsrC0UFiJyy0Y-aVVW6MGZWDsrTo9u0NCK803JmKAPulBNutDug1tcuoBh8mNbTFzOKzVCWsdqJ23o_SmmyP83zKJOmf6REVfd8UURjwJLF2BrFPwinw">
+            <h2>Marcus Thorne</h2>
+            <p>Kindness Ambassador since 2022</p>
+
+            <button class="btn primary"><span class="material-symbols-outlined text-lg">add_circle</span>Start Campaign</button>
+            <button class="btn secondary">Edit Profile</button>
+    </div>
+
+        <div class="card"><br>
+        <h4>Quick Navigation</h4> <br>
+        <ul class="nav-menu">
+            <a href="#"><li class="active"><span class="material-symbols-outlined">dashboard</span>Overview</li></a>
+            <a href="#"><li><span class="material-symbols-outlined">campaign</span>My Campaigns</li></a>
+            <a href="#"><li><span class="material-symbols-outlined">volunteer_activism</span>My Donations</li></a>
+            <a href="#"><li><span class="material-symbols-outlined">settings</span>Settings</li></a>
+        </ul>
+    </div>
+
+</aside>
+
+<!-- MAIN -->
+        <section class="content">
+
+<!-- STATS -->
+<div class="stats">
+            <div class="stat-card">
+                <span>Total Raised</span>
+                <h2>$12,450</h2>
+            </div>
+
+        <div class="stat-card">
+            <span>Campaigns</span>
+            <h2>4</h2>
+        </div>
+
+            <div class="stat-card">
+                <span>Donors</span>
+                <h2>184</h2>
+            </div>
+</div>
+
+<!-- CAMPAIGNS -->
+            <div class="section-header">
+                    <h2>My Campaigns</h2>
+            </div>
+
+        <div class="cards">
+
+                <div class="campaign-card">
+                    <img src="/image/school supplies.png">
+                    <div class="card-body">
+                        <h3>School Supplies</h3>
+                        <div class="progress"><div style="width:85%"></div></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- testing this out -->
+            <div class="cards">
+
+                <div class="campaign-card">
+                    <img src="/image/urban community.png">
+                    <div class="card-body">
+                        <h3>Community Garden</h3>
+                        <div class="progress"><div style="width:100%"></div></div>
+                    </div>
+                </div>
+
+
+                </div>
+            </div>
+
+</div>
+
+<!-- TABLE -->
+    <h2 style="margin:30px 0">Recent Donations</h2>
+
+    <table>
+                <tr>
+                    <th>Campaign</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                </tr>
+
+        <tr>
+            <td>Reforest the Ridge</td>
+                <td>Oct 12</td>
+                <td>$250</td>
+        </tr>
+
+            <tr>
+            <td>Community Kitchen</td>
+            <td>Sep 28</td>
+            <td>$100</td>
+        </tr>
+
+    </table>
+
+        </section>
+
+</div>
+</div>
+
+</main>
+
+</body>
+</html>

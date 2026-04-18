@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - KindHeart Crowdfunding</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ===== BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background: #f7f9fb;
+    color: #191c1e;
+}
+
+/* ===== LAYOUT ===== */
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.main {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 60px 0;
+}
+
+/* ===== BACKGROUND BLOBS ===== */
+.bg-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.2;
+}
+
+.bg-1 {
+    width: 400px;
+    height: 400px;
+    background: #f97316;
+    top: -10%;
+    right: -5%;
+}
+
+.bg-2 {
+    width: 300px;
+    height: 300px;
+    background: #ffc329;
+    bottom: -10%;
+    left: -5%;
+}
+
+/* ===== CARD ===== */
+.card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    z-index: 2;
+    padding: 0px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* ===== FORM SECTION ===== */
+.form-section {
+    padding: 50px;
+}
+
+.form-section h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.form-section p {
+    color: #584237;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #584237;
+    display: block;
+    margin-bottom: 6px;
+}
+
+/* INPUT STYLE */
+.input {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 12px 0;
+    font-size: 15px;
+    background: transparent;
+    transition: 0.3s;
+    box-shadow: 0 1px 2px rgba(0,0,0);
+}
+
+.input:focus {
+    outline: none;
+    border-bottom: 2px solid #9d4300;
+}
+
+/* CHECKBOX */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.checkbox-group input {
+    width: 18px;
+    height: 18px;
+}
+
+/* BUTTON */
+.btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    background: linear-gradient(to right, #9d4300, #f97316);
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 2px 10px rgba(0,0,0);
+}
+
+.btn:hover {
+    transform: scale(1.02);
+}
+
+/* LINKS */
+.link {
+    color: #9d4300;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+/* META */
+.meta {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+/* ===== IMAGE SECTION ===== */
+.image-section {
+    position: relative;
+    background: #e6e8ea;
+    height: 70%;
+    width: 50%;
+    box-shadow: 0 2px 10px rgba(0,0,0);
+}
+
+.image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(20%) brightness(0.8);
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(157,67,0,0.5), transparent);
+}
+
+.image-content {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    color: white;
+}
+
+.image-content h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.image-content blockquote {
+    font-size: 22px;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    border-top: 1px solid #ddd;
+    padding: 30px 20px;
+    background: #fafafa;
+}
+
+.footer-inner {
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer a {
+    color: #666;
+    text-decoration: none;
+    margin-right: 15px;
+}
+
+.footer a:hover {
+    color: #000;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width: 900px) {
+    .card {
+        grid-template-columns: 1fr;
+    }
+
+    .image-section {
+        display: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="main">
+
+<div class="bg-shape bg-1"></div>
+<div class="bg-shape bg-2"></div>
+
+<div class="card">
+
+<!-- FORM -->
+<div class="form-section">
+    <h1>Welcome back</h1>
+    <p>Enter your credentials to continue your impact.</p>
+
+    <form>
+        <div class="form-group">
+            <label>Email or Username</label>
+            <input class="input" type="text" placeholder="alex@example.com">
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input class="input" type="password" placeholder="••••••••">
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox">
+            <span>Remember me</span>
+        </div>
+
+        <button class="btn">Login to KindHeart</button>
+    </form>
+
+    <div class="meta">
+        New here? <a href="#" class="link">Create account</a>
+    </div>
+</div>
+
+<!-- IMAGE -->
+<div class="image-section">
+    <img src="/image/login-container-image.png" alt="Diverse group of people collaborating on a community project in an outdoor urban environment, conveying hope and unity">
+    <div class="overlay"></div>
+
+    <div class="image-content">
+        <h2>KindHeart</h2>
+        <blockquote>
+            "Every small contribution creates a ripple of hope."
+        </blockquote>
+    </div>
+</div>
+
+</div>
+</main>
+
+<footer class="footer">
+<div class="footer-inner">
+    <div>
+        <strong>KindHeart</strong>
+        <p>© 2026 KindHeart Crowdfunding</p>
+    </div>
+
+    <div>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Help</a>
+        <a href="#">Contact</a>
+    </div>
+</div>
+</footer>
+
+</body>
+</html>
