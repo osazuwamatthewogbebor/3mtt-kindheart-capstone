@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import passport from 'passport';
 import './config/passport.js';
 import authRoutes from './routes/authRoutes.js';
+import campaignRoutes from './routes/campaignRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import notFoundMiddleware from './middlewares/notFoundMiddleware.js';
 import errorMiddleware from './middlewares/errorMiddleware.js';
@@ -34,6 +35,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/campaigns', campaignRoutes);
 app.use('/api/projects', projectRoutes);
 
 // Error Handlers
