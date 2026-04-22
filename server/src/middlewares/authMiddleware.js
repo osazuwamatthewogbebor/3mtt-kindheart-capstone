@@ -67,6 +67,8 @@ export const protect = async (req, res, next) => {
 	}
 };
 
+export const isAuth = protect;
+
 export const authorizeRoles = (...roles) => (req, res, next) => {
 	if (!req.user) {
 		const error = new Error('Not authorized. User context is missing.');
