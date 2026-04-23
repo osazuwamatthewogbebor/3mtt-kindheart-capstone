@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import pkg from 'pg'
 
-dotenv.config({ path: "../.env"});
+dotenv.config();
 
 const { Pool } = pkg;
 
