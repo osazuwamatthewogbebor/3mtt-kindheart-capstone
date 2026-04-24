@@ -5,11 +5,11 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 yarn.lock
-migrations/
 logs/
 # Environment Variables
 .env
 .env.local
+offline_campaign_model_update.sql
 
 # Database
 prisma/dev.db
@@ -26,3 +26,6 @@ dist/
 build/
 
 /generated/prisma
+
+#Infisical
+.infisical.json

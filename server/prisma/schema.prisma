@@ -3,27 +3,34 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id                      String    @id @default(uuid())
+  id                      String     @id @default(uuid())
   name                    String
-  email                   String    @unique
+  email                   String     @unique
   password                String?
-  googleId                String?   @unique
+  profile_picture         String?
+  created_at              DateTime   @default(now())
+  role                    Role       @default(USER)
   resetToken              String?
   resetTokenExpiry        DateTime?
-  isVerified              Boolean   @default(false)
-  emailVerificationToken  String?
   emailVerificationExpiry DateTime?
-  profile_picture         String?
-  profileImageUrl         String?
+  emailVerificationToken  String?
+  isVerified              Boolean    @default(false)
+  googleId                String?    @unique
   profileImagePublicId    String?
-  created_at              DateTime  @default(now())
-  role                    Role      @default(USER)
+  profileImageUrl         String?
+  campaigns               Campaign[]
+  sessions                Session[]
+  profile_picture String?
+  profileImageUrl String?
+  profileImagePublicId String?
+  created_at      DateTime @default(now())
+  role            Role     @default(USER)
 
   campaigns Campaign[]
   donations Donation[]
@@ -92,8 +99,42 @@ model BlacklistedToken {
   jti       String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
+  id        String   @id @default(uuid())
+  jti       String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
   @@index([expiresAt])
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+
+  campaigns Campaign[]
+}
+
+model Campaign {
+  id            Int      @id @default(autoincrement())
+  userId        String
+  title         String
+  description   String
+  categoryId    Int
+  goalAmount    Float
+  amountRaised  Float    @default(0)
+  imageUrl      String
+  imagePublicId String
+  startDate     DateTime @default(now())
+  endDate       DateTime
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category      Category @relation(fields: [categoryId], references: [id])
+
+  @@index([userId])
+  @@index([categoryId])
+  @@index([startDate])
+  @@index([endDate])
 }
 
 enum Role {

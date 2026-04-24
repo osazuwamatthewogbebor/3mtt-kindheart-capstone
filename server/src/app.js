@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import passport from 'passport';
 import './config/passport.js';
 import authRoutes from './routes/authRoutes.js';
+import adminCategoryRoutes from './routes/adminCategoryRoutes.js';
 import campaignRoutes from './routes/campaignRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -38,6 +39,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/admin/categories', adminCategoryRoutes);
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/users', userRoutes);
