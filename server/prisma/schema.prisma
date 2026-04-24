@@ -26,7 +26,16 @@ model User {
   profileImageUrl         String?
   campaigns               Campaign[]
   sessions                Session[]
+  profile_picture String?
+  profileImageUrl String?
+  profileImagePublicId String?
+  created_at      DateTime @default(now())
+  role            Role     @default(USER)
+
+  campaigns       Campaign[]
+  sessions        Session[]
 }
+
 
 model Session {
   id           String   @id @default(uuid())

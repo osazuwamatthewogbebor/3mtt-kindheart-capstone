@@ -22,3 +22,14 @@ const upload = multer({
 });
 
 export const uploadCampaignImage = upload.single('image');
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 2 * 1024 * 1024,
+  },
+  fileFilter,
+});
+
+export const uploadSingleImage = upload.single('image');
+export default upload;
