@@ -1,5 +1,4 @@
 import prisma from "../config/db.js";
-import { donationSchema } from "../validations/donationValidator.js";
 import { PaystackService } from "./paystackService.js";
 
 
@@ -8,11 +7,7 @@ class DonationService {
         this.paymentGateway = paymentGateway
     }
 
-    async createDonation(donorId, email, payload) {
-        // Validation checks
-        const validatedData = donationSchema.parse(payload);
-        const { campaignId, amount } = validatedData;
-
+    async createDonation(donorId, email, campaignId, amount) {
         
         // Business logic
         const campaign = await prisma.campaign.findUnique({ 
@@ -24,13 +19,25 @@ class DonationService {
 
         // Check Expiry
         if (new Date() > new Date(campaign.endDate)) {
-            throw new Error("This campaing has ended and can no longer accept donations.")
+            throw new Error("This campaign has ended and can no longer accept donations.")
         }
+
+        // Check if amount has been achieved
+        if (campaign.amountRaised )
 
         // Prevent self-donation
         if (campaign.userId === donorId) {
             throw new Error("Self-donation is not allowed.")
         }
+
+        // Overfunding Logic
+        const goal = Number(campaign.goalAmount);
+        const raised = Number(campaign.amountRaised)
+
+        if (raised > goal) {
+            throw new Error("The goal has been reached! Thank you for your interest, but this campaign is no longer accepting funds.")
+        }
+
 
         // Calling payment system
         const payment = await this.paymentGateway.initializePayment(email, amount, {
@@ -39,7 +46,7 @@ class DonationService {
         })
 
         // Create Donation Record with pending status
-        return await prisma.donation.create({
+        const donationRecord = await prisma.donation.create({
             data: {
                 amount: amount,
                 reference: payment.reference,
@@ -48,6 +55,11 @@ class DonationService {
                 campaignId: campaignId,
             }
         })
+
+        return {
+            donation: donationRecord,
+            paymentLink: payment.authorization_url
+        }
     }
 
     async finalizeDonation(reference) {
@@ -73,17 +85,15 @@ class DonationService {
         
         // ATOMIC TRANSACTION: Only update if verification is solid
         return await prisma.$transaction(async (tx) => {
-            // Update Donation Status
             const updatedDonation = await tx.donation.update({
                 where: {reference},
                 data: {status: "SUCCESS"},
             });
 
-            // Update campaign raised amount (Atomic update)
             await tx.campaign.update({
                 where: {id: donation.campaignId},
                 data: {
-                    raisedAmount: { increment: donation.amount}
+                    amountRaised: { increment: parseFloat(donation.amount)}
                 }
             });
 

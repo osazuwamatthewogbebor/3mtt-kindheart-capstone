@@ -9,7 +9,6 @@ logs/
 # Environment Variables
 .env
 .env.local
-offline_campaign_model_update.sql
 
 # Database
 prisma/dev.db

@@ -41,8 +41,8 @@ export const protect = async (req, res, next) => {
 				email: true,
 				isVerified: true,
 				role: true,
-				profile_picture: true,
-				created_at: true,
+				profileImageUrl: true,
+				createdAt: true,
 			},
 		});
 

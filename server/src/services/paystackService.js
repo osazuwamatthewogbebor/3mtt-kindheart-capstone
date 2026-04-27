@@ -11,9 +11,9 @@ export class PaystackService extends PaymentGateway {
             headers: paystackHeaders,
             body: JSON.stringify({
                 email,
-                amount: amount * 500,
+                amount: amount * 100,
                 metadata,
-                callback_url: "http://localhost:3000/verify-payment",
+                callback_url: "http://localhost:3000/api/donations/verify-payment",
             })
         });
 
@@ -25,7 +25,7 @@ export class PaystackService extends PaymentGateway {
     
     // Verify transaction method using reference id
     async verifyPayment(reference) {
-        const response = await fetch(PAYSTACK_URLS.VERIFY, {
+        const response = await fetch(`${PAYSTACK_URLS.VERIFY}/${reference}`, {
             method: "GET",
             headers: paystackHeaders,
         })

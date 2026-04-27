@@ -13,6 +13,7 @@ import uploadRoutes from './routes/uploadRoutes.js';
 import paymentRoutes from "./routes/paymentRoutes.js";
 import notFoundMiddleware from './middlewares/notFoundMiddleware.js';
 import errorMiddleware from './middlewares/errorMiddleware.js';
+import donationRoutes from './routes/donationRoutes.js'
 
 const app = express();
 
@@ -44,7 +45,8 @@ app.use('/api/campaigns', campaignRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
-app.use('/api/payments', paymentRoutes)
+app.use('/api/payments', paymentRoutes);
+app.use('/api/donations', donationRoutes);
 
 // Error Handlers
 app.use(notFoundMiddleware);

@@ -21,9 +21,11 @@ export const uploadImageBuffer = async ({ buffer, mimetype, folder = 'campaigns'
 			{
 				folder,
 				resource_type: 'image',
+				timeout: 60000,
 			},
 			(error, response) => {
 				if (error) {
+					console.error("DETAILED CLOUDINARY ERROR:", error);
 					reject(error);
 					return;
 				}
