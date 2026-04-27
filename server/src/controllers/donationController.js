@@ -32,8 +32,12 @@ export const handlePaymentRedirect = async (req, res) => {
             return res.status(400).json({ status: "error", message: "Payment verification failed" });
         }
 
-        // Redirect to your Frontend success page
-        res.redirect(`http://localhost:5173/donation-success?ref=${reference}`);
+        if (donation) {
+            // Redirect back to success screen
+            res.redirect(`http://localhost:5173/donation-success?status=success&ref=${reference}`);
+        } else {
+            res.redirect(`http://localhost:5173/donation-failure`);
+        }
         
     } catch (error) {
         res.status(500).json({ status: "error", message: error.message });
