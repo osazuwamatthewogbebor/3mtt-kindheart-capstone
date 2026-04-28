@@ -1,6 +1,7 @@
 import prisma from '../config/db.js';
 import { deleteImageByPublicId, uploadImageBuffer } from '../config/cloudinary.js';
 
+
 const publicUserSelect = {
 	name: true,
 };
@@ -300,13 +301,7 @@ export const listCampaigns = getCampaigns;
 
 export const getCampaignById = async (req, res, next) => {
 	try {
-		const id = Number.parseInt(req.params.id, 10);
-
-		if (!Number.isInteger(id)) {
-			const error = new Error('Campaign id must be a valid integer');
-			error.statusCode = 400;
-			throw error;
-		}
+		const id = req.params.id.trim();
 
 		const campaign = await prisma.campaign.findUnique({
 			where: { id },

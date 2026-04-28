@@ -2,7 +2,7 @@ import express from 'express';
 import { createCampaign, getCampaignById, listCampaigns, updateCampaign, updateCampaignImage } from '../controllers/campaignController.js';
 import { isAuth, protect, requireVerified } from '../middlewares/authMiddleware.js';
 import validateRequest from '../middlewares/validateRequest.js';
-import { createCampaignSchema, updateCampaignSchema } from '../validations/campaignValidation.js';
+import { createCampaignSchema, getCampaignByIdSchema, updateCampaignSchema } from '../validations/campaignValidation.js';
 import { uploadCampaignImage } from '../middlewares/uploadMiddleware.js';
 
 const router = express.Router();
