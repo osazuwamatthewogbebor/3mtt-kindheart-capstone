@@ -58,10 +58,11 @@ async function loadCampaigns() {
         
         const response = await fetch(url);
         const data = await response.json();
+
         
         const container = document.getElementById('campaignsGrid');
         
-        if (!data.success || data.data.length === 0) {
+        if (!data.success || data.campaigns.length === 0) {
             container.innerHTML = `
                 <div class="loading-state">
                     <i class="fas fa-inbox"></i>
@@ -73,18 +74,18 @@ async function loadCampaigns() {
         
         container.innerHTML = '';
         
-        data.data.forEach(campaign => {
-            const progress = calculateProgress(campaign.raised_amount, campaign.goal_amount);
+        data.campaigns.forEach(campaign => {
+            const progress = calculateProgress(campaign.amountRaised, campaign.goalAmount);
             
             const card = document.createElement('div');
             card.className = 'campaign-card';
             card.innerHTML = `
-                <img src="${campaign.image || 'https://via.placeholder.com/400x200?text=Campaign+Image'}" 
+                <img src="${campaign.imageUrl || 'https://via.placeholder.com/400x200?text=Campaign+Image'}" 
                      alt="${campaign.title}" 
                      class="campaign-image"
                      onerror="this.src='https://via.placeholder.com/400x200?text=Campaign+Image'">
                 <div class="campaign-content">
-                    <span class="campaign-category">${campaign.category_name || 'General'}</span>
+                    <span class="campaign-category">${campaign.name || 'General'}</span>
                     <h3 class="campaign-title">${campaign.title}</h3>
                     <p class="campaign-description">${campaign.description}</p>
                     <div class="campaign-progress">
@@ -93,8 +94,8 @@ async function loadCampaigns() {
                         </div>
                         <div class="campaign-stats">
                             <div class="stat">
-                                <span class="stat-value">${formatCurrency(campaign.raised_amount)}</span>
-                                <span class="stat-label">Raised of ${formatCurrency(campaign.goal_amount)}</span>
+                                <span class="stat-value">${formatCurrency(campaign.amountRaised)}</span>
+                                <span class="stat-label">Raised of ${formatCurrency(campaign.goalAmount)}</span>
                             </div>
                             <div class="stat">
                                 <span class="stat-value">${progress}%</span>

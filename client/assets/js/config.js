@@ -1,5 +1,5 @@
 // API Configuration
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'http://localhost:3000/api';
 
 // API Endpoints
 const API = {
@@ -55,7 +55,7 @@ function isLoggedIn() {
 function logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = '/pages/login.html';
+    window.location.href = 'login.html';
 }
 
 // Helper function to format currency
