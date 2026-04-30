@@ -12,6 +12,6 @@ export const handleSearch = async (req, res) => {
             pagination
         });
     } catch (error) {
-        res.status(500).json({status: "error", message: error.message})
+        res.status(500).json({status: "error", message: "Internal server error during search"})
     }
 }
