@@ -1,17 +1,15 @@
 import { searchCampaigns } from "../services/campaignSearchService.js";
 
-export const handleSearch = async (req, res) => {
+export const handleSearch = async (req, res, next) => {
     try {
-        const { query, page, limit } = req.query;
-
-        const { campaigns, pagination } = await searchCampaigns(query, page, limit);
+        
+        const results = await searchCampaigns(req.query);
 
         res.status(200).json({
             status: "success",
-            data: campaigns,
-            pagination
+            ...results
         });
     } catch (error) {
-        res.status(500).json({status: "error", message: "Internal server error during search"})
+        return next(error)
     }
 }

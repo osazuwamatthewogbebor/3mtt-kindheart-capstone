@@ -1,24 +1,42 @@
 import prisma from "../config/db.js"
 
-export const searchCampaigns = async (searchQuery, page, limit) => {
+export const searchCampaigns = async (filters) => {
+    const { query, category, owner, page, limit } = filters;
     const skip = (page - 1) * limit;
 
-    const [total, campaigns] = await Promise.all([
-        prisma.campaign.count({
-            where: {
-                OR: [
-                    {title: { contains: searchQuery, mode: "insensitive"}},
-                    {description: {contains: searchQuery, mode: "insensitive"}}
-                ]
+    // Building the where object
+    let whereClause = { AND: [] };
+
+    if (query) {
+        whereClause.AND.push({
+            OR: [
+                { title: { contains: query, mode: "insensitive"} },
+                { description: { contains: query, mode: "insensitive" } },
+            ]
+        });
+    }
+
+
+    if (category) {
+        whereClause.AND.push({
+            category: {
+                name: { contains: category, mode: "insensitive"}
             }
-        }),
+        });
+    }
+
+    if (owner) {
+        whereClause.AND.push({
+            user: {
+                name: {contains: owner, mode: "insensitive"}
+            }
+        });
+    }
+
+    const [total, campaigns] = await Promise.all([
+        prisma.campaign.count({ where: whereClause }),
         prisma.campaign.findMany({
-            where: {
-                OR: [
-                    { title: { contains: searchQuery, mode: "insensitive" } },
-                    { description: { contains: searchQuery, mode: "insensitive" } }
-                ]
-            },
+            where: whereClause,
             skip,
             take: limit,
             include: {

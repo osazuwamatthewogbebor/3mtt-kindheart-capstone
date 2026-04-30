@@ -4,7 +4,7 @@ import { isAuth, protect, requireVerified } from '../middlewares/authMiddleware.
 import validateRequest from '../middlewares/validateRequest.js';
 import { createCampaignSchema, getCampaignByIdSchema, updateCampaignSchema } from '../validations/campaignValidation.js';
 import { uploadCampaignImage } from '../middlewares/uploadMiddleware.js';
-import { searchSchema } from '../validations/searchValidations.js';
+import { searchSchema } from '../validations/campaignSearchValidations.js';
 import { handleSearch } from '../controllers/campaignSearchController.js';
 
 const router = express.Router();
