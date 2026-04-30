@@ -28,11 +28,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Rate Limiting
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 100,
-// });
-// app.use('/api', limiter);
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
+app.use('/api', limiter);
 
 // Welcome Route
 app.get('/', (req, res) => {
