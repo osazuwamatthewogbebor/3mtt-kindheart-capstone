@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - KindHeart</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .page-hero {
+            padding: 5rem 0 3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .content-wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-card h2 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .content-card p {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <a href="../index.html">
+                        <i class="fas fa-heart"></i>
+                        <span>KindHeart</span>
+                    </a>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="campaigns.html">Campaigns</a></li>
+                    <li><a href="how-it-works.html">How It Works</a></li>
+                    <li><a href="about.html" class="active">About</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="login.html" class="btn-link">Login</a>
+                    <a href="register.html" class="btn btn-primary">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-hero">
+        <div class="container">
+            <h1>About KindHeart</h1>
+            <p>We help people create and support meaningful fundraising campaigns.</p>
+        </div>
+    </section>
+
+    <main class="content-wrap">
+        <section class="content-card">
+            <h2>Our Mission</h2>
+            <p>KindHeart is built to make fundraising simple, transparent, and accessible. Whether you are raising support for health, education, community, or emergency needs, the platform gives you a clean place to tell your story and reach supporters.</p>
+        </section>
+        <section class="content-card">
+            <h2>What We Do</h2>
+            <p>We provide campaign creation, donation tracking, and user accounts for creators and supporters. The goal is to keep the experience straightforward while giving every campaign a professional presence.</p>
+        </section>
+    </main>
+
+    <script src="../assets/js/config.js"></script>
+</body>
+</html>
