@@ -1,8 +1,7 @@
 import prisma from '../config/db.js';
 
 const parseCategoryId = (value) => {
-	const id = Number.parseInt(value, 10);
-	return Number.isInteger(id) ? id : null;
+	return value?.toString().trim() || null;
 };
 
 const normalizeCategoryName = (value) => value?.toString().trim();
@@ -66,7 +65,7 @@ export const updateCategory = async (req, res, next) => {
 		const name = normalizeCategoryName(req.body?.name);
 
 		if (!id) {
-			const error = new Error('Category id must be a valid integer');
+			const error = new Error('Category id is required');
 			error.statusCode = 400;
 			throw error;
 		}
@@ -119,7 +118,7 @@ export const deleteCategory = async (req, res, next) => {
 		const id = parseCategoryId(req.params.id);
 
 		if (!id) {
-			const error = new Error('Category id must be a valid integer');
+			const error = new Error('Category id is required');
 			error.statusCode = 400;
 			throw error;
 		}

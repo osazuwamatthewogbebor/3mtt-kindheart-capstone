@@ -56,8 +56,10 @@ const sanitizeUser = (user) => ({
 	name: user.name,
 	email: user.email,
 	role: user.role,
-	profile_picture: user.profile_picture,
-	created_at: user.created_at,
+	profileImageUrl: user.profileImageUrl,
+	createdAt: user.createdAt,
+	profile_picture: user.profileImageUrl,
+	created_at: user.createdAt,
 });
 
 export const registerUser = async (req, res, next) => {
@@ -286,8 +288,8 @@ export const getMe = async (req, res, next) => {
 				name: true,
 				email: true,
 				role: true,
-				profile_picture: true,
-				created_at: true,
+				profileImageUrl: true,
+				createdAt: true,
 			},
 		});
 
@@ -299,7 +301,11 @@ export const getMe = async (req, res, next) => {
 
 		res.status(200).json({
 			success: true,
-			user,
+			user: {
+				...user,
+				profile_picture: user.profileImageUrl,
+				created_at: user.createdAt,
+			},
 		});
 	} catch (error) {
 		next(error);
