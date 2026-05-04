@@ -22,18 +22,17 @@ class DonationService {
             throw new Error("This campaign has ended and can no longer accept donations.")
         }
 
-        // Check if amount has been achieved
-        if (campaign.amountRaised )
-
+        
         // Prevent self-donation
         if (campaign.userId === donorId) {
             throw new Error("Self-donation is not allowed.")
         }
-
+        
         // Overfunding Logic
         const goal = Number(campaign.goalAmount);
         const raised = Number(campaign.amountRaised)
-
+        
+        // Check if amount has been achieved
         if (raised > goal) {
             throw new Error("The goal has been reached! Thank you for your interest, but this campaign is no longer accepting funds.")
         }
