@@ -213,21 +213,15 @@ export const getCampaigns = async (req, res, next) => {
 		const skip = (page - 1) * limit;
 		const search = normalizeStringQuery(req.query.search);
 		const userId = normalizeStringQuery(req.query.userId);
-    const categoryId = normalizeStringQuery(req.query.category);
-		const statusFilter = normalizeStringQuery(req.query.status).toLowerCase();
+		const categoryId = normalizeStringQuery(req.query.category);
 		const requestedSortBy = normalizeStringQuery(req.query.sortBy);
 		const sortBy = ['createdAt', 'startDate', 'endDate', 'goalAmount', 'amountRaised'].includes(requestedSortBy)
 			? requestedSortBy
 			: 'createdAt';
 		const sortOrder = normalizeStringQuery(req.query.sortOrder).toLowerCase() === 'asc' ? 'asc' : 'desc';
 
-		if (statusFilter && !['active', 'fully_funded', 'expired'].includes(statusFilter)) {
-			const error = new Error('status must be one of active, fully_funded, or expired');
-			error.statusCode = 400;
-			throw error;
-		}
-
 		const where = {
+			campaignStatus: 'APPROVED',
 			...(userId ? { userId } : {}),
 			...(categoryId ? { categoryId } : {}),
 			...(buildSearchWhere(search) || {}),
@@ -236,7 +230,7 @@ export const getCampaigns = async (req, res, next) => {
 		const campaigns = await prisma.campaign.findMany({
 			where,
 			orderBy: {
-				createdAt: 'desc',
+				[sortBy]: sortOrder,
 			},
 			include: {
 				user: { select: publicUserSelect },
@@ -276,6 +270,12 @@ export const getCampaignById = async (req, res, next) => {
 		});
 
 		if (!campaign) {
+			const error = new Error('Campaign not found');
+			error.statusCode = 404;
+			throw error;
+		}
+
+		if (campaign.campaignStatus !== 'APPROVED') {
 			const error = new Error('Campaign not found');
 			error.statusCode = 404;
 			throw error;

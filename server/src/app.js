@@ -3,10 +3,10 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import passport from 'passport';
-import { NODE_ENV } from './config/env.js';
 import './config/passport.js';
 import authRoutes from './routes/authRoutes.js';
 import adminCategoryRoutes from './routes/adminCategoryRoutes.js';
+import adminStatsRoutes from './routes/adminStatsRoutes.js';
 import campaignRoutes from './routes/campaignRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -53,6 +53,14 @@ const authLimiter = rateLimit({
   skipSuccessfulRequests: false,
 });
 
+// Strict rate limiting for admin endpoints
+const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  message: 'Too many admin requests, please try again later',
+  skipSuccessfulRequests: false,
+});
+
 app.use('/api', limiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
@@ -65,7 +73,9 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminLimiter);
 app.use('/api/admin/categories', adminCategoryRoutes);
+app.use('/api/admin', adminStatsRoutes);
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/users', userRoutes);

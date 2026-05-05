@@ -42,3 +42,32 @@ export const updateCampaignSchema = z
     .strict()
     .refine((data) => Object.keys(data).length > 0, 'At least one field is required');
 
+export const adminUpdateCampaignStatusSchema = z
+    .object({
+        status: z.enum(['APPROVED', 'REJECTED']),
+        rejectionReason: z.string().optional(),
+    })
+    .strict()
+    .refine(
+        (data) => data.status === 'APPROVED' || (data.status === 'REJECTED' && data.rejectionReason),
+        {
+            message: 'Rejection reason is required when status is REJECTED',
+            path: ['rejectionReason'],
+        }
+    );
+
+export const bulkCampaignStatusSchema = z
+    .object({
+        campaignIds: z.array(z.string().uuid()).min(1, 'At least one campaign ID is required'),
+        status: z.enum(['APPROVED', 'REJECTED']),
+        rejectionReason: z.string().optional(),
+    })
+    .strict()
+    .refine(
+        (data) => data.status === 'APPROVED' || (data.status === 'REJECTED' && data.rejectionReason),
+        {
+            message: 'Rejection reason is required when status is REJECTED',
+            path: ['rejectionReason'],
+        }
+    );
+
