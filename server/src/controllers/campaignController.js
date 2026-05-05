@@ -20,7 +20,6 @@ const calculateTimeLeft = (endDate, now = new Date()) => {
 };
 
 const calculateCampaignStatus = (campaign, now = new Date()) => {
-	const startDate = new Date(campaign.startDate).getTime();
 	const endDate = new Date(campaign.endDate).getTime();
 	const goalAmount = toNumber(campaign.goalAmount);
 	const amountRaised = toNumber(campaign.amountRaised);
@@ -68,13 +67,6 @@ const formatCampaign = (campaign) => {
 	};
 };
 
-const parsePagination = (query) => {
-	const page = Math.max(1, Number.parseInt(query.page, 10) || 1);
-	const limit = Math.min(100, Math.max(1, Number.parseInt(query.limit, 10) || 10));
-
-	return { page, limit, skip: (page - 1) * limit };
-};
-
 const normalizeStringQuery = (value) => {
 	if (Array.isArray(value)) {
 		return value[0]?.toString().trim() || '';
@@ -94,32 +86,6 @@ const buildSearchWhere = (search) => {
 			{ description: { contains: search, mode: 'insensitive' } },
 		],
 	};
-};
-
-const applyStatusFilter = (campaigns, statusFilter) => {
-	if (!statusFilter) {
-		return campaigns;
-	}
-
-	return campaigns.filter((campaign) => campaign.status === statusFilter);
-};
-
-const applySorting = (campaigns, sortBy, sortOrder) => {
-	const direction = sortOrder === 'asc' ? 1 : -1;
-	return [...campaigns].sort((left, right) => {
-		const leftValue = left[sortBy];
-		const rightValue = right[sortBy];
-
-		if (leftValue < rightValue) {
-			return -1 * direction;
-		}
-
-		if (leftValue > rightValue) {
-			return 1 * direction;
-		}
-
-		return 0;
-	});
 };
 
 const canManageCampaign = (req, campaignUserId) => req.user?.role === 'ADMIN' || campaignUserId === req.user?.id;
@@ -247,8 +213,7 @@ export const getCampaigns = async (req, res, next) => {
 		const skip = (page - 1) * limit;
 		const search = normalizeStringQuery(req.query.search);
 		const userId = normalizeStringQuery(req.query.userId);
-		const category = normalizeStringQuery(req.query.category);
-		const categoryId = Number.parseInt(category, 10);
+    const categoryId = normalizeStringQuery(req.query.category);
 		const statusFilter = normalizeStringQuery(req.query.status).toLowerCase();
 		const requestedSortBy = normalizeStringQuery(req.query.sortBy);
 		const sortBy = ['createdAt', 'startDate', 'endDate', 'goalAmount', 'amountRaised'].includes(requestedSortBy)
@@ -264,7 +229,7 @@ export const getCampaigns = async (req, res, next) => {
 
 		const where = {
 			...(userId ? { userId } : {}),
-			...(category ? { categoryId } : {}),
+			...(categoryId ? { categoryId } : {}),
 			...(buildSearchWhere(search) || {}),
 		};
 
@@ -280,9 +245,8 @@ export const getCampaigns = async (req, res, next) => {
 		});
 
 		const formattedCampaigns = campaigns.map(formatCampaign);
-		const filteredCampaigns = applyStatusFilter(formattedCampaigns, statusFilter);
-		const total = filteredCampaigns.length;
-		const paginatedCampaigns = filteredCampaigns.slice(skip, skip + limit);
+		const total = formattedCampaigns.length;
+		const paginatedCampaigns = formattedCampaigns.slice(skip, skip + limit);
 
 		res.status(200).json({
 			success: true,
@@ -328,10 +292,10 @@ export const getCampaignById = async (req, res, next) => {
 
 export const updateCampaign = async (req, res, next) => {
 	try {
-		const id = Number.parseInt(req.params.id, 10);
+		const id = req.params.id?.trim();
 
-		if (!Number.isInteger(id)) {
-			const error = new Error('Campaign id must be a valid integer');
+		if (!id) {
+			const error = new Error('Campaign id is required');
 			error.statusCode = 400;
 			throw error;
 		}
@@ -382,10 +346,10 @@ export const updateCampaign = async (req, res, next) => {
 
 export const updateCampaignImage = async (req, res, next) => {
 	try {
-		const id = Number.parseInt(req.params.id, 10);
+		const id = req.params.id?.trim();
 
-		if (!Number.isInteger(id)) {
-			const error = new Error('Campaign id must be a valid integer');
+		if (!id) {
+			const error = new Error('Campaign id is required');
 			error.statusCode = 400;
 			throw error;
 		}

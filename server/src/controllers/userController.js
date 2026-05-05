@@ -57,23 +57,25 @@ export const updateMyImage = async (req, res, next) => {
       data: {
         profileImageUrl: secureUrl,
         profileImagePublicId: publicId,
-        profile_picture: secureUrl,
       },
       select: {
         id: true,
         name: true,
         email: true,
-        profile_picture: true,
         profileImageUrl: true,
         profileImagePublicId: true,
-        created_at: true,
+        createdAt: true,
       },
     });
 
     res.status(200).json({
       success: true,
       message: 'Profile image updated successfully',
-      user: updatedUser,
+      user: {
+        ...updatedUser,
+        profile_picture: updatedUser.profileImageUrl,
+        created_at: updatedUser.createdAt,
+      },
     });
   } catch (error) {
     next(error);

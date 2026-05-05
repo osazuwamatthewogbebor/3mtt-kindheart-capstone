@@ -21,6 +21,7 @@ export const handleNewDonation = async (req, res) => {
 export const handlePaymentRedirect = async (req, res) => {
     try {
         const { reference } = req.query
+        const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 
         if (!reference) {
             return res.status(400).json({ status: "error", message: "No reference found" })
@@ -29,14 +30,13 @@ export const handlePaymentRedirect = async (req, res) => {
         const donation = await donationService.finalizeDonation(reference);
 
         if (!donation) {
-            return res.status(400).json({ status: "error", message: "Payment verification failed" });
+            const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+            return res.redirect(`${frontendUrl}/donation-failure`);
         }
 
         if (donation) {
             // Redirect back to success screen
-            res.redirect(`http://localhost:5173/donation-success?status=success&ref=${reference}`);
-        } else {
-            res.redirect(`http://localhost:5173/donation-failure`);
+            res.redirect(`${frontendUrl}/donation-success?status=success&ref=${reference}`);
         }
         
     } catch (error) {
