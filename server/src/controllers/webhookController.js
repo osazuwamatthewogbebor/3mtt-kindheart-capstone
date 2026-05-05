@@ -1,4 +1,6 @@
 import donationService from "../services/donationService.js";
+import prisma from "../config/db.js";
+import logger from "../config/logger.js";
 
 export const donationPaystackWebHook = async (req, res) => {
     res.status(200).send("OK");
@@ -16,6 +18,6 @@ export const donationPaystackWebHook = async (req, res) => {
             })
         }
     } catch (error) {
-        logger.info('Webhook processing failed:', error.message);
+        logger.error(`Webhook processing failed: ${error.message}`);
     }
 }

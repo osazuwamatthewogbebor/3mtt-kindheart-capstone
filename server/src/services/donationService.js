@@ -33,7 +33,7 @@ class DonationService {
         const raised = Number(campaign.amountRaised)
         
         // Check if amount has been achieved
-        if (raised > goal) {
+        if (raised >= goal) {
             throw new Error("The goal has been reached! Thank you for your interest, but this campaign is no longer accepting funds.")
         }
 
