@@ -227,20 +227,23 @@ export const getCampaigns = async (req, res, next) => {
 			...(buildSearchWhere(search) || {}),
 		};
 
-		const campaigns = await prisma.campaign.findMany({
-			where,
-			orderBy: {
-				[sortBy]: sortOrder,
-			},
-			include: {
-				user: { select: publicUserSelect },
-				category: { select: { id: true, name: true } },
-			},
-		});
+		const [campaigns, total] = await Promise.all([
+			prisma.campaign.findMany({
+				where,
+				orderBy: {
+					[sortBy]: sortOrder,
+				},
+				include: {
+					user: { select: publicUserSelect },
+					category: { select: { id: true, name: true } },
+				},
+				skip,
+				take: limit,
+			}),
+			prisma.campaign.count({ where }),
+		]);
 
-		const formattedCampaigns = campaigns.map(formatCampaign);
-		const total = formattedCampaigns.length;
-		const paginatedCampaigns = formattedCampaigns.slice(skip, skip + limit);
+		const paginatedCampaigns = campaigns.map(formatCampaign);
 
 		res.status(200).json({
 			success: true,

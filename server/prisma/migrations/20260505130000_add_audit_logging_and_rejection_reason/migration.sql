@@ -14,6 +14,11 @@ CREATE TABLE "AuditLog" (
     CONSTRAINT "AuditLog_pkey" PRIMARY KEY ("id")
 );
 
+-- Preserve audit integrity by tying log authors to existing users
+ALTER TABLE "AuditLog"
+ADD CONSTRAINT "AuditLog_adminId_fkey"
+FOREIGN KEY ("adminId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
 -- CreateIndex
 CREATE INDEX "AuditLog_adminId_idx" ON "AuditLog"("adminId");
 

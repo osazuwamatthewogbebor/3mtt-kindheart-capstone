@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/stats', isAuth, isAdmin, getStats);
 router.get('/users', isAuth, isAdmin, getUsers);
 router.get('/campaigns', isAuth, isAdmin, getCampaigns);
-router.put('/campaigns/:id/status', isAuth, isAdmin, validateRequest(adminUpdateCampaignStatusSchema), updateCampaignStatus);
 router.put('/campaigns/bulk/status', isAuth, isAdmin, validateRequest(bulkCampaignStatusSchema), bulkUpdateCampaignStatus);
+router.put('/campaigns/:id/status', isAuth, isAdmin, validateRequest(adminUpdateCampaignStatusSchema), updateCampaignStatus);
 
 export default router;

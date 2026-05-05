@@ -5,7 +5,7 @@ export const isAdmin = (req, res, next) => {
     return next(error);
   }
 
-  if (req.user.role !== 'admin') {
+  if (req.user.role !== 'ADMIN') {
     const error = new Error('Admin access only');
     error.statusCode = 403;
     return next(error);

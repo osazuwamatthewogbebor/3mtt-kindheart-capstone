@@ -55,7 +55,12 @@ export const getStats = async (req, res, next) => {
 
 export const getUsers = async (req, res, next) => {
 	try {
-		const users = await prisma.user.findMany({
+		const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
+		const limit = Math.min(100, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
+		const skip = (page - 1) * limit;
+
+		const [users, total] = await Promise.all([
+			prisma.user.findMany({
 			select: {
 				id: true,
 				name: true,
@@ -66,12 +71,20 @@ export const getUsers = async (req, res, next) => {
 			orderBy: {
 				createdAt: 'desc',
 			},
-		});
+			skip,
+			take: limit,
+			}),
+			prisma.user.count(),
+		]);
 
 		res.status(200).json({
 			success: true,
 			count: users.length,
 			data: users,
+			page,
+			limit,
+			total,
+			totalPages: Math.ceil(total / limit),
 		});
 	} catch (error) {
 		next(error);
@@ -102,11 +115,8 @@ export const updateCampaignStatus = async (req, res, next) => {
 
 		const updateData = {
 			campaignStatus: status,
+			rejectionReason: status === 'REJECTED' ? rejectionReason ?? null : null,
 		};
-
-		if (status === 'REJECTED' && rejectionReason) {
-			updateData.rejectionReason = rejectionReason;
-		}
 
 		const updatedCampaign = await prisma.campaign.update({
 			where: { id },
@@ -226,11 +236,8 @@ export const bulkUpdateCampaignStatus = async (req, res, next) => {
 
 		const updateData = {
 			campaignStatus: status,
+			rejectionReason: status === 'REJECTED' ? rejectionReason ?? null : null,
 		};
-
-		if (status === 'REJECTED' && rejectionReason) {
-			updateData.rejectionReason = rejectionReason;
-		}
 
 		const result = await prisma.campaign.updateMany({
 			where: {
