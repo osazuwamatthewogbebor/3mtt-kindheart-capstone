@@ -1,6 +1,7 @@
 import prisma from '../config/db.js';
 import { deleteImageByPublicId, uploadImageBuffer } from '../config/cloudinary.js';
 
+
 const publicUserSelect = {
 	name: true,
 };
@@ -99,7 +100,6 @@ export const createCampaign = async (req, res, next) => {
 
 		const userId = req.user.id;
 		const { title, description, categoryId, goalAmount, endDate } = req.body;
-		const parsedCategoryId = Number(categoryId);
 		const parsedGoalAmount = Number(goalAmount);
 		const parsedEndDate = new Date(endDate);
 
@@ -149,14 +149,9 @@ export const createCampaign = async (req, res, next) => {
 			throw error;
 		}
 
-		if (!Number.isInteger(parsedCategoryId) || parsedCategoryId <= 0) {
-			const error = new Error('Invalid category');
-			error.statusCode = 400;
-			throw error;
-		}
 
 		const category = await prisma.category.findUnique({
-			where: { id: parsedCategoryId },
+			where: { id: categoryId },
 			select: { id: true },
 		});
 
@@ -189,7 +184,7 @@ export const createCampaign = async (req, res, next) => {
 				userId,
 				title,
 				description,
-				categoryId: parsedCategoryId,
+				categoryId,
 				goalAmount: parsedGoalAmount,
 				amountRaised: 0,
 				imageUrl,
@@ -218,9 +213,7 @@ export const getCampaigns = async (req, res, next) => {
 		const skip = (page - 1) * limit;
 		const search = normalizeStringQuery(req.query.search);
 		const userId = normalizeStringQuery(req.query.userId);
-<<<<<<< Updated upstream
-		const category = normalizeStringQuery(req.query.category);
-		const parsedCategoryId = Number.parseInt(category, 10);
+    const categoryId = normalizeStringQuery(req.query.category);
 		const statusFilter = normalizeStringQuery(req.query.status).toLowerCase();
 		const requestedSortBy = normalizeStringQuery(req.query.sortBy);
 		const sortBy = ['createdAt', 'startDate', 'endDate', 'goalAmount', 'amountRaised'].includes(requestedSortBy)
@@ -236,14 +229,7 @@ export const getCampaigns = async (req, res, next) => {
 
 		const where = {
 			...(userId ? { userId } : {}),
-			...(category && Number.isInteger(parsedCategoryId) ? { categoryId: parsedCategoryId } : {}),
-=======
-		const categoryId = normalizeStringQuery(req.query.category);
-
-		const where = {
-			...(userId ? { userId } : {}),
 			...(categoryId ? { categoryId } : {}),
->>>>>>> Stashed changes
 			...(buildSearchWhere(search) || {}),
 		};
 
@@ -279,13 +265,7 @@ export const listCampaigns = getCampaigns;
 
 export const getCampaignById = async (req, res, next) => {
 	try {
-		const id = Number.parseInt(req.params.id, 10);
-
-		if (!Number.isInteger(id)) {
-			const error = new Error('Campaign id must be a valid integer');
-			error.statusCode = 400;
-			throw error;
-		}
+		const id = req.params.id.trim();
 
 		const campaign = await prisma.campaign.findUnique({
 			where: { id },

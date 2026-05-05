@@ -14,6 +14,7 @@ import uploadRoutes from './routes/uploadRoutes.js';
 import paymentRoutes from "./routes/paymentRoutes.js";
 import notFoundMiddleware from './middlewares/notFoundMiddleware.js';
 import errorMiddleware from './middlewares/errorMiddleware.js';
+import donationRoutes from './routes/donationRoutes.js'
 
 const app = express();
 
@@ -26,11 +27,7 @@ const allowedOrigins = process.env.CORS_ORIGINS
   : ['http://localhost:5500', 'http://127.0.0.1:5500'];
 
 app.use(cors({
-<<<<<<< Updated upstream
-  origin: 'http://localhost:5500',
-=======
   origin: allowedOrigins,
->>>>>>> Stashed changes
   credentials: true
 }));
 
@@ -73,7 +70,8 @@ app.use('/api/campaigns', campaignRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
-app.use('/api/payments', paymentRoutes)
+app.use('/api/payments', paymentRoutes);
+app.use('/api/donations', donationRoutes);
 
 // Error Handlers
 app.use(notFoundMiddleware);

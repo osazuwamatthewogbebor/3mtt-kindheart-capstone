@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campaign Details - KindHeart</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -371,7 +371,7 @@
         </div>
     </footer>
 
-    <script src="../js/config.js"></script>
+    <script src="../assets/js/config.js"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const campaignId = urlParams.get('id');
@@ -397,35 +397,36 @@
         async function loadCampaign() {
             try {
                 const response = await fetch(`${API.CAMPAIGNS}/${campaignId}`);
-                const data = await response.json();
+                const result = await response.json();
 
-                if (!data.success) {
+                const campaign = result.data?.campaign || result.campaign;
+
+                if (!result.success && !campaign) {
                     alert('Campaign not found');
                     window.location.href = 'campaigns.html';
                     return;
                 }
 
-                const campaign = data.data;
-                const progress = calculateProgress(campaign.raised_amount, campaign.goal_amount);
+                const progress = calculateProgress(campaign.amountRaised, campaign.goalAmount);
 
                 // Update page
                 document.getElementById('campaignTitle').textContent = campaign.title;
-                document.getElementById('campaignCategory').textContent = campaign.category_name || 'General';
-                document.getElementById('creatorName').textContent = campaign.creator_name;
-                document.getElementById('creatorNameFull').textContent = campaign.creator_name;
-                document.getElementById('createdDate').textContent = formatDate(campaign.created_at);
-                document.getElementById('campaignImage').src = campaign.image || 'https://via.placeholder.com/800x500';
-                document.getElementById('amountRaised').textContent = formatCurrency(campaign.raised_amount);
-                document.getElementById('goalAmount').textContent = formatCurrency(campaign.goal_amount);
+                document.getElementById('campaignCategory').textContent = campaign?.category?.name || 'General';
+                document.getElementById('creatorName').textContent = campaign?.user?.name;
+                document.getElementById('creatorNameFull').textContent = campaign?.user?.name;
+                document.getElementById('createdDate').textContent = formatDate(campaign.createdAt);
+                document.getElementById('campaignImage').src = campaign.imageUrl || 'https://via.placeholder.com/800x500';
+                document.getElementById('amountRaised').textContent = formatCurrency(campaign.amountRaised);
+                document.getElementById('goalAmount').textContent = formatCurrency(campaign.goalAmount);
                 document.getElementById('progressBar').style.width = progress + '%';
                 document.getElementById('campaignDescription').textContent = campaign.description;
                 
                 // Creator avatar
-                const initials = campaign.creator_name.split(' ').map(n => n[0]).join('').toUpperCase();
+                const initials = campaign?.user?.name.split(' ').map(n => n[0]).join('').toUpperCase();
                 document.getElementById('creatorAvatar').textContent = initials;
 
                 // Load donations
-                loadDonations();
+                // loadDonations();
 
             } catch (error) {
                 console.error('Error:', error);

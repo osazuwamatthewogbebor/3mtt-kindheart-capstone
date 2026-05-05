@@ -12,7 +12,7 @@ export const donationPaystackWebHook = async (req, res) => {
             await donationService.finalizeDonation(data.reference);
             logger.info(`Payment successful for reference: ${data.reference}`)
         } else if (event === "charge.failed") {
-            await prisma.donation.updateMany({
+            await prisma.donation.update({
                 where: { reference: data.reference },
                 data: { status: "FAILED" }
             })

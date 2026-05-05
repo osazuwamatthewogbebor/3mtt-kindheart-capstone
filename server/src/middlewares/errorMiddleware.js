@@ -1,9 +1,9 @@
+import {z} from 'zod';
 import logger from '../config/logger.js';
 import { IS_DEV } from '../config/env.js';
 
+
 const errorMiddleware = (err, req, res, next) => {
-<<<<<<< Updated upstream
-=======
   
   // Handle Zod Validation Errors
   if (err instanceof z.ZodError) {
@@ -42,7 +42,6 @@ const errorMiddleware = (err, req, res, next) => {
     })
   }
   
->>>>>>> Stashed changes
   const statusCode = err.statusCode || (err.name === 'MulterError' ? 400 : 500);
   const message =
     err.name === 'MulterError' && err.code === 'LIMIT_FILE_SIZE'
@@ -52,6 +51,7 @@ const errorMiddleware = (err, req, res, next) => {
   logger.error(`${err.message} - ${req.method} ${req.url}`);
 
   res.status(statusCode).json({
+    status: "error",
     success: false,
     message,
     stack: IS_DEV ? err.stack : undefined,

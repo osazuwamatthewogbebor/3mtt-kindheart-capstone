@@ -1,5 +1,6 @@
 // Login Form Handler
 const loginForm = document.getElementById('loginForm');
+
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -22,17 +23,19 @@ if (loginForm) {
             });
             
             const data = await response.json();
+
+            console.log(data)
             
             if (data.success) {
                 // Store token and user data
-                localStorage.setItem('token', data.data.token);
-                localStorage.setItem('user', JSON.stringify(data.data.user));
+                localStorage.setItem('token', data.accessToken);
+                localStorage.setItem('user', JSON.stringify(data.user));
                 
                 // Show success message
                 alert('Login successful!');
                 
                 // Redirect based on role
-                if (data.data.user.role === 'ADMIN') {
+                if (data.user.role === 'ADMIN') {
                     window.location.href = 'dashboard.html';
                 } else {
                     window.location.href = 'my-campaigns.html';
@@ -92,8 +95,8 @@ if (registerForm) {
             
             if (data.success) {
                 // Store token and user data
-                localStorage.setItem('token', data.data.token);
-                localStorage.setItem('user', JSON.stringify(data.data.user));
+                localStorage.setItem('token', data.accessToken);
+                localStorage.setItem('user', JSON.stringify(data.user));
                 
                 // Show success message
                 alert('Account created successfully!');

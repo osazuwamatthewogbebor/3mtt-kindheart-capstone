@@ -871,10 +871,10 @@ body {
 
 </div>
 
-<script src="../js/config.js"></script>
+<script src="../assets/js/config.js"></script>
 <script>
 
-const API = "http://localhost:5000/api";
+// const API = "http://localhost:3000/api";
 
 // ================= SIDEBAR =================
 function toggleSidebar() {
@@ -895,7 +895,7 @@ async function loadUser() {
   }
 
   try {
-    const res = await fetch(API + "/users/me", {
+    const res = await fetch(API_URL  + "/users/me", {
       headers: {
         Authorization: "Bearer " + token
       }
@@ -917,7 +917,7 @@ async function loadUser() {
 // ================= LOAD STATS =================
 async function loadStats() {
   try {
-    const res = await fetch(API + "/admin/stats");
+    const res = await fetch(API_URL  + "/admin/stats");
     const data = await res.json();
 
     document.getElementById("donations").innerText = "₦" + data.donations.toLocaleString();
@@ -933,7 +933,7 @@ async function loadStats() {
 // ================= LOAD CAMPAIGNS =================
 async function loadCampaigns() {
   try {
-    const res = await fetch(API + "/campaigns");
+    const res = await fetch(API_URL  + "/campaigns");
     const data = await res.json();
 
     let box = document.getElementById("campaignList");
@@ -971,7 +971,7 @@ async function loadCampaigns() {
 // ================= LOGOUT =================
 function logout() {
   localStorage.removeItem("token");
-  window.location.href = "login.html";
+  window.location.href = "./login.html";
 }
 
 // ================= INIT =================

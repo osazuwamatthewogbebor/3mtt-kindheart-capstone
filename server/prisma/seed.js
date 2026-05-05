@@ -4,10 +4,14 @@ const prisma = new PrismaClient();
 
 const defaultCategories = [
 	{ name: 'Health' },
-	{ name: 'Education' },
 	{ name: 'Emergency' },
 	{ name: 'Business' },
 	{ name: 'Charity' },
+	{ name: 'Education' },
+    { name: 'Medical' },
+    { name: 'Environment' },
+    { name: 'Community' },
+    { name: 'Technology' },
 ];
 
 async function main() {

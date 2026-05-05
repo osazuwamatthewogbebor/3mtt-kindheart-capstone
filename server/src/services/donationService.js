@@ -22,26 +22,19 @@ class DonationService {
             throw new Error("This campaign has ended and can no longer accept donations.")
         }
 
+        
         // Prevent self-donation
         if (campaign.userId === donorId) {
             throw new Error("Self-donation is not allowed.")
         }
-
+        
         // Overfunding Logic
         const goal = Number(campaign.goalAmount);
-        const raised = Number(campaign.amountRaised);
-        const donationAmount = Number(amount);
-
-        if (!Number.isFinite(donationAmount) || donationAmount <= 0) {
-            throw new Error("Invalid donation amount")
-        }
-
+        const raised = Number(campaign.amountRaised)
+        
+        // Check if amount has been achieved
         if (raised >= goal) {
             throw new Error("The goal has been reached! Thank you for your interest, but this campaign is no longer accepting funds.")
-        }
-
-        if (raised + donationAmount > goal) {
-            throw new Error("This donation would exceed the campaign goal.")
         }
 
 
@@ -54,7 +47,7 @@ class DonationService {
         // Create Donation Record with pending status
         const donationRecord = await prisma.donation.create({
             data: {
-                amount: donationAmount,
+                amount: amount,
                 reference: payment.reference,
                 status: "PENDING",
                 donorId: donorId,
