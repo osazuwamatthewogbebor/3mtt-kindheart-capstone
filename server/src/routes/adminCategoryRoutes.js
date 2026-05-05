@@ -5,11 +5,12 @@ import {
 	listCategories,
 	updateCategory,
 } from '../controllers/adminCategoryController.js';
-import { authorizeRoles, protect } from '../middlewares/authMiddleware.js';
+import { isAuth } from '../middlewares/authMiddleware.js';
+import { isAdmin } from '../middlewares/isAdmin.js';
 
 const router = express.Router();
 
-router.use(protect, authorizeRoles('ADMIN'));
+router.use(isAuth, isAdmin);
 
 router.get('/', listCategories);
 router.post('/', createCategory);
