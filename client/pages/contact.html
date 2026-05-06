@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contact Us | KindHeart</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "background": "#f7f9fb",
+                    "surface-container-high": "#e6e8ea",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed-variant": "#783200",
+                    "tertiary-fixed-dim": "#79db8d",
+                    "primary-fixed-dim": "#ffb690",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface": "#f7f9fb",
+                    "on-secondary-container": "#6f5100",
+                    "tertiary": "#006d30",
+                    "error-container": "#ffdad6",
+                    "secondary-container": "#ffc329",
+                    "on-error-container": "#93000a",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container": "#eceef0",
+                    "surface-bright": "#f7f9fb",
+                    "on-surface-variant": "#584237",
+                    "secondary-fixed": "#ffdf9f",
+                    "on-tertiary-container": "#003b17",
+                    "on-surface": "#191c1e",
+                    "secondary-fixed-dim": "#f9bd22",
+                    "primary-container": "#f97316",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#4cad64",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#795900",
+                    "on-primary-container": "#582200",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#95f8a7",
+                    "outline-variant": "#e0c0b1",
+                    "on-primary-fixed": "#341100",
+                    "inverse-surface": "#2d3133",
+                    "surface-dim": "#d8dadc",
+                    "on-tertiary-fixed": "#00210a",
+                    "primary": "#9d4300",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed-variant": "#005323",
+                    "on-secondary-fixed-variant": "#5c4300",
+                    "inverse-primary": "#ffb690",
+                    "surface-container-low": "#f2f4f6",
+                    "on-secondary-fixed": "#261a00",
+                    "on-background": "#191c1e",
+                    "primary-fixed": "#ffdbca",
+                    "outline": "#8c7164",
+                    "error": "#ba1a1a",
+                    "surface-tint": "#9d4300"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-stone-900/80 glass-nav shadow-sm shadow-stone-200/50">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+<div class="text-2xl font-bold tracking-tighter text-orange-700 dark:text-orange-500">KindHeart</div>
+<div class="hidden md:flex items-center space-x-8 font-sans antialiased tracking-tight">
+<a class="text-stone-600 hover:text-orange-600 transition-colors" href="#">Campaigns</a>
+<a class="text-stone-600 hover:text-orange-600 transition-colors" href="#">Impact</a>
+<a class="text-stone-600 hover:text-orange-600 transition-colors" href="#">Stories</a>
+<a class="text-orange-700 border-b-2 border-orange-700 pb-1" href="#">About Us</a>
+</div>
+<div class="flex items-center space-x-4">
+<button class="hidden md:block px-4 py-2 text-stone-600 font-medium hover:bg-stone-100/50 rounded-lg transition-all">Log In</button>
+<button class="px-6 py-2 bg-primary text-on-primary rounded-lg font-bold tracking-tight shadow-lg shadow-primary/20 active:scale-95 transition-transform">Donate Now</button>
+</div>
+</div>
+</nav>
+<main class="pt-24 pb-20">
+<!-- Hero Section -->
+<section class="max-w-7xl mx-auto px-6 py-16 md:py-24 overflow-hidden">
+<div class="relative flex flex-col items-center text-center max-w-3xl mx-auto">
+<span class="text-primary font-bold tracking-widest text-xs uppercase mb-4">Contact Our Team</span>
+<h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter text-on-surface mb-6 leading-none">Get in Touch</h1>
+<p class="text-lg md:text-xl text-on-surface-variant font-body leading-relaxed opacity-90">
+                    Whether you're looking to fund a dream or support a life-changing cause, our team is here to guide you through every step of your journey.
+                </p>
+</div>
+</section>
+<!-- Main Layout: Contact Form & Support Details -->
+<section class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+<!-- Left Column: Contact Form -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-xl p-8 md:p-10 shadow-sm">
+<h2 class="text-2xl font-bold tracking-tight mb-8">Send us a message</h2>
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant px-1">Full Name</label>
+<input class="w-full bg-surface-container-low border-none border-b-2 border-transparent focus:border-primary focus:ring-0 rounded-lg p-4 transition-all" placeholder="Jane Doe" required="" type="text"/>
+</div>
+<div class="flex flex-col space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant px-1">Email Address</label>
+<input class="w-full bg-surface-container-low border-none border-b-2 border-transparent focus:border-primary focus:ring-0 rounded-lg p-4 transition-all" placeholder="jane@example.com" required="" type="email"/>
+</div>
+</div>
+<div class="flex flex-col space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant px-1">Subject</label>
+<select class="w-full bg-surface-container-low border-none border-b-2 border-transparent focus:border-primary focus:ring-0 rounded-lg p-4 transition-all">
+<option>General Inquiry</option>
+<option>Campaign Support</option>
+<option>Donation Issues</option>
+<option>Partnership Opportunities</option>
+</select>
+</div>
+<div class="flex flex-col space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant px-1">Message</label>
+<textarea class="w-full bg-surface-container-low border-none border-b-2 border-transparent focus:border-primary focus:ring-0 rounded-lg p-4 transition-all resize-none" placeholder="How can we help you?" required="" rows="5"></textarea>
+</div>
+<button class="w-full md:w-auto px-10 py-4 bg-primary text-on-primary font-bold rounded-lg shadow-xl shadow-primary/10 hover:shadow-primary/20 active:scale-95 transition-all" type="submit">
+                        Send Message
+                    </button>
+</form>
+</div>
+<!-- Right Column: Support Details -->
+<div class="lg:col-span-5 space-y-8">
+<!-- Support Card -->
+<div class="bg-surface-container-low rounded-xl p-8 space-y-8">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary-container">location_on</span>
+</div>
+<div>
+<h3 class="text-lg font-bold mb-1">Our Office</h3>
+<p class="text-on-surface-variant leading-relaxed">
+                                452 Kindness Blvd, Suite 100<br/>
+                                San Francisco, CA 94107
+                            </p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-lg bg-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary-container">mail</span>
+</div>
+<div>
+<h3 class="text-lg font-bold mb-1">Email Support</h3>
+<p class="text-on-surface-variant">support@kindheart.org</p>
+<p class="text-sm text-on-surface-variant opacity-70 mt-1">Response time: 24-48 hours</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-lg bg-tertiary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-tertiary-container">call</span>
+</div>
+<div>
+<h3 class="text-lg font-bold mb-1">Phone Number</h3>
+<p class="text-on-surface-variant">+1 (800) KIND-HEART</p>
+<p class="text-sm text-on-surface-variant opacity-70 mt-1">Mon-Fri, 9am - 6pm PST</p>
+</div>
+</div>
+</div>
+<!-- Help Center CTA -->
+<div class="relative overflow-hidden bg-on-surface rounded-xl p-8 text-surface-bright">
+<div class="relative z-10">
+<h3 class="text-2xl font-bold tracking-tight mb-3">Looking for quick answers?</h3>
+<p class="mb-6 opacity-80 leading-relaxed">Browse our documentation and common questions to get help instantly.</p>
+<a class="inline-flex items-center gap-2 font-bold text-primary-container hover:underline group" href="#">
+                            Visit Help Center
+                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">help_center</span>
+</div>
+</div>
+</div>
+</section>
+<!-- FAQ Section -->
+<section class="max-w-4xl mx-auto px-6 py-24">
+<div class="text-center mb-12">
+<h2 class="text-3xl md:text-4xl font-extrabold tracking-tighter mb-4">Frequently Asked Questions</h2>
+<p class="text-on-surface-variant">The most common things people ask us.</p>
+</div>
+<div class="space-y-4">
+<!-- FAQ Item 1 -->
+<details class="group bg-surface-container rounded-xl">
+<summary class="flex justify-between items-center p-6 cursor-pointer list-none">
+<span class="font-bold text-lg text-on-surface">How do I start a campaign?</span>
+<span class="material-symbols-outlined transition-transform group-open:rotate-180 text-primary">expand_more</span>
+</summary>
+<div class="px-6 pb-6 text-on-surface-variant leading-relaxed">
+                        To start a campaign, simply click the "Start Funding" button in the navigation. You'll need to verify your identity, tell your story with clear goals, and upload high-quality images to inspire trust in your donors.
+                    </div>
+</details>
+<!-- FAQ Item 2 -->
+<details class="group bg-surface-container rounded-xl">
+<summary class="flex justify-between items-center p-6 cursor-pointer list-none">
+<span class="font-bold text-lg text-on-surface">Is my donation secure?</span>
+<span class="material-symbols-outlined transition-transform group-open:rotate-180 text-primary">expand_more</span>
+</summary>
+<div class="px-6 pb-6 text-on-surface-variant leading-relaxed">
+                        Yes. We use industry-standard bank-level encryption and partner with global payment leaders like Stripe to ensure your financial data is never stored on our servers and every transaction is protected.
+                    </div>
+</details>
+<!-- FAQ Item 3 -->
+<details class="group bg-surface-container rounded-xl">
+<summary class="flex justify-between items-center p-6 cursor-pointer list-none">
+<span class="font-bold text-lg text-on-surface">How do I get my funds?</span>
+<span class="material-symbols-outlined transition-transform group-open:rotate-180 text-primary">expand_more</span>
+</summary>
+<div class="px-6 pb-6 text-on-surface-variant leading-relaxed">
+                        Once your campaign reaches its goal or a scheduled payout date, funds are transferred directly to your linked bank account. This typically takes 3-5 business days depending on your local banking regulations.
+                    </div>
+</details>
+<!-- FAQ Item 4 -->
+<details class="group bg-surface-container rounded-xl">
+<summary class="flex justify-between items-center p-6 cursor-pointer list-none">
+<span class="font-bold text-lg text-on-surface">Are there platform fees?</span>
+<span class="material-symbols-outlined transition-transform group-open:rotate-180 text-primary">expand_more</span>
+</summary>
+<div class="px-6 pb-6 text-on-surface-variant leading-relaxed">
+                        KindHeart operates on a donor-tip model. We don't take a percentage of the funds you raise for individual causes, though standard credit card processing fees from our payment providers still apply.
+                    </div>
+</details>
+</div>
+</section>
+<!-- Image Decorative Section -->
+<section class="max-w-7xl mx-auto px-6 mb-24">
+<div class="h-[400px] rounded-xl relative overflow-hidden">
+<img alt="Empathetic team meeting" class="w-full h-full object-cover" data-alt="a collaborative team of diverse professionals sitting in a sun-drenched modern office having a positive and empathetic conversation" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKEKSco1CpjfYqzJ4wAlaFYzh_c611CeZUem5mIg9QCVpXPUlykZhZhAP8_bT1s-dJdQPFxaoxMwNnnYY_Kp7PpFqLC1WSpmHU097jLkCuBPmLbqGlo4bfjF6XUlNlHHnnsx3MCjXONklOvEQ-n_2wJGoKA6Ja2LaVaG7TLfpKyWU-i9il-_cC9vv3Qa5US32iGInb70cZEWjbngmFdnfWleYBmVffXIcfM9PYSQuFnsvCrbPyV-c4bjVfMRbWt4sMAFvqu2IA_-s"/>
+<div class="absolute inset-0 bg-gradient-to-r from-on-surface/60 to-transparent flex items-center p-12">
+<div class="max-w-md">
+<h2 class="text-4xl font-bold text-white mb-4 tracking-tight leading-none">We believe in the power of shared stories.</h2>
+<p class="text-white/90 text-lg">Our community managers are activists and donors themselves, ensuring every campaign gets the respect it deserves.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-stone-200/15 bg-stone-50 dark:bg-stone-950">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 px-8 py-12 max-w-7xl mx-auto">
+<div class="space-y-6">
+<div class="text-lg font-black text-stone-900 dark:text-stone-100 uppercase tracking-widest">KindHeart</div>
+<p class="text-stone-500 dark:text-stone-400 text-sm font-medium leading-relaxed max-w-sm">
+                    © 2024 KindHeart Crowdfunding. Empowering change through editorial storytelling. Helping thousands turn empathy into action every single day.
+                </p>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-stone-400 hover:text-orange-600 cursor-pointer transition-colors">public</span>
+<span class="material-symbols-outlined text-stone-400 hover:text-orange-600 cursor-pointer transition-colors">chat_bubble</span>
+<span class="material-symbols-outlined text-stone-400 hover:text-orange-600 cursor-pointer transition-colors">campaign</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-8">
+<div class="space-y-4">
+<h4 class="text-stone-900 dark:text-stone-100 font-bold text-sm">Navigation</h4>
+<ul class="space-y-2">
+<li><a class="text-sm font-medium text-stone-500 hover:text-orange-600 transition-colors" href="#">Campaigns</a></li>
+<li><a class="text-sm font-medium text-stone-500 hover:text-orange-600 transition-colors" href="#">Impact</a></li>
+<li><a class="text-sm font-medium text-stone-500 hover:text-orange-600 transition-colors" href="#">Stories</a></li>
+<li><a class="text-sm font-medium text-stone-500 hover:text-orange-600 transition-colors" href="#">About Us</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h4 class="text-stone-900 dark:text-stone-100 font-bold text-sm">Legal &amp; Support</h4>
+<ul class="space-y-2">
+<li><a class="text-sm font-medium text-stone-500 hover:text-orange-600 transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="text-sm font-medium text-stone-500 hover:text-orange-600 transition-colors" href="#">Terms of Service</a></li>
+<li><a class="text-sm font-medium text-stone-500 hover:text-orange-600 transition-colors" href="#">Cookie Policy</a></li>
+<li><a class="text-sm font-medium text-orange-700 font-semibold" href="#">Contact Support</a></li>
+</ul>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
