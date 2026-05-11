@@ -21,6 +21,9 @@ import { gatekeeper } from './middlewares/gatekeeperMiddleware.js';
 
 const app = express();
 
+// Trust proxy for Render/Cloud environments (fixes rate-limit issues)
+app.set('trust proxy', 1);
+
 // Middlewares
 app.use(helmet({
   contentSecurityPolicy: {
