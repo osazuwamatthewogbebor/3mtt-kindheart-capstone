@@ -86,6 +86,16 @@ const options = {
             createdAt: { type: 'string', format: 'date-time' },
           },
         },
+        Category: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            name: { type: 'string' },
+            description: { type: 'string', nullable: true },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
+        },
       },
     },
     paths: {
@@ -276,28 +286,24 @@ const options = {
           parameters: [
             { name: 'q', in: 'query', schema: { type: 'string' } },
             { name: 'category', in: 'query', schema: { type: 'string' } },
+            { name: 'status', in: 'query', schema: { type: 'string' } }
           ],
-          responses: {
-            200: { description: 'Search results' },
-          },
-        },
+          responses: { 200: { description: 'Success' } }
+        }
       },
       '/api/campaigns/{id}': {
         get: {
           tags: ['Campaigns'],
           summary: 'Get campaign by ID',
           parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-          responses: { 200: { description: 'Campaign details' } }
+          responses: { 200: { description: 'Success' } }
         },
         put: {
           tags: ['Campaigns'],
-          summary: 'Update campaign details',
+          summary: 'Update campaign',
           security: [{ bearerAuth: [] }],
           parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-          requestBody: {
-            content: { 'application/json': { schema: { type: 'object', properties: { title: { type: 'string' }, description: { type: 'string' } } } } }
-          },
-          responses: { 200: { description: 'Campaign updated' } }
+          responses: { 200: { description: 'Updated' } }
         }
       },
       '/api/campaigns/{id}/image': {
@@ -445,6 +451,33 @@ const options = {
           responses: { 200: { description: 'Category deleted' } }
         }
       },
+      '/api/donations/me': {
+        get: {
+          tags: ['Donations'],
+          summary: 'Get my donations',
+          security: [{ bearerAuth: [] }],
+          responses: { 200: { description: 'Success' } }
+        }
+      },
+      '/api/donations': {
+        post: {
+          tags: ['Donations'],
+          summary: 'Initiate a new donation',
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Donation' } } }
+          },
+          responses: { 201: { description: 'Donation initiated' } }
+        }
+      },
+      '/api/donations/verify-payment': {
+        get: {
+          tags: ['Donations'],
+          summary: 'Verify payment redirect',
+          parameters: [{ name: 'reference', in: 'query', required: true, schema: { type: 'string' } }],
+          responses: { 200: { description: 'Payment verified' } }
+        }
+      },
       '/api/projects': {
         get: {
           tags: ['Projects'],
@@ -493,6 +526,89 @@ const options = {
           tags: ['Payments'],
           summary: 'Paystack Webhook',
           responses: { 200: { description: 'Webhook processed' } }
+        }
+      },
+      '/api/admin/categories': {
+        get: {
+          tags: ['Admin'],
+          summary: 'List all categories',
+          security: [{ bearerAuth: [] }],
+          responses: { 200: { description: 'Success' } }
+        },
+        post: {
+          tags: ['Admin'],
+          summary: 'Create a new category',
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Category' } } }
+          },
+          responses: { 201: { description: 'Created' } }
+        }
+      },
+      '/api/admin/categories/{id}': {
+        put: {
+          tags: ['Admin'],
+          summary: 'Update category',
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+          requestBody: {
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/Category' } } }
+          },
+          responses: { 200: { description: 'Updated' } }
+        },
+        delete: {
+          tags: ['Admin'],
+          summary: 'Delete category',
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+          responses: { 200: { description: 'Deleted' } }
+        }
+      },
+      '/api/admin/stats': {
+        get: {
+          tags: ['Admin'],
+          summary: 'Get admin dashboard statistics',
+          security: [{ bearerAuth: [] }],
+          responses: { 200: { description: 'Success' } }
+        }
+      },
+      '/api/admin/users': {
+        get: {
+          tags: ['Admin'],
+          summary: 'List all users (Admin only)',
+          security: [{ bearerAuth: [] }],
+          responses: { 200: { description: 'Success' } }
+        }
+      },
+      '/api/admin/campaigns': {
+        get: {
+          tags: ['Admin'],
+          summary: 'List all campaigns (Admin only)',
+          security: [{ bearerAuth: [] }],
+          responses: { 200: { description: 'Success' } }
+        }
+      },
+      '/api/admin/campaigns/bulk/status': {
+        put: {
+          tags: ['Admin'],
+          summary: 'Bulk update campaign status',
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            content: { 'application/json': { schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } }, status: { type: 'string' } } } } }
+          },
+          responses: { 200: { description: 'Updated' } }
+        }
+      },
+      '/api/admin/campaigns/{id}/status': {
+        put: {
+          tags: ['Admin'],
+          summary: 'Update single campaign status',
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+          requestBody: {
+            content: { 'application/json': { schema: { type: 'object', properties: { status: { type: 'string' } } } } }
+          },
+          responses: { 200: { description: 'Updated' } }
         }
       },
       '/api/health': {

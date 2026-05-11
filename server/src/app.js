@@ -23,7 +23,15 @@ const app = express();
 
 // Middlewares
 app.use(helmet({
-  contentSecurityPolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https://validator.swagger.io"],
+      connectSrc: ["'self'"],
+    },
+  },
 }));
 
 // CORS configuration - allow production origins via env var
