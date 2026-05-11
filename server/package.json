@@ -5,7 +5,7 @@
   "description": "Backend API for KindHeart Crowdfunding Platform",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "npx prisma migrate deploy && node server.js",
     "dev": "npx prisma generate && nodemon server.js",
     "migrate": "npx prisma migrate dev",
     "seed": "node prisma/seed.js"
