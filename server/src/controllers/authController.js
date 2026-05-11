@@ -3,7 +3,12 @@ import { createHash, randomBytes, randomUUID } from 'crypto';
 import jwt from 'jsonwebtoken';
 import prisma from '../config/db.js';
 import logger from '../config/logger.js';
-import { sendVerificationEmail } from '../services/emailService.js';
+import { 
+	sendVerificationEmail, 
+	sendWelcomeEmail, 
+	sendResetPasswordEmail, 
+	sendResetSuccessEmail 
+} from '../services/emailService.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const ACCESS_TOKEN_EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN || '15m';
@@ -148,7 +153,7 @@ export const loginUser = async (req, res, next) => {
 		}
 
 		if (!user.isVerified) {
-			const error = new Error('Please verify your email');
+			const error = new Error('Account not verified. Please check your email for a verification link or contact support.');
 			error.statusCode = 403;
 			throw error;
 		}
@@ -341,10 +346,24 @@ export const forgotPassword = async (req, res, next) => {
 		const appUrl = process.env.APP_URL || 'http://localhost:3000';
 		const resetLink = `${appUrl}/api/auth/reset-password/${rawToken}`;
 
+		let emailSent = true;
+		try {
+			await sendResetPasswordEmail({
+				to: user.email,
+				name: user.name,
+				resetLink,
+			});
+		} catch (error) {
+			emailSent = false;
+			logger.error(`Reset email failed: ${error.message}`);
+		}
+
 		res.status(200).json({
 			success: true,
-			message: 'Password reset link generated',
-			resetLink,
+			message: emailSent
+				? 'Password reset link sent to your email'
+				: 'Password reset link generated (email delivery failed)',
+			resetLink: process.env.NODE_ENV === 'production' && emailSent ? undefined : resetLink,
 		});
 	} catch (error) {
 		next(error);
@@ -394,6 +413,12 @@ export const resetPassword = async (req, res, next) => {
 			success: true,
 			message: 'Password reset successful',
 		});
+
+		// Send success email in background
+		sendResetSuccessEmail({
+			to: user.email,
+			name: user.name,
+		}).catch((err) => logger.error(`Reset success email failed: ${err.message}`));
 	} catch (error) {
 		next(error);
 	}
@@ -437,7 +462,75 @@ export const verifyEmail = async (req, res, next) => {
 
 		res.status(200).json({
 			success: true,
-			message: 'Email verified successfully',
+			message: 'Email verified successfully. You can now login.',
+		});
+
+		// Send welcome email in background
+		sendWelcomeEmail({
+			to: user.email,
+			name: user.name,
+		}).catch((err) => logger.error(`Welcome email failed: ${err.message}`));
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const resendVerificationEmailLink = async (req, res, next) => {
+	try {
+		const { email } = req.body;
+
+		const user = await prisma.user.findUnique({
+			where: { email: email.toLowerCase() },
+		});
+
+		if (!user) {
+			const error = new Error('User with this email does not exist');
+			error.statusCode = 404;
+			throw error;
+		}
+
+		if (user.isVerified) {
+			return res.status(400).json({
+				success: false,
+				message: 'This account is already verified',
+			});
+		}
+
+		const rawVerificationToken = randomBytes(32).toString('hex');
+		const hashedVerificationToken = createHash('sha256')
+			.update(rawVerificationToken)
+			.digest('hex');
+		const emailVerificationExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+		await prisma.user.update({
+			where: { id: user.id },
+			data: {
+				emailVerificationToken: hashedVerificationToken,
+				emailVerificationExpiry,
+			},
+		});
+
+		const appUrl = process.env.APP_URL || 'http://localhost:3000';
+		const verificationLink = `${appUrl}/api/auth/verify-email?token=${rawVerificationToken}`;
+
+		let emailSent = true;
+		try {
+			await sendVerificationEmail({
+				to: user.email,
+				name: user.name,
+				verificationLink,
+			});
+		} catch (emailError) {
+		emailSent = false;
+			logger.error(`Resend verification failed: ${emailError.message}`);
+		}
+
+		res.status(200).json({
+			success: true,
+			message: emailSent 
+				? 'Verification email resent successfully' 
+				: 'Verification email could not be sent (delivery failure)',
+			verificationLink: process.env.NODE_ENV === 'production' && emailSent ? undefined : verificationLink,
 		});
 	} catch (error) {
 		next(error);

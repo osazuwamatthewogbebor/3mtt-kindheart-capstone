@@ -8,7 +8,7 @@ import authRoutes from './routes/authRoutes.js';
 import adminCategoryRoutes from './routes/adminCategoryRoutes.js';
 import adminStatsRoutes from './routes/adminStatsRoutes.js';
 import campaignRoutes from './routes/campaignRoutes.js';
-import projectRoutes from './routes/projectRoutes.js';
+
 import userRoutes from './routes/userRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import paymentRoutes from "./routes/paymentRoutes.js";
@@ -102,7 +102,6 @@ app.use('/api/admin', adminLimiter);
 app.use('/api/admin/categories', adminCategoryRoutes);
 app.use('/api/admin', adminStatsRoutes);
 app.use('/api/campaigns', campaignRoutes);
-app.use('/api/projects', projectRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/payments', paymentRoutes);

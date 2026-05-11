@@ -73,6 +73,9 @@ const options = {
           properties: {
             id: { type: 'string', format: 'uuid' },
             name: { type: 'string' },
+            description: { type: 'string', nullable: true },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' },
           },
         },
         Donation: {
@@ -84,16 +87,6 @@ const options = {
             campaignId: { type: 'string', format: 'uuid' },
             userId: { type: 'string', format: 'uuid' },
             createdAt: { type: 'string', format: 'date-time' },
-          },
-        },
-        Category: {
-          type: 'object',
-          properties: {
-            id: { type: 'string', format: 'uuid' },
-            name: { type: 'string' },
-            description: { type: 'string', nullable: true },
-            createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' },
           },
         },
       },
@@ -120,8 +113,9 @@ const options = {
             },
           },
           responses: {
-            201: { description: 'User registered successfully' },
+            201: { description: 'User registered successfully. Verification email sent.' },
             400: { description: 'Validation error' },
+            409: { description: 'Email already in use' },
           },
         },
       },
@@ -147,6 +141,7 @@ const options = {
           responses: {
             200: { description: 'Login successful' },
             401: { description: 'Invalid credentials' },
+            403: { description: 'Account not verified. Email verification required.' },
           },
         },
       },
@@ -165,6 +160,7 @@ const options = {
           summary: 'Refresh authentication token',
           responses: {
             200: { description: 'Token refreshed' },
+            401: { description: 'Invalid or expired refresh token' },
           },
         },
       },
@@ -176,8 +172,32 @@ const options = {
             { name: 'token', in: 'query', required: true, schema: { type: 'string' } }
           ],
           responses: {
-            200: { description: 'Email verified' },
-            400: { description: 'Invalid token' },
+            200: { description: 'Email verified successfully. Welcome email sent.' },
+            400: { description: 'Invalid or expired verification token' },
+          },
+        },
+      },
+      '/api/auth/resend-verification': {
+        post: {
+          tags: ['Auth'],
+          summary: 'Resend verification email',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['email'],
+                  properties: {
+                    email: { type: 'string', format: 'email', example: 'user@example.com' },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: { description: 'Verification email resent successfully' },
+            404: { description: 'User not found' },
           },
         },
       },
@@ -190,7 +210,8 @@ const options = {
             content: { 'application/json': { schema: { type: 'object', properties: { email: { type: 'string' } } } } }
           },
           responses: {
-            200: { description: 'Reset email sent' },
+            200: { description: 'Reset email sent using template' },
+            404: { description: 'User not found' },
           },
         },
       },
@@ -206,7 +227,8 @@ const options = {
             content: { 'application/json': { schema: { type: 'object', properties: { password: { type: 'string' } } } } }
           },
           responses: {
-            200: { description: 'Password reset successful' },
+            200: { description: 'Password reset successful. Confirmation email sent.' },
+            400: { description: 'Invalid or expired token' },
           },
         },
       },
@@ -231,17 +253,6 @@ const options = {
               content: { 'application/json': { schema: { $ref: '#/components/schemas/User' } } }
             },
             401: { description: 'Unauthorized' },
-          },
-        },
-      },
-      '/api/auth/admin': {
-        get: {
-          tags: ['Auth'],
-          summary: 'Check admin access',
-          security: [{ bearerAuth: [] }],
-          responses: {
-            200: { description: 'Admin access confirmed' },
-            403: { description: 'Forbidden' },
           },
         },
       },
@@ -276,6 +287,7 @@ const options = {
           },
           responses: {
             201: { description: 'Campaign created' },
+            403: { description: 'Forbidden. Email verification required.' },
           },
         },
       },
@@ -303,7 +315,10 @@ const options = {
           summary: 'Update campaign',
           security: [{ bearerAuth: [] }],
           parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-          responses: { 200: { description: 'Updated' } }
+          responses: { 
+            200: { description: 'Updated' },
+            403: { description: 'Forbidden. Email verification required.' },
+          }
         }
       },
       '/api/campaigns/{id}/image': {
@@ -315,13 +330,16 @@ const options = {
           requestBody: {
             content: { 'multipart/form-data': { schema: { type: 'object', properties: { image: { type: 'string', format: 'binary' } } } } }
           },
-          responses: { 200: { description: 'Image updated' } }
+          responses: { 
+            200: { description: 'Image updated' },
+            403: { description: 'Forbidden. Email verification required.' },
+          }
         }
       },
       '/api/donations': {
         post: {
           tags: ['Donations'],
-          summary: 'Make a donation',
+          summary: 'Initiate a new donation',
           security: [{ bearerAuth: [] }],
           requestBody: {
             required: true,
@@ -329,9 +347,10 @@ const options = {
               'application/json': {
                 schema: {
                   type: 'object',
+                  required: ['campaignId', 'amount'],
                   properties: {
-                    campaignId: { type: 'string' },
-                    amount: { type: 'number' },
+                    campaignId: { type: 'string', example: 'uuid' },
+                    amount: { type: 'number', example: 5000 },
                   },
                 },
               },
@@ -339,6 +358,7 @@ const options = {
           },
           responses: {
             200: { description: 'Donation initiated' },
+            403: { description: 'Forbidden. Email verification required.' },
           },
         },
       },
@@ -347,15 +367,32 @@ const options = {
           tags: ['Donations'],
           summary: 'Get my donations',
           security: [{ bearerAuth: [] }],
-          responses: { 200: { description: 'List of my donations' } }
+          responses: { 
+            200: { description: 'List of my donations' },
+            403: { description: 'Forbidden. Email verification required.' },
+          }
         }
       },
       '/api/donations/verify-payment': {
         get: {
           tags: ['Donations'],
           summary: 'Verify payment redirect',
-          parameters: [{ name: 'reference', in: 'query', schema: { type: 'string' } }],
+          parameters: [{ name: 'reference', in: 'query', required: true, schema: { type: 'string' } }],
           responses: { 200: { description: 'Payment verified' } }
+        }
+      },
+      '/api/users/me/image': {
+        patch: {
+          tags: ['Users'],
+          summary: 'Update my profile image',
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            content: { 'multipart/form-data': { schema: { type: 'object', properties: { image: { type: 'string', format: 'binary' } } } } }
+          },
+          responses: { 
+            200: { description: 'Profile image updated' },
+            403: { description: 'Forbidden. Email verification required.' },
+          }
         }
       },
       '/api/admin/stats': {
@@ -365,6 +402,7 @@ const options = {
           security: [{ bearerAuth: [] }],
           responses: {
             200: { description: 'Stats retrieved' },
+            403: { description: 'Forbidden. Admin access and email verification required.' },
           },
         },
       },
@@ -373,7 +411,10 @@ const options = {
           tags: ['Admin'],
           summary: 'List all users',
           security: [{ bearerAuth: [] }],
-          responses: { 200: { description: 'List of users' } }
+          responses: { 
+            200: { description: 'List of users' },
+            403: { description: 'Forbidden. Admin access and email verification required.' },
+          }
         }
       },
       '/api/admin/campaigns': {
@@ -381,7 +422,10 @@ const options = {
           tags: ['Admin'],
           summary: 'List all campaigns (Admin view)',
           security: [{ bearerAuth: [] }],
-          responses: { 200: { description: 'List of campaigns' } }
+          responses: { 
+            200: { description: 'List of campaigns' },
+            403: { description: 'Forbidden. Admin access and email verification required.' },
+          }
         }
       },
       '/api/admin/campaigns/bulk/status': {
@@ -393,7 +437,10 @@ const options = {
             required: true,
             content: { 'application/json': { schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } }, status: { type: 'string' } } } } }
           },
-          responses: { 200: { description: 'Bulk update successful' } }
+          responses: { 
+            200: { description: 'Bulk update successful' },
+            403: { description: 'Forbidden. Admin access and email verification required.' },
+          }
         }
       },
       '/api/admin/campaigns/{id}/status': {
@@ -406,7 +453,10 @@ const options = {
             required: true,
             content: { 'application/json': { schema: { type: 'object', properties: { status: { type: 'string' } } } } }
           },
-          responses: { 200: { description: 'Status updated' } }
+          responses: { 
+            200: { description: 'Status updated' },
+            403: { description: 'Forbidden. Admin access and email verification required.' },
+          }
         }
       },
       '/api/admin/categories': {
@@ -416,6 +466,7 @@ const options = {
           security: [{ bearerAuth: [] }],
           responses: {
             200: { description: 'Categories retrieved' },
+            403: { description: 'Forbidden. Admin access and email verification required.' },
           },
         },
         post: {
@@ -428,6 +479,7 @@ const options = {
           },
           responses: {
             201: { description: 'Category created' },
+            403: { description: 'Forbidden. Admin access and email verification required.' },
           },
         },
       },
@@ -441,75 +493,20 @@ const options = {
             required: true,
             content: { 'application/json': { schema: { type: 'object', properties: { name: { type: 'string' } } } } }
           },
-          responses: { 200: { description: 'Category updated' } }
+          responses: { 
+            200: { description: 'Category updated' },
+            403: { description: 'Forbidden. Admin access and email verification required.' },
+          }
         },
         delete: {
           tags: ['Admin'],
           summary: 'Delete category',
           security: [{ bearerAuth: [] }],
           parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-          responses: { 200: { description: 'Category deleted' } }
-        }
-      },
-      '/api/donations/me': {
-        get: {
-          tags: ['Donations'],
-          summary: 'Get my donations',
-          security: [{ bearerAuth: [] }],
-          responses: { 200: { description: 'Success' } }
-        }
-      },
-      '/api/donations': {
-        post: {
-          tags: ['Donations'],
-          summary: 'Initiate a new donation',
-          security: [{ bearerAuth: [] }],
-          requestBody: {
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/Donation' } } }
-          },
-          responses: { 201: { description: 'Donation initiated' } }
-        }
-      },
-      '/api/donations/verify-payment': {
-        get: {
-          tags: ['Donations'],
-          summary: 'Verify payment redirect',
-          parameters: [{ name: 'reference', in: 'query', required: true, schema: { type: 'string' } }],
-          responses: { 200: { description: 'Payment verified' } }
-        }
-      },
-      '/api/projects': {
-        get: {
-          tags: ['Projects'],
-          summary: 'Check if projects route is active',
-          security: [{ bearerAuth: [] }],
-          responses: { 200: { description: 'Active' } }
-        },
-        post: {
-          tags: ['Projects'],
-          summary: 'Create project',
-          security: [{ bearerAuth: [] }],
-          responses: { 201: { description: 'Project created' } }
-        }
-      },
-      '/api/projects/{projectId}/donate': {
-        post: {
-          tags: ['Projects'],
-          summary: 'Donate to project',
-          security: [{ bearerAuth: [] }],
-          parameters: [{ name: 'projectId', in: 'path', required: true, schema: { type: 'string' } }],
-          responses: { 201: { description: 'Donation submitted' } }
-        }
-      },
-      '/api/users/me/image': {
-        patch: {
-          tags: ['Users'],
-          summary: 'Update my profile image',
-          security: [{ bearerAuth: [] }],
-          requestBody: {
-            content: { 'multipart/form-data': { schema: { type: 'object', properties: { image: { type: 'string', format: 'binary' } } } } }
-          },
-          responses: { 200: { description: 'Profile image updated' } }
+          responses: { 
+            200: { description: 'Category deleted' },
+            403: { description: 'Forbidden. Admin access and email verification required.' },
+          }
         }
       },
       '/api/upload/{public_id}': {
@@ -526,89 +523,6 @@ const options = {
           tags: ['Payments'],
           summary: 'Paystack Webhook',
           responses: { 200: { description: 'Webhook processed' } }
-        }
-      },
-      '/api/admin/categories': {
-        get: {
-          tags: ['Admin'],
-          summary: 'List all categories',
-          security: [{ bearerAuth: [] }],
-          responses: { 200: { description: 'Success' } }
-        },
-        post: {
-          tags: ['Admin'],
-          summary: 'Create a new category',
-          security: [{ bearerAuth: [] }],
-          requestBody: {
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/Category' } } }
-          },
-          responses: { 201: { description: 'Created' } }
-        }
-      },
-      '/api/admin/categories/{id}': {
-        put: {
-          tags: ['Admin'],
-          summary: 'Update category',
-          security: [{ bearerAuth: [] }],
-          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-          requestBody: {
-            content: { 'application/json': { schema: { $ref: '#/components/schemas/Category' } } }
-          },
-          responses: { 200: { description: 'Updated' } }
-        },
-        delete: {
-          tags: ['Admin'],
-          summary: 'Delete category',
-          security: [{ bearerAuth: [] }],
-          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-          responses: { 200: { description: 'Deleted' } }
-        }
-      },
-      '/api/admin/stats': {
-        get: {
-          tags: ['Admin'],
-          summary: 'Get admin dashboard statistics',
-          security: [{ bearerAuth: [] }],
-          responses: { 200: { description: 'Success' } }
-        }
-      },
-      '/api/admin/users': {
-        get: {
-          tags: ['Admin'],
-          summary: 'List all users (Admin only)',
-          security: [{ bearerAuth: [] }],
-          responses: { 200: { description: 'Success' } }
-        }
-      },
-      '/api/admin/campaigns': {
-        get: {
-          tags: ['Admin'],
-          summary: 'List all campaigns (Admin only)',
-          security: [{ bearerAuth: [] }],
-          responses: { 200: { description: 'Success' } }
-        }
-      },
-      '/api/admin/campaigns/bulk/status': {
-        put: {
-          tags: ['Admin'],
-          summary: 'Bulk update campaign status',
-          security: [{ bearerAuth: [] }],
-          requestBody: {
-            content: { 'application/json': { schema: { type: 'object', properties: { ids: { type: 'array', items: { type: 'string' } }, status: { type: 'string' } } } } }
-          },
-          responses: { 200: { description: 'Updated' } }
-        }
-      },
-      '/api/admin/campaigns/{id}/status': {
-        put: {
-          tags: ['Admin'],
-          summary: 'Update single campaign status',
-          security: [{ bearerAuth: [] }],
-          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
-          requestBody: {
-            content: { 'application/json': { schema: { type: 'object', properties: { status: { type: 'string' } } } } }
-          },
-          responses: { 200: { description: 'Updated' } }
         }
       },
       '/api/health': {

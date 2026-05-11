@@ -9,7 +9,7 @@ import { handleSearch } from '../controllers/campaignSearchController.js';
 
 const router = express.Router();
 
-router.post('/', isAuth, uploadCampaignImage, validateRequest(createCampaignSchema), createCampaign);
+router.post('/', isAuth, requireVerified, uploadCampaignImage, validateRequest(createCampaignSchema), createCampaign);
 router.get('/', listCampaigns);
 router.get("/search", validateRequest(searchSchema, "query"), handleSearch)
 router.get('/:id', getCampaignById);
