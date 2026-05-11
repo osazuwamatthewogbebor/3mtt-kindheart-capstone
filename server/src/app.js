@@ -15,6 +15,9 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import notFoundMiddleware from './middlewares/notFoundMiddleware.js';
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import donationRoutes from './routes/donationRoutes.js'
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger.js';
+import { gatekeeper } from './middlewares/gatekeeperMiddleware.js';
 
 const app = express();
 
@@ -22,7 +25,7 @@ const app = express();
 app.use(helmet());
 
 // CORS configuration - allow production origins via env var
-const allowedOrigins = process.env.CORS_ORIGINS 
+const allowedOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
   : ['http://localhost:5500', 'http://127.0.0.1:5500'];
 
@@ -74,8 +77,11 @@ app.get('/', (req, res) => {
 
 // Health Check Route
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: "Server is awake and running"})
+  res.status(200).json({ status: "Server is awake and running" })
 })
+
+// API Documentation
+app.use('/api-docs', gatekeeper, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminLimiter);
