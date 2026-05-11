@@ -103,26 +103,35 @@ export const createCampaign = async (req, res, next) => {
 		const parsedGoalAmount = Number(goalAmount);
 		const parsedEndDate = new Date(endDate);
 
-		if (
-			title === undefined ||
-			title === null ||
-			title === '' ||
-			description === undefined ||
-			description === null ||
-			description === '' ||
-			categoryId === undefined ||
-			categoryId === null ||
-			categoryId === '' ||
-			goalAmount === undefined ||
-			goalAmount === null ||
-			goalAmount === '' ||
-			endDate === undefined ||
-			endDate === null ||
-			endDate === ''
-		) {
-			const error = new Error('title, description, categoryId, goalAmount, and endDate are required');
-			error.statusCode = 400;
-			throw error;
+		// if (
+		// 	title === undefined ||
+		// 	title === null ||
+		// 	title === '' ||
+		// 	description === undefined ||
+		// 	description === null ||
+		// 	description === '' ||
+		// 	categoryId === undefined ||
+		// 	categoryId === null ||
+		// 	categoryId === '' ||
+		// 	goalAmount === undefined ||
+		// 	goalAmount === null ||
+		// 	goalAmount === '' ||
+		// 	endDate === undefined ||
+		// 	endDate === null ||
+		// 	endDate === ''
+		// ) {
+		// 	const error = new Error('title, description, categoryId, goalAmount, and endDate are required');
+		// 	error.statusCode = 400;
+		// 	throw error;
+		// }
+
+		const requiredFields = { title, description, categoryId, goalAmount, endDate };
+		for (const [key, value] of Object.entries(requiredFields)) {
+			if (!value || value.toString().trim() === '') {
+				const error = new Error(`${key} is required`);
+				error.statusCode = 400;
+				throw error;
+			}
 		}
 
 		if (!req.file) {
@@ -149,6 +158,21 @@ export const createCampaign = async (req, res, next) => {
 			throw error;
 		}
 
+		const existingCampaign = await prisma.campaign.findFirst({
+			where: { 
+				title: {
+					equals: title.trim(),
+					mode: "insensitive"
+				}
+			},
+			select: { id: true},
+		})
+
+		if (existingCampaign) { 
+			const error=  new Error("A campaign with this title already exists");
+			error.statusCode = 409;
+			throw error
+		}
 
 		const category = await prisma.category.findUnique({
 			where: { id: categoryId },
@@ -324,7 +348,8 @@ export const updateCampaign = async (req, res, next) => {
 		}
 
 		const updateData = {
-			...(req.body.title ? { title: req.body.title } : {}),
+			// users shouldn't be able to update the title after creating it
+			// ...(req.body.title ? { title: req.body.title } : {}), 
 			...(req.body.description ? { description: req.body.description } : {}),
 		};
 

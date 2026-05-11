@@ -69,8 +69,13 @@ app.use('/api/auth/reset-password', authLimiter);
 
 // Welcome Route
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to KindHeart API' });
+  res.status(200).json({ message: 'Welcome to KindHeart API' });
 });
+
+// Health Check Route
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: "Server is awake and running"})
+})
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminLimiter);
