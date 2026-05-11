@@ -1,0 +1,518 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f7f9fb;
+    color: #191c1e;
+}
+
+/* CONTAINER */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* NAV */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #eee;
+}
+
+.nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 20px;
+    color: #f97316;
+    display: flex;
+}
+
+.nav-links a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #555;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+/* MAIN */
+.main {
+    padding-top: 100px;
+}
+
+/* LAYOUT */
+.layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 30px;
+}
+
+/* CARD */
+
+/* PROFILE */
+.profile-card {
+    text-align: center;
+}
+
+.profile-img {
+    width: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+/* BUTTONS */
+.btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+
+/* ========================
+   THEME COLORS
+======================== */
+:root {
+    --orange: #c2410c;       /* text-orange-700 */
+    --orange-light: #f97316; /* dark:text-orange-500 */
+}
+
+/* Dark mode */
+body.dark {
+    --orange: #f97316;
+}
+
+.btn-link {
+    display: flex; /* hidden */
+    font-weight: bold;
+    color: var(--orange);
+    border: none;
+    border-bottom: 2px solid var(--orange);
+    background: transparent;
+    cursor: pointer;
+
+    transition: transform 0.2s ease;
+
+}
+/* Active press effect */
+.btn-link:active {
+    transform: scale(0.95);
+}
+
+
+.primary {
+    background: #f97316;
+    color: white;
+}
+
+.secondary {
+    background: #ffc329;
+}
+
+/* NAV MENU */
+.nav-menu {
+    list-style: none;
+    display: grid;
+}
+.nav-menu a {
+    color: #584237;
+    text-decoration: none;
+}
+
+.nav-menu li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.nav-menu li.active {
+    background: #fff;
+    color: #f97316;
+    font-weight: bold;
+}
+
+/* CONTENT */
+/* Layout */
+.stats-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem; /* gap-6 */
+}
+
+/* Responsive (md:grid-cols-3) */
+@media (min-width: 768px) {
+    .stats-section {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Card */
+.stat-card {
+    background-color: #ffffff; /* surface-container-lowest */
+    padding: 1.5rem; /* p-6 */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 32px 48px -12px rgba(25, 28, 30, 0.06); /* editorial-shadow */
+    border-bottom: 4px solid transparent;
+}
+
+/* Border Variants */
+.border-primary {
+    border-bottom-color: #9d4300;
+}
+
+.border-secondary {
+    border-bottom-color: #ffc329;
+}
+
+.border-tertiary {
+    border-bottom-color: #4cad64;
+}
+
+/* Label */
+.stat-label {
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 700;
+    color: #8c7164; /* outline */
+    text-transform: uppercase;
+    letter-spacing: 0.08em; /* tracking-widest */
+}
+
+/* Value Row */
+.stat-value {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem; /* gap-2 */
+    margin-top: 0.5rem; /* mt-2 */
+}
+
+/* Main Value */
+.amount {
+    font-size: 1rem; /* text-4xl */
+    font-weight: 700;
+    letter-spacing: -0.02em; /* tracking-tighter */
+    color: #000000; /* on-surface */
+}
+
+/* Secondary Text */
+.meta {
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 700;
+    color: #584237; /* on-surface-variant */
+    margin-bottom: 0.25rem; /* mb-1 */
+}
+
+/* Positive Change */
+.change {
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.change.positive {
+    color: #006d30; /* tertiary */
+}
+
+
+/* start from here */
+/* Layout */
+.campaigns-section {
+    padding: 2rem;
+}
+
+/* Header */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    margin-top: 30px;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.section-header a {
+    color: #9d4300;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+
+.section-header a:hover {
+    text-decoration: underline;
+}
+
+/* Grid */
+.campaign-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .campaign-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Card */
+.campaign-card {
+    background: #fff;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+}
+
+/* Image */
+.card-image {
+    position: relative;
+    height: 12rem;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Badge */
+.badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(255,255,255,0.9);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.badge.primary { color: #9d4300; }
+.badge.success { color: #006d30; }
+
+/* Content */
+.card-content {
+    padding: 1.5rem;
+}
+
+.card-content h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.card-content p {
+    font-size: 0.875rem;
+    color: #584237;
+    margin-bottom: 1rem;
+}
+
+/* Progress */
+.progress-track {
+    height: 8px;
+    background: #e6e8ea;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #9d4300, #f97316);
+}
+
+.progress-fill.success {
+    background: #4cad64;
+}
+
+/* Meta */
+/* .meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #8c7164;
+    margin-bottom: 1.5rem;
+} */
+
+/* Buttons */
+.card-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+}
+
+.btn.primary {
+    background: #9d4300;
+    color: white;
+}
+
+.btn.secondary {
+    background: #e6e8ea;
+}
+
+.btn.success {
+    background: #006d30;
+    color: white;
+}
+
+/* Donations */
+.donations-section {
+    margin-top: 2rem;
+    background: #fff;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.donation-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+}
+
+thead {
+    background: #f2f4f6;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+tbody tr:hover {
+    background: #f9fafb;
+}
+
+.campaign-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.campaign-cell img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.amount {
+    color: #9d4300;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.status {
+    background: rgba(76,173,100,0.1);
+    color: #006d30;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+}
+
+/* Footer */
+.footer {
+    background: #f5f5f5;
+    padding: 2rem;
+    margin-top: 3rem;
+}
+
+.footer-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .footer-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.footer a {
+    display: block;
+    margin: 0.25rem 0;
+    color: #666;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    margin-top: 1.5rem;
+    font-size: 0.75rem;
+    color: #999;
+}
+/* stop here for now */
+
+
+/* RESPONSIVE */
+@media(max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.dashboard{
+        grid-template-columns:1fr;
+    }
+
+    .campaigns{
+        grid-template-columns:1fr;
+    }
