@@ -25,24 +25,7 @@ const setupSessionCleanup = () => {
     })
 }
 
-// Keep Render instance Awake
-// Runs every 14 minutes
-const setupKeepAwake = () => {
-    const APP_URL = process.env.APP_URL || "http://localhost:3000";
-
-    cron.schedule("*/14 * * * *", async () => {
-        try {
-            logger.info("Pinging server to keep awake...")
-            await fetch(`${APP_URL}/api/health`)
-            logger.info("Ping successful.")
-        } catch (error) {
-            logger.error("Keep-awake ping failed")
-        }
-    });
-};
-
 export const initCronJobs = () => {
     setupSessionCleanup();
-    setupKeepAwake();
     logger.info("Cron jobs initialised")
 }

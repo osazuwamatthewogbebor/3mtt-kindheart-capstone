@@ -78,6 +78,11 @@ const adminLimiter = rateLimit({
   skipSuccessfulRequests: false,
 });
 
+// Health Check Route
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: "Server is awake and running" })
+})
+
 app.use('/api', limiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
