@@ -3,11 +3,11 @@ import { createHash, randomBytes, randomUUID } from 'crypto';
 import jwt from 'jsonwebtoken';
 import prisma from '../config/db.js';
 import logger from '../config/logger.js';
-import { 
-	sendVerificationEmail, 
-	sendWelcomeEmail, 
-	sendResetPasswordEmail, 
-	sendResetSuccessEmail 
+import {
+	sendVerificationEmail,
+	sendWelcomeEmail,
+	sendResetPasswordEmail,
+	sendResetSuccessEmail
 } from '../services/emailService.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -529,14 +529,14 @@ export const resendVerificationEmailLink = async (req, res, next) => {
 				verificationLink,
 			});
 		} catch (emailError) {
-		emailSent = false;
+			emailSent = false;
 			logger.error(`Resend verification failed: ${emailError.message}`);
 		}
 
 		res.status(200).json({
 			success: true,
-			message: emailSent 
-				? 'Verification email resent successfully' 
+			message: emailSent
+				? 'Verification email resent successfully'
 				: 'Verification email could not be sent (delivery failure)',
 			verificationLink: process.env.NODE_ENV === 'production' && emailSent ? undefined : verificationLink,
 		});
