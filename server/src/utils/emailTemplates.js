@@ -1,6 +1,6 @@
 const APP_NAME = 'KindHeart';
-const PRIMARY_COLOR = '#064e3b'; // Dark Green
-const SECONDARY_COLOR = '#059669'; // Emerald Green
+const PRIMARY_COLOR = '#064e3b';
+const SECONDARY_COLOR = '#059669';
 const TEXT_COLOR = '#374151';
 
 const baseTemplate = (content) => `
