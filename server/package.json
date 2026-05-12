@@ -5,7 +5,7 @@
   "description": "Backend API for KindHeart Crowdfunding Platform",
   "main": "server.js",
   "scripts": {
-    "start": "npx prisma migrate deploy && node server.js",
+    "start": "npx prisma generate && npx prisma migrate deploy && node server.js",
     "dev": "npx prisma generate && nodemon server.js",
     "migrate": "npx prisma migrate dev",
     "seed": "node prisma/seed.js"
@@ -32,12 +32,12 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.10.0",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "prisma": "^6.19.3"
   },
   "devDependencies": {
     "eslint": "^8.45.0",
     "nodemon": "^3.1.14",
-    "prettier": "^3.0.0",
-    "prisma": "^6.19.3"
+    "prettier": "^3.0.0"
   }
 }

@@ -3,7 +3,7 @@ import * as templates from '../utils/emailTemplates.js';
 import logger from '../config/logger.js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const MAIL_FROM = process.env.MAIL_FROM || 'onboarding@resend.dev'; // Resend default for testing
+const MAIL_FROM = process.env.MAIL_FROM || 'onboarding@resend.dev';
 
 /**
  * Generic send email function using Resend
@@ -16,7 +16,7 @@ const sendEmail = async ({ to, subject, html }) => {
     }
 
     const { data, error } = await resend.emails.send({
-      from: `KindHeart <${MAIL_FROM}>`,
+      from: MAIL_FROM.includes('<') ? MAIL_FROM : `KindHeart <${MAIL_FROM}>`,
       to: [to],
       subject,
       html,
