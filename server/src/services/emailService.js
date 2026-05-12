@@ -29,7 +29,6 @@ const sendEmail = async ({ to, subject, html, recipientName = 'User' }) => {
       }
     }
 
-    logger.info(`Sending email from: ${fromEmail} (${fromName})`);
     const sentFrom = new Sender(fromEmail, fromName);
     const recipients = [new Recipient(to, recipientName)];
 
