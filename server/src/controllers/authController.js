@@ -163,6 +163,14 @@ export const loginUser = async (req, res, next) => {
 		const hashedRefreshToken = hashToken(refreshToken);
 		const refreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
+		// Lazy cleanup: Delete expired sessions for this user before creating a new one
+		await prisma.session.deleteMany({
+			where: {
+				userId: user.id,
+				expiresAt: { lt: new Date() },
+			},
+		});
+
 		await prisma.session.create({
 			data: {
 				userId: user.id,
@@ -551,6 +559,14 @@ export const googleAuthCallback = async (req, res, next) => {
 		const refreshToken = createRefreshToken(user);
 		const hashedRefreshToken = hashToken(refreshToken);
 		const refreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+		// Lazy cleanup: Delete expired sessions for this user before creating a new one
+		await prisma.session.deleteMany({
+			where: {
+				userId: user.id,
+				expiresAt: { lt: new Date() },
+			},
+		});
 
 		await prisma.session.create({
 			data: {
