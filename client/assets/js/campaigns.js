@@ -57,25 +57,32 @@ async function loadCampaigns() {
         if (category) url += `&category=${encodeURIComponent(category)}`;
         
         const response = await fetch(url);
-        const data = await response.json();
-
+        const result = await response.json();
         
+        // Defensive data parsing - handles both direct and nested data structures
+        const data = result.data || result;
+        const campaigns = Array.isArray(data.campaigns) ? data.campaigns : (Array.isArray(data) ? data : []);
+        const totalItems = data.total || campaigns.length;
+        const totalPages = data.totalPages || Math.ceil(totalItems / limit);
         const container = document.getElementById('campaignsGrid');
         
-        if (!data.success || data.campaigns.length === 0) {
+        if (!campaigns || campaigns.length === 0) {
             container.innerHTML = `
                 <div class="loading-state">
                     <i class="fas fa-inbox"></i>
                     <p>No campaigns found</p>
                 </div>
             `;
+            updatePagination(0);
             return;
         }
         
         container.innerHTML = '';
         
-        data.campaigns.forEach(campaign => {
-            const progress = calculateProgress(campaign.amountRaised, campaign.goalAmount);
+        campaigns.forEach(campaign => {
+            const raised = campaign.amountRaised || campaign.raised_amount || 0;
+            const goal = campaign.goalAmount || campaign.goal_amount || 0;
+            const progress = calculateProgress(raised, goal);
             
             const card = document.createElement('div');
             card.className = 'campaign-card';
@@ -85,17 +92,17 @@ async function loadCampaigns() {
                      class="campaign-image"
                      onerror="this.src='https://via.placeholder.com/400x200?text=Campaign+Image'">
                 <div class="campaign-content">
-                    <span class="campaign-category">${campaign.name || 'General'}</span>
+                    <span class="campaign-category">${campaign.categoryName || campaign.category?.name || 'General'}</span>
                     <h3 class="campaign-title">${campaign.title}</h3>
-                    <p class="campaign-description">${campaign.description}</p>
+                    <p class="campaign-description">${campaign.description?.substring(0, 100)}...</p>
                     <div class="campaign-progress">
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${progress}%"></div>
                         </div>
                         <div class="campaign-stats">
                             <div class="stat">
-                                <span class="stat-value">${formatCurrency(campaign.amountRaised)}</span>
-                                <span class="stat-label">Raised of ${formatCurrency(campaign.goalAmount)}</span>
+                                <span class="stat-value">${formatCurrency(raised)}</span>
+                                <span class="stat-label">Raised of ${formatCurrency(goal)}</span>
                             </div>
                             <div class="stat">
                                 <span class="stat-value">${progress}%</span>
@@ -103,7 +110,7 @@ async function loadCampaigns() {
                             </div>
                         </div>
                     </div>
-                    <a href="campaign-details.html?id=${campaign.id}" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
+                    <a href="campaign-details.html?id=${campaign.id || campaign._id}" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
                         <i class="fas fa-heart"></i> Support This Campaign
                     </a>
                 </div>
@@ -111,6 +118,8 @@ async function loadCampaigns() {
             
             container.appendChild(card);
         });
+        
+        updatePagination(totalPages);
         
     } catch (error) {
         console.error('Error loading campaigns:', error);
@@ -121,6 +130,53 @@ async function loadCampaigns() {
             </div>
         `;
     }
+}
+
+function updatePagination(totalPages) {
+    const pagination = document.getElementById('pagination');
+    if (!pagination) return;
+    
+    if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+    }
+    
+    let html = '';
+    
+    // Previous button
+    html += `
+        <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    `;
+    
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+            html += `
+                <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+                    ${i}
+                </button>
+            `;
+        } else if (i === currentPage - 3 || i === currentPage + 3) {
+            html += `<span class="page-dots">...</span>`;
+        }
+    }
+    
+    // Next button
+    html += `
+        <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+    
+    pagination.innerHTML = html;
+}
+
+function changePage(page) {
+    currentPage = page;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    loadCampaigns();
 }
 
 // Search and filter handlers

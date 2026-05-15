@@ -237,6 +237,18 @@
     display: block;
 }
 
+.auth-card-lg {
+    max-width: 600px;
+}
+
+.mt-1 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 1rem; }
+.img-preview {
+    max-width: 200px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+}
+
 /* Responsive */
 @media (max-width: 968px) {
     .auth-container {
@@ -245,5 +257,13 @@
     
     .auth-side {
         display: none;
+    }
+
+    .auth-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .auth-card-lg {
+        max-width: 100%;
     }
 }

@@ -1,5 +1,5 @@
 // API Configuration
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://kindheart-api.onrender.com/api';
 
 // API Endpoints
 const API = {
@@ -11,23 +11,23 @@ const API = {
     RESET_PASSWORD: `${API_URL}/auth/reset-password`,
     UPDATE_PROFILE: `${API_URL}/auth/update-profile`,
     CHANGE_PASSWORD: `${API_URL}/auth/change-password`,
-    
+
     // Campaigns
     CAMPAIGNS: `${API_URL}/campaigns`,
     MY_CAMPAIGNS: `${API_URL}/campaigns/my-campaigns`,
-    
+
     // Donations
     DONATIONS: `${API_URL}/donations`,
     MY_DONATIONS: `${API_URL}/donations/my-donations`,
     VERIFY_DONATION: `${API_URL}/donations/verify`,
-    
+
     // Categories
     CATEGORIES: `${API_URL}/categories`,
-    
+
     // Admin
     ADMIN_STATS: `${API_URL}/admin/stats`,
     ADMIN_USERS: `${API_URL}/admin/users`,
-    
+
     // Users
     USERS: `${API_URL}/users`,
 };

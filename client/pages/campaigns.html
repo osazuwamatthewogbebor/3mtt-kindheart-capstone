@@ -5,344 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Campaigns - KindHeart</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-     <style>
-        /* =========================
-   GLOBAL
-========================= */
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: auto;
-}
-
-/* =========================
-   PAGE HEADER
-========================= */
-.page-header {
-    background: linear-gradient(135deg, #4CAF50, #2E7D32);
-    color: #fff;
-    padding: 60px 0;
-    text-align: center;
-    border-radius: 0 0 30px 30px;
-}
-
-.page-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-    font-weight: 700;
-}
-
-.page-header p {
-    font-size: 1.1rem;
-    opacity: 0.9;
-}
-
-/* =========================
-   FILTER SECTION
-========================= */
-.filters-section {
-    margin-top: -30px;
-    padding-bottom: 30px;
-}
-
-.filters-wrapper {
-    background: #fff;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-}
-
-/* =========================
-   SEARCH BOX
-========================= */
-.search-box {
-    position: relative;
-    flex: 1;
-    min-width: 250px;
-}
-
-.search-box input {
-    width: 100%;
-    padding: 12px 15px 12px 40px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    outline: none;
-    font-size: 0.95rem;
-    transition: 0.3s;
-}
-
-.search-box input:focus {
-    border-color: #4CAF50;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-}
-
-.search-box i {
-    position: absolute;
-    top: 50%;
-    left: 12px;
-    transform: translateY(-50%);
-    color: #888;
-}
-
-/* =========================
-   FILTER GROUP
-========================= */
-.filters-group {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-/* =========================
-   SELECT DROPDOWNS
-========================= */
-.filter-select {
-    padding: 12px 15px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: 0.3s;
-    background: #f9f9f9;
-}
-
-.filter-select:hover {
-    border-color: #4CAF50;
-}
-
-.filter-select:focus {
-    outline: none;
-    border-color: #4CAF50;
-    background: #fff;
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-@media (max-width: 768px) {
-    .filters-wrapper {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .filters-group {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .filter-select {
-        flex: 1;
-    }
-}
-        .page-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 0;
-            text-align: center;
-        }
-
-        .page-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .user-menu {
-            position: relative;
-        }
-
-        .user-btn {
-            background: none;
-            border: none;
-            color: var(--gray);
-            font-weight: 500;
-            cursor: pointer;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            transition: var(--transition);
-        }
-
-        .user-btn:hover {
-            background: var(--gray-lightest);
-            color: var(--primary);
-        }
-
-        .user-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
-            padding: 0.5rem;
-            min-width: 200px;
-            display: none;
-            z-index: 1000;
-            margin-top: 0.5rem;
-        }
-
-        .user-dropdown.show {
-            display: block;
-        }
-
-        .user-dropdown a {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: var(--dark);
-            border-radius: var(--radius-sm);
-            transition: var(--transition);
-        }
-
-        .user-dropdown a:hover {
-            background: var(--gray-lightest);
-            color: var(--primary);
-        }
-
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .stat-box {
-            background: white;
-            padding: 1.5rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--gray-lightest);
-            text-align: center;
-        }
-
-        .stat-box h3 {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-box p {
-            color: var(--gray);
-        }
-
-        .campaigns-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 2rem 0 1.5rem;
-        }
-
-        .campaigns-header h2 {
-            font-size: 1.75rem;
-            color: var(--dark);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: white;
-            border-radius: var(--radius-xl);
-            border: 2px dashed var(--gray-lighter);
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            color: var(--gray-lighter);
-            margin-bottom: 1rem;
-        }
-
-        .empty-state h3 {
-            font-size: 1.5rem;
-            color: var(--dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .empty-state p {
-            color: var(--gray);
-            margin-bottom: 1.5rem;
-        }
-
-        .campaign-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: var(--radius-lg);
-            max-width: 500px;
-            width: 90%;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-header h3 {
-            font-size: 1.5rem;
-            color: var(--dark);
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray);
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 1.5rem;
-        }
-    </style>
-
+<link rel="stylesheet" href="../assets/css/campaign.css">
 </head>
 <body>
 
@@ -351,8 +18,8 @@
         <div class="container">
             <div class="nav-wrapper">
                 <div class="logo">
-                    <a href="../index.html">
-                        <i class="fas fa-heart"></i>
+                    <a href="../index.html" style="display: flex; align-items: center;">
+                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" style="margin-right: 0.5rem;">
                         <span>KindHeart</span>
                     </a>
                 </div>
@@ -376,20 +43,20 @@
     </nav>
 
     <!-- PAGE HEADER -->
-    <section class="page-header">
+    <section class="page-header" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&q=80&w=1200'); background-size: cover; background-position: center; color: white; text-align: center; padding: 6rem 0;">
         <div class="container">
-            <h1>Browse Campaigns</h1>
-            <p>Discover causes that need your support</p>
+            <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem;">Browse Campaigns</h1>
+            <p style="font-size: 1.25rem; opacity: 0.9;">Discover causes that need your support</p>
         </div>
     </section>
 
     <!-- FILTERS & SEARCH -->
-    <section class="filters-section">
+    <section class="filters-section" style="background: var(--gray-lightest); padding: 2rem 0; border: none;">
         <div class="container">
-            <div class="filters-wrapper">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search campaigns...">
+            <div class="filters-wrapper" style="background: var(--white); padding: 1.5rem; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
+                <div class="search-box" style="flex: 1; min-width: 250px; position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--gray);"></i>
+                    <input type="text" id="searchInput" placeholder="Search campaigns..." style="width: 100%; padding: 0.875rem 1.25rem 0.875rem 3rem; border-radius: var(--radius-md); border: 1px solid var(--gray-lighter); background: var(--gray-lightest); font-size: 1rem;">
                 </div>
 
                 <select id="categoryFilter" class="filter-select">
