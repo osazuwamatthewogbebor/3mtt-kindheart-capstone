@@ -5,6 +5,7 @@ import { deleteImageByPublicId, uploadImageBuffer } from '../config/cloudinary.j
 const publicUserSelect = {
 	name: true,
 };
+const PUBLIC_CAMPAIGN_CACHE_CONTROL = 'public, max-age=60, stale-while-revalidate=300';
 
 const toNumber = (value) => Number(value ?? 0);
 
@@ -232,6 +233,8 @@ export const createCampaign = async (req, res, next) => {
 
 export const getCampaigns = async (req, res, next) => {
 	try {
+		res.set('Cache-Control', PUBLIC_CAMPAIGN_CACHE_CONTROL);
+
 		const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
 		const limit = Math.min(100, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
 		const skip = (page - 1) * limit;
@@ -286,6 +289,8 @@ export const listCampaigns = getCampaigns;
 
 export const getCampaignById = async (req, res, next) => {
 	try {
+		res.set('Cache-Control', PUBLIC_CAMPAIGN_CACHE_CONTROL);
+
 		const id = req.params.id.trim();
 
 		const campaign = await prisma.campaign.findUnique({
