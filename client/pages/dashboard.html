@@ -7,6 +7,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
 <link rel="stylesheet" href="../assets/css/dashboard.css">
 </head>
 
@@ -15,11 +16,11 @@
 <!-- SIDEBAR -->
 <div id="sidebar" class="sidebar">
 
-  <div class="sidebar-header">
-    <div class="logo-icon">
-      <i class="fa fa-heart"></i>
+  <div class="sidebar-header" style="padding: 2rem; border-bottom: none;">
+    <div class="logo-icon" style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+      <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32">
     </div>
-    <div class="logo-text">KindHeart</div>
+    <div class="logo-text" style="font-weight: 800; font-size: 1.5rem; color: var(--dark);">KindHeart</div>
   </div>
 
   <div class="menu">
@@ -102,18 +103,18 @@
     <!-- STATS -->
     <div class="stats-grid">
 
-      <div class="stat-card donations">
+      <div class="stat-card donations" style="background: var(--white); border: none; box-shadow: var(--shadow-xl); border-radius: var(--radius-xl); padding: 2rem;">
         <div class="stat-header">
-          <div class="stat-icon">
-            <i class="fa fa-money-bill"></i>
+          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--primary); padding: 1rem; border-radius: 12px;">
+            <i class="fa fa-money-bill" style="font-size: 1.5rem;"></i>
           </div>
           <div class="stat-trend up">
             <i class="fa fa-arrow-up"></i>
             12.5%
           </div>
         </div>
-        <div class="stat-value" id="donations">₦0</div>
-        <div class="stat-label">Total Donations</div>
+        <div class="stat-value" id="donations" style="font-size: 2.25rem; font-weight: 800; margin-top: 1rem;">₦0</div>
+        <div class="stat-label" style="color: var(--gray); font-weight: 500;">Total Donations</div>
       </div>
 
       <div class="stat-card campaigns">

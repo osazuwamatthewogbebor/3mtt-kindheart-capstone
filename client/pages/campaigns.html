@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Campaigns - KindHeart</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -17,8 +18,8 @@
         <div class="container">
             <div class="nav-wrapper">
                 <div class="logo">
-                    <a href="../index.html">
-                        <i class="fas fa-heart"></i>
+                    <a href="../index.html" style="display: flex; align-items: center;">
+                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" style="margin-right: 0.5rem;">
                         <span>KindHeart</span>
                     </a>
                 </div>
@@ -42,20 +43,20 @@
     </nav>
 
     <!-- PAGE HEADER -->
-    <section class="page-header">
+    <section class="page-header" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&q=80&w=1200'); background-size: cover; background-position: center; color: white; text-align: center; padding: 6rem 0;">
         <div class="container">
-            <h1>Browse Campaigns</h1>
-            <p>Discover causes that need your support</p>
+            <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem;">Browse Campaigns</h1>
+            <p style="font-size: 1.25rem; opacity: 0.9;">Discover causes that need your support</p>
         </div>
     </section>
 
     <!-- FILTERS & SEARCH -->
-    <section class="filters-section">
+    <section class="filters-section" style="background: var(--gray-lightest); padding: 2rem 0; border: none;">
         <div class="container">
-            <div class="filters-wrapper">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search campaigns...">
+            <div class="filters-wrapper" style="background: var(--white); padding: 1.5rem; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
+                <div class="search-box" style="flex: 1; min-width: 250px; position: relative;">
+                    <i class="fas fa-search" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--gray);"></i>
+                    <input type="text" id="searchInput" placeholder="Search campaigns..." style="width: 100%; padding: 0.875rem 1.25rem 0.875rem 3rem; border-radius: var(--radius-md); border: 1px solid var(--gray-lighter); background: var(--gray-lightest); font-size: 1rem;">
                 </div>
 
                 <select id="categoryFilter" class="filter-select">

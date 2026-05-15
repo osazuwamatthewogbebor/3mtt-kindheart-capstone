@@ -156,6 +156,13 @@ if (forgotPasswordForm) {
     });
 }
 
+// Google Login Placeholder
+function googleLogin() {
+    alert('Google Login is being integrated. Please use the email login for now.');
+    // In a real implementation, you would use Firebase Auth or another Google OAuth library here
+    // Example: auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+}
+
 // Check if user is already logged in
 document.addEventListener('DOMContentLoaded', () => {
     const currentPage = window.location.pathname;

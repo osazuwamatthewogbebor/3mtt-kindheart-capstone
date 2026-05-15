@@ -34,23 +34,23 @@
     --spacing-sm: 1rem;
     --spacing-md: 1.5rem;
     --spacing-lg: 2rem;
-    --spacing-xl: 3rem;
-    --spacing-2xl: 4rem;
+    --spacing-xl: 3.5rem;
+    --spacing-2xl: 5rem;
     
-    /* Border Radius */
+    /* Border Radius - Premium Stitch Standard */
     --radius-sm: 0.5rem;
     --radius-md: 0.75rem;
     --radius-lg: 1rem;
     --radius-xl: 1.5rem;
     
-    /* Shadows */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12);
-    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+    /* Shadows - Ambient Light Style */
+    --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+    --shadow-lg: 0 12px 24px rgba(15, 23, 42, 0.08);
+    --shadow-xl: 0 20px 40px rgba(15, 23, 42, 0.1);
     
     /* Transitions */
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -131,10 +131,10 @@ ul {
 .content-card {
     background: var(--white);
     border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
-    padding: 2.5rem;
-    margin-bottom: 2rem;
-    border: 1px solid var(--gray-lightest);
+    box-shadow: var(--shadow-xl);
+    padding: 3rem;
+    margin-bottom: 2.5rem;
+    border: none; /* No-line rule */
 }
 
 .content-card h2 {
@@ -160,14 +160,14 @@ ul {
 .step-card {
     background: var(--white);
     border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
-    padding: 3rem 2rem 2.5rem;
+    box-shadow: var(--shadow-xl);
+    padding: 3.5rem 2.5rem 3rem;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    border: 1px solid var(--gray-lightest);
+    border: none;
 }
 
 .step-number {
