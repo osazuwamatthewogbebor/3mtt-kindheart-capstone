@@ -12,7 +12,7 @@ export const verifyPaystackWebhook = (req, res, next) => {
         try {
             req.verifiedWebhookBody = JSON.parse(rawBody.toString("utf8"));
         } catch (error) {
-            return res.status(400).json({ message: "Invalid webhook payload" });
+            return res.status(400).json({ message: "Malformed JSON in webhook payload" });
         }
         next();
     } else {
