@@ -232,6 +232,8 @@ export const createCampaign = async (req, res, next) => {
 
 export const getCampaigns = async (req, res, next) => {
 	try {
+		res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+
 		const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
 		const limit = Math.min(100, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
 		const skip = (page - 1) * limit;
@@ -286,6 +288,8 @@ export const listCampaigns = getCampaigns;
 
 export const getCampaignById = async (req, res, next) => {
 	try {
+		res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+
 		const id = req.params.id.trim();
 
 		const campaign = await prisma.campaign.findUnique({

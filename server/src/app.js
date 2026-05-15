@@ -49,12 +49,9 @@ app.use(cors({
 
 
 app.use(passport.initialize());
-app.use(express.json({
-  verify: (req, res, buf) => {
-    req.rawBody = buf;
-  }
-}));
-app.use(express.urlencoded({ extended: true }));
+app.disable('x-powered-by');
+app.use(express.json({ limit: '100kb' }));
+app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
 // Rate Limiting - global
 const limiter = rateLimit({
@@ -77,11 +74,6 @@ const adminLimiter = rateLimit({
   message: 'Too many admin requests, please try again later',
   skipSuccessfulRequests: false,
 });
-
-// Health Check Route
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: "Server is awake and running" })
-})
 
 app.use('/api', limiter);
 app.use('/api/auth/login', authLimiter);
