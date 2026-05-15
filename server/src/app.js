@@ -20,6 +20,7 @@ import { swaggerSpec } from './config/swagger.js';
 import { gatekeeper } from './middlewares/gatekeeperMiddleware.js';
 
 const app = express();
+app.disable('x-powered-by');
 
 // Trust proxy for Render/Cloud environments (fixes rate-limit issues)
 app.set('trust proxy', 1);
@@ -49,7 +50,6 @@ app.use(cors({
 
 
 app.use(passport.initialize());
-app.disable('x-powered-by');
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
