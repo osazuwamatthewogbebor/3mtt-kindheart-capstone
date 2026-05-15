@@ -6,7 +6,12 @@ export const donationPaystackWebHook = async (req, res) => {
     res.status(200).send("OK");
 
     try {
-        const {event, data} = req.body
+        const { event, data } = req.verifiedWebhookBody ?? {};
+
+        if (!event || !data?.reference) {
+            logger.warn("Webhook received without required event/reference payload");
+            return;
+        }
 
         if (event === "charge.success") {
             await donationService.finalizeDonation(data.reference);

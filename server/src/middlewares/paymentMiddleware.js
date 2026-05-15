@@ -10,8 +10,8 @@ export const verifyPaystackWebhook = (req, res, next) => {
 
     if (hash === req.headers["x-paystack-signature"]) {
         try {
-            req.body = JSON.parse(rawBody.toString("utf8"));
-        } catch {
+            req.verifiedWebhookBody = JSON.parse(rawBody.toString("utf8"));
+        } catch (error) {
             return res.status(400).json({ message: "Invalid webhook payload" });
         }
         next();
