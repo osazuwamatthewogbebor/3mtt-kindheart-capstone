@@ -7,222 +7,7 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .campaign-header {
-            background: white;
-            padding: 2rem 0;
-            border-bottom: 1px solid var(--gray-lightest);
-        }
-
-        .campaign-hero {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 3rem;
-            margin-top: 2rem;
-        }
-
-        .campaign-image-large {
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .campaign-sidebar {
-            background: white;
-            padding: 2rem;
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--gray-lightest);
-            height: fit-content;
-            position: sticky;
-            top: 2rem;
-        }
-
-        .amount-raised {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .goal-text {
-            color: var(--gray);
-            font-size: 1.125rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .donate-btn {
-            width: 100%;
-            justify-content: center;
-            font-size: 1.125rem;
-            padding: 1.25rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .donors-count {
-            text-align: center;
-            padding: 1rem;
-            background: var(--gray-lightest);
-            border-radius: var(--radius-md);
-            margin-bottom: 1.5rem;
-        }
-
-        .donors-count strong {
-            font-size: 1.5rem;
-            color: var(--dark);
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-
-        .share-section {
-            border-top: 1px solid var(--gray-lightest);
-            padding-top: 1.5rem;
-        }
-
-        .share-section h4 {
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-
-        .share-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .share-btn {
-            flex: 1;
-            padding: 0.75rem;
-            border: 1px solid var(--gray-lighter);
-            border-radius: var(--radius-md);
-            background: white;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 1.25rem;
-        }
-
-        .share-btn:hover {
-            background: var(--gray-lightest);
-        }
-
-        .share-btn.facebook { color: #1877f2; }
-        .share-btn.twitter { color: #1da1f2; }
-        .share-btn.whatsapp { color: #25d366; }
-        .share-btn.copy { color: var(--gray); }
-
-        .campaign-content {
-            background: white;
-            padding: 2rem;
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--gray-lightest);
-            margin-top: 2rem;
-        }
-
-        .campaign-tabs {
-            display: flex;
-            gap: 2rem;
-            border-bottom: 2px solid var(--gray-lightest);
-            margin-bottom: 2rem;
-        }
-
-        .tab {
-            padding: 1rem 0;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--gray);
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-            transition: var(--transition);
-        }
-
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .creator-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.5rem;
-            background: var(--gray-lightest);
-            border-radius: var(--radius-lg);
-            margin-bottom: 2rem;
-        }
-
-        .creator-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .creator-details h4 {
-            color: var(--dark);
-            margin-bottom: 0.25rem;
-        }
-
-        .creator-details p {
-            color: var(--gray);
-            font-size: 0.9375rem;
-        }
-
-        .donation-item {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--gray-lightest);
-        }
-
-        .donation-item:last-child {
-            border-bottom: none;
-        }
-
-        .donation-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .donor-name {
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .donation-amount {
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .donation-time {
-            color: var(--gray);
-            font-size: 0.875rem;
-        }
-
-        @media (max-width: 968px) {
-            .campaign-hero {
-                grid-template-columns: 1fr;
-            }
-
-            .campaign-sidebar {
-                position: relative;
-                top: 0;
-            }
-        }
-    </style>
+<link rel="stylesheet" href="../assets/css/campaign.css">
 </head>
 <body>
 
@@ -253,16 +38,16 @@
     <!-- CAMPAIGN HEADER -->
     <section class="campaign-header">
         <div class="container">
-            <a href="campaigns.html" style="color: var(--gray); margin-bottom: 1rem; display: inline-block;">
+            <a href="campaigns.html" class="btn-link mb-1 d-inline-block">
                 <i class="fas fa-arrow-left"></i> Back to Campaigns
             </a>
-            <h1 id="campaignTitle" style="font-size: 2.5rem; margin-bottom: 1rem;">Loading...</h1>
-            <div style="display: flex; gap: 1rem; align-items: center;">
+            <h1 id="campaignTitle" class="mb-1" style="font-size: 2.5rem;">Loading...</h1>
+            <div class="d-flex gap-1 align-center">
                 <span class="campaign-category" id="campaignCategory">Category</span>
-                <span style="color: var(--gray);">
+                <span class="color-gray">
                     <i class="fas fa-user"></i> By <span id="creatorName">Creator</span>
                 </span>
-                <span style="color: var(--gray);">
+                <span class="color-gray">
                     <i class="fas fa-calendar"></i> <span id="createdDate">Date</span>
                 </span>
             </div>
@@ -270,7 +55,7 @@
     </section>
 
     <!-- CAMPAIGN HERO -->
-    <section style="padding: 3rem 0; background: var(--gray-lightest);">
+    <section class="p-3 bg-gray-lightest">
         <div class="container">
             <div class="campaign-hero">
                 <div>
@@ -281,7 +66,7 @@
                     <div class="amount-raised" id="amountRaised">₦0</div>
                     <div class="goal-text">raised of <span id="goalAmount">₦0</span> goal</div>
                     
-                    <div class="progress-bar" style="height: 12px; margin-bottom: 1.5rem;">
+                    <div class="progress-bar mb-1" style="height: 12px;">
                         <div class="progress-fill" id="progressBar" style="width: 0%"></div>
                     </div>
 
@@ -291,7 +76,7 @@
 
                     <div class="donors-count">
                         <strong id="donorsCount">0</strong>
-                        <span style="color: var(--gray);">donors</span>
+                        <span class="color-gray">donors</span>
                     </div>
 
                     <div class="share-section">
@@ -317,7 +102,7 @@
     </section>
 
     <!-- CAMPAIGN CONTENT -->
-    <section style="padding: 3rem 0;">
+    <section class="p-3">
         <div class="container">
             <div class="campaign-content">
                 <div class="campaign-tabs">
@@ -353,8 +138,8 @@
 
                 <!-- UPDATES TAB -->
                 <div class="tab-content" id="updatesTab">
-                    <div style="text-align: center; padding: 3rem; color: var(--gray);">
-                        <i class="fas fa-bell" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                    <div class="loading-state">
+                        <i class="fas fa-bell opacity-30" style="font-size: 3rem;"></i>
                         <p>No updates yet</p>
                     </div>
                 </div>
@@ -411,18 +196,19 @@
 
                 // Update page
                 document.getElementById('campaignTitle').textContent = campaign.title;
-                document.getElementById('campaignCategory').textContent = campaign?.category?.name || 'General';
-                document.getElementById('creatorName').textContent = campaign?.user?.name;
-                document.getElementById('creatorNameFull').textContent = campaign?.user?.name;
-                document.getElementById('createdDate').textContent = formatDate(campaign.createdAt);
-                document.getElementById('campaignImage').src = campaign.imageUrl || 'https://via.placeholder.com/800x500';
-                document.getElementById('amountRaised').textContent = formatCurrency(campaign.amountRaised);
-                document.getElementById('goalAmount').textContent = formatCurrency(campaign.goalAmount);
+                document.getElementById('campaignCategory').textContent = campaign?.category?.name || campaign?.categoryName || 'General';
+                document.getElementById('creatorName').textContent = campaign?.user?.name || campaign?.creatorName || 'Creator';
+                document.getElementById('creatorNameFull').textContent = campaign?.user?.name || campaign?.creatorName || 'Creator';
+                document.getElementById('createdDate').textContent = formatDate(campaign.createdAt || campaign.created_at);
+                document.getElementById('campaignImage').src = campaign.imageUrl || campaign.image || 'https://via.placeholder.com/800x500';
+                document.getElementById('amountRaised').textContent = formatCurrency(campaign.amountRaised || campaign.raised_amount || 0);
+                document.getElementById('goalAmount').textContent = formatCurrency(campaign.goalAmount || campaign.goal_amount || 0);
                 document.getElementById('progressBar').style.width = progress + '%';
                 document.getElementById('campaignDescription').textContent = campaign.description;
                 
                 // Creator avatar
-                const initials = campaign?.user?.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                const creatorNameStr = campaign?.user?.name || campaign?.creatorName || 'Creator';
+                const initials = creatorNameStr.split(' ').map(n => n[0]).join('').toUpperCase();
                 document.getElementById('creatorAvatar').textContent = initials;
 
                 // Load donations
@@ -463,10 +249,10 @@
                     item.className = 'donation-item';
                     item.innerHTML = `
                         <div class="donation-header">
-                            <span class="donor-name">${donation.donor_name || 'Anonymous'}</span>
+                            <span class="donor-name">${donation.donorName || donation.donor_name || 'Anonymous'}</span>
                             <span class="donation-amount">${formatCurrency(donation.amount)}</span>
                         </div>
-                        <div class="donation-time">${formatDate(donation.created_at)}</div>
+                        <div class="donation-time">${formatDate(donation.createdAt || donation.created_at)}</div>
                     `;
                     container.appendChild(item);
                 });

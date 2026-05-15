@@ -85,7 +85,7 @@ async function loadCampaigns() {
                      class="campaign-image"
                      onerror="this.src='https://via.placeholder.com/400x200?text=Campaign+Image'">
                 <div class="campaign-content">
-                    <span class="campaign-category">${campaign.name || 'General'}</span>
+                    <span class="campaign-category">${campaign.categoryName || 'General'}</span>
                     <h3 class="campaign-title">${campaign.title}</h3>
                     <p class="campaign-description">${campaign.description}</p>
                     <div class="campaign-progress">

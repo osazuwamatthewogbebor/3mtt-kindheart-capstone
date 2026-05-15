@@ -7,207 +7,7 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .profile-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 0;
-            text-align: center;
-        }
-
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: white;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: 700;
-            margin: 0 auto 1rem;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        }
-
-        .profile-content {
-            max-width: 800px;
-            margin: -3rem auto 3rem;
-            padding: 0 1.5rem;
-        }
-
-        .profile-card {
-            background: white;
-            padding: 2rem;
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 2rem;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--gray-lightest);
-        }
-
-        .card-header h2 {
-            font-size: 1.5rem;
-            color: var(--dark);
-        }
-
-        .edit-btn {
-            background: none;
-            border: none;
-            color: var(--primary);
-            cursor: pointer;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            transition: var(--transition);
-        }
-
-        .edit-btn:hover {
-            background: var(--gray-lightest);
-        }
-
-        .info-row {
-            display: grid;
-            grid-template-columns: 150px 1fr;
-            gap: 1rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--gray-lightest);
-        }
-
-        .info-row:last-child {
-            border-bottom: none;
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: var(--gray);
-        }
-
-        .info-value {
-            color: var(--dark);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--dark);
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 2px solid var(--gray-lightest);
-            border-radius: var(--radius-md);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-box {
-            text-align: center;
-            padding: 1.5rem;
-            background: var(--gray-lightest);
-            border-radius: var(--radius-lg);
-        }
-
-        .stat-box h3 {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-box p {
-            color: var(--gray);
-            font-size: 0.9375rem;
-        }
-
-        .user-menu {
-            position: relative;
-        }
-
-        .user-btn {
-            background: none;
-            border: none;
-            color: var(--gray);
-            font-weight: 500;
-            cursor: pointer;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            transition: var(--transition);
-        }
-
-        .user-btn:hover {
-            background: var(--gray-lightest);
-            color: var(--primary);
-        }
-
-        .user-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
-            padding: 0.5rem;
-            min-width: 200px;
-            display: none;
-            z-index: 1000;
-            margin-top: 0.5rem;
-        }
-
-        .user-dropdown.show {
-            display: block;
-        }
-
-        .user-dropdown a {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: var(--dark);
-            border-radius: var(--radius-sm);
-            transition: var(--transition);
-        }
-
-        .user-dropdown a:hover {
-            background: var(--gray-lightest);
-            color: var(--primary);
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
+<link rel="stylesheet" href="../assets/css/profile.css">
 </head>
 <body>
 
@@ -236,7 +36,7 @@
                         <div class="user-dropdown" id="userDropdown">
                             <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
                             <a href="my-donations.html"><i class="fas fa-heart"></i> My Donations</a>
-                            <a href="dashboard.html" id="adminLink" style="display: none;"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                            <a href="dashboard.html" id="adminLink" class="hidden"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                             <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
                         </div>
                     </div>
@@ -249,16 +49,16 @@
     <section class="profile-header">
         <div class="container">
             <div class="profile-avatar" id="profileAvatar">A</div>
-            <h1 id="profileName" style="font-size: 2rem; margin-bottom: 0.5rem;">Loading...</h1>
-            <p id="profileEmail" style="opacity: 0.9;">email@example.com</p>
-            <p style="opacity: 0.8; margin-top: 0.5rem;">
+            <h1 id="profileName" class="mb-1" style="font-size: 2rem;">Loading...</h1>
+            <p id="profileEmail" class="opacity-90">email@example.com</p>
+            <p class="opacity-80 mt-1">
                 <i class="fas fa-calendar"></i> Member since <span id="memberSince">2024</span>
             </p>
         </div>
     </section>
 
     <!-- PROFILE CONTENT -->
-    <section style="padding: 5rem 0; background: var(--gray-lightest);">
+    <section class="p-3 bg-gray-lightest">
         <div class="profile-content">
             
             <!-- STATS -->
@@ -337,7 +137,7 @@
                 </div>
 
                 <div id="passwordView">
-                    <p style="color: var(--gray);">••••••••</p>
+                    <p class="color-gray">••••••••</p>
                 </div>
 
                 <div id="passwordEdit" class="hidden">
@@ -409,10 +209,10 @@
                 const response = await fetch(API.ME, {
                     headers: getAuthHeaders()
                 });
-                const data = await response.json();
+                const result = await response.json();
 
-                if (data.success) {
-                    const user = data.data;
+                if (result.success) {
+                    const user = result.data;
                     
                     // Update display
                     const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
@@ -420,12 +220,12 @@
                     document.getElementById('profileName').textContent = user.name;
                     document.getElementById('profileEmail').textContent = user.email;
                     document.getElementById('navUserName').textContent = user.name;
-                    document.getElementById('memberSince').textContent = formatDate(user.created_at);
+                    document.getElementById('memberSince').textContent = formatDate(user.createdAt || user.created_at);
 
                     document.getElementById('displayName').textContent = user.name;
                     document.getElementById('displayEmail').textContent = user.email;
                     document.getElementById('displayRole').textContent = user.role;
-                    document.getElementById('displayJoined').textContent = formatDate(user.created_at);
+                    document.getElementById('displayJoined').textContent = formatDate(user.createdAt || user.created_at);
 
                     document.getElementById('editName').value = user.name;
                     document.getElementById('editEmail').value = user.email;

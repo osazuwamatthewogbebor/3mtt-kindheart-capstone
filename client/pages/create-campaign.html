@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="auth-container">
-        <div class="auth-card" style="max-width: 600px;">
+        <div class="auth-card auth-card-lg">
             <div class="auth-header">
                 <div class="logo">
                     <i class="fas fa-heart"></i>
@@ -116,8 +116,8 @@
             try {
                 const formData = new FormData();
                 formData.append('title', document.getElementById('title').value);
-                formData.append('category_id', document.getElementById('category').value);
-                formData.append('goal_amount', document.getElementById('goal').value);
+                formData.append('categoryId', document.getElementById('category').value);
+                formData.append('goalAmount', document.getElementById('goal').value);
                 formData.append('description', document.getElementById('description').value);
                 
                 const imageFile = document.getElementById('image').files[0];

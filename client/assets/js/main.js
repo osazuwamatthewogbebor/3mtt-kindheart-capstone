@@ -12,12 +12,13 @@ if (mobileToggle) {
 async function loadStats() {
     try {
         const response = await fetch(API.ADMIN_STATS);
-        const data = await response.json();
+        const result = await response.json();
+        const data = result.data || result;
         
-        if (data.success) {
-            document.getElementById('totalDonations').textContent = formatCurrency(data.data.donations);
-            document.getElementById('totalCampaigns').textContent = data.data.campaigns;
-            document.getElementById('totalUsers').textContent = data.data.users;
+        if (result.success || data.donations !== undefined) {
+            document.getElementById('totalDonations').textContent = formatCurrency(data.donations || data.totalDonations || 0);
+            document.getElementById('totalCampaigns').textContent = data.campaigns || data.totalCampaigns || 0;
+            document.getElementById('totalUsers').textContent = data.users || data.totalUsers || 0;
         }
     } catch (error) {
         console.error('Error loading stats:', error);
@@ -28,11 +29,14 @@ async function loadStats() {
 async function loadFeaturedCampaigns() {
     try {
         const response = await fetch(`${API.CAMPAIGNS}?status=ACTIVE&limit=6`);
-        const data = await response.json();
+        const result = await response.json();
+        const data = result.data || result.campaigns || result;
         
         const container = document.getElementById('featuredCampaigns');
         
-        if (!data.success || data.data.length === 0) {
+        const campaigns = Array.isArray(data) ? data : (data.campaigns || []);
+        
+        if (campaigns.length === 0) {
             container.innerHTML = `
                 <div class="loading-state">
                     <i class="fas fa-inbox"></i>
@@ -44,17 +48,17 @@ async function loadFeaturedCampaigns() {
         
         container.innerHTML = '';
         
-        data.data.forEach(campaign => {
-            const progress = calculateProgress(campaign.raised_amount, campaign.goal_amount);
+        campaigns.forEach(campaign => {
+            const progress = calculateProgress(campaign.amountRaised || campaign.raised_amount, campaign.goalAmount || campaign.goal_amount);
             
             const card = document.createElement('div');
             card.className = 'campaign-card';
             card.innerHTML = `
-                <img src="${campaign.image ? `http://localhost:5000${campaign.image}` : 'https://via.placeholder.com/400x200?text=Campaign+Image'}"
+                <img src="${campaign.imageUrl || 'https://via.placeholder.com/400x200?text=Campaign+Image'}"
      alt="${campaign.title}"
      class="campaign-image">
                 <div class="campaign-content">
-                    <span class="campaign-category">${campaign.category_name || 'General'}</span>
+                    <span class="campaign-category">${campaign.categoryName || 'General'}</span>
                     <h3 class="campaign-title">${campaign.title}</h3>
                     <p class="campaign-description">${campaign.description}</p>
                     <div class="campaign-progress">
@@ -63,7 +67,7 @@ async function loadFeaturedCampaigns() {
                         </div>
                         <div class="campaign-stats">
                             <div class="stat">
-                                <span class="stat-value">${formatCurrency(campaign.raised_amount)}</span>
+                                <span class="stat-value">${formatCurrency(campaign.amountRaised)}</span>
                                 <span class="stat-label">Raised</span>
                             </div>
                             <div class="stat">

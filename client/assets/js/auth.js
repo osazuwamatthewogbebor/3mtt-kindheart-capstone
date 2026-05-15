@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (user && user.role === 'ADMIN') {
             window.location.href = 'dashboard.html';
         } else {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'my-campaigns.html';
         }
     }
 });
