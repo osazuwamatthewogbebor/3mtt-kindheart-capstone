@@ -85,16 +85,16 @@
                     <div class="share-section">
                         <h4>Share this campaign</h4>
                         <div class="share-buttons">
-                            <button class="share-btn facebook" onclick="shareOnFacebook()">
+                            <button class="share-btn facebook" onclick="shareOnFacebook()" title="Share on Facebook">
                                 <i class="fab fa-facebook"></i>
                             </button>
-                            <button class="share-btn twitter" onclick="shareOnTwitter()">
+                            <button class="share-btn twitter" onclick="shareOnTwitter()" title="Share on Twitter">
                                 <i class="fab fa-twitter"></i>
                             </button>
-                            <button class="share-btn whatsapp" onclick="shareOnWhatsApp()">
+                            <button class="share-btn whatsapp" onclick="shareOnWhatsApp()" title="Share on WhatsApp">
                                 <i class="fab fa-whatsapp"></i>
                             </button>
-                            <button class="share-btn copy" onclick="copyLink()">
+                            <button class="share-btn copy" onclick="copyLink()" title="Copy link">
                                 <i class="fas fa-link"></i>
                             </button>
                         </div>
@@ -109,9 +109,9 @@
         <div class="container">
             <div class="campaign-content">
                 <div class="campaign-tabs">
-                    <div class="tab active" onclick="switchTab('story')">Story</div>
-                    <div class="tab" onclick="switchTab('donations')">Donations (<span id="donationsCount">0</span>)</div>
-                    <div class="tab" onclick="switchTab('updates')">Updates</div>
+                    <div class="tab active" onclick="switchTab(event, 'story')">Story</div>
+                    <div class="tab" onclick="switchTab(event, 'donations')">Donations (<span id="donationsCount">0</span>)</div>
+                    <div class="tab" onclick="switchTab(event, 'updates')">Updates</div>
                 </div>
 
                 <!-- STORY TAB -->
@@ -163,9 +163,15 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const campaignId = urlParams.get('id');
+        const paymentReference = urlParams.get('reference')
+            || urlParams.get('trxref')
+            || urlParams.get('transaction_reference')
+            || urlParams.get('paymentReference')
+            || urlParams.get('payment_reference');
+        const paymentStatus = (urlParams.get('status') || urlParams.get('payment_status') || '').toLowerCase();
 
         if (!campaignId) {
-            alert('Campaign not found');
+            showToast('Campaign not found', 'error');
             window.location.href = 'campaigns.html';
         }
 
@@ -189,8 +195,8 @@
 
                 const campaign = result.data?.campaign || result.campaign;
 
-                if (!result.success && !campaign) {
-                    alert('Campaign not found');
+                if (!result.success || !campaign) {
+                    showToast('Campaign not found', 'error');
                     window.location.href = 'campaigns.html';
                     return;
                 }
@@ -215,11 +221,11 @@
                 document.getElementById('creatorAvatar').textContent = initials;
 
                 // Load donations
-                // loadDonations();
+                loadDonations();
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error loading campaign');
+                showToast('Error loading campaign', 'error');
             }
         }
 
@@ -265,32 +271,143 @@
             }
         }
 
+        function cleanPaymentQueryParams() {
+            const nextUrl = new URL(window.location.href);
+            nextUrl.searchParams.delete('reference');
+            nextUrl.searchParams.delete('trxref');
+            nextUrl.searchParams.delete('transaction_reference');
+            nextUrl.searchParams.delete('paymentReference');
+            nextUrl.searchParams.delete('payment_reference');
+            nextUrl.searchParams.delete('status');
+            nextUrl.searchParams.delete('payment_status');
+            window.history.replaceState({}, document.title, nextUrl.toString());
+        }
+
+        async function handleDonationReturn() {
+            if (!paymentReference) return false;
+
+            try {
+                showToast('Verifying your donation...', 'info');
+
+                const response = await fetch(API.VERIFY_DONATION, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        reference: paymentReference,
+                        paymentReference,
+                        status: paymentStatus || undefined,
+                        campaignId
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success !== false) {
+                    showToast(result.message || 'Donation verified successfully!', 'success');
+                    cleanPaymentQueryParams();
+                    return true;
+                }
+
+                showToast(result.message || 'Unable to verify donation right now.', 'warning');
+                return false;
+            } catch (error) {
+                console.error('Donation verification error:', error);
+                showToast('Unable to verify donation right now.', 'warning');
+                return false;
+            }
+        }
+
         // Switch tabs
-        function switchTab(tabName) {
+        function switchTab(event, tabName) {
             // Remove active from all tabs
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
 
             // Add active to clicked tab
-            event.target.classList.add('active');
+            event.currentTarget.classList.add('active');
             document.getElementById(tabName + 'Tab').classList.add('active');
         }
 
         // Donate function
-        function donate() {
+        async function donate() {
             if (!isLoggedIn()) {
-                alert('Please login to donate');
+                showToast('Please login to donate', 'warning');
                 window.location.href = 'login.html';
                 return;
             }
             
             const amount = prompt('Enter donation amount (₦):');
-            if (!amount || isNaN(amount) || amount < 100) {
-                alert('Please enter a valid amount (minimum ₦100)');
+            if (!amount) return;
+
+            const parsedAmount = Number(amount);
+            if (isNaN(parsedAmount) || parsedAmount < 100) {
+                showToast('Please enter a valid amount (minimum ₦100)', 'warning');
                 return;
             }
 
-            alert('Payment integration coming soon! You would donate ₦' + amount);
+            const donateBtn = document.querySelector('.donate-btn');
+            const originalBtnText = donateBtn ? donateBtn.innerHTML : '';
+
+            if (donateBtn) {
+                donateBtn.disabled = true;
+                donateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            }
+
+            try {
+                const response = await fetch(API.DONATIONS, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        campaignId,
+                        campaign_id: campaignId,
+                        amount: parsedAmount
+                    })
+                });
+
+                const result = await response.json();
+                const payload = result.data || result;
+
+                if (!response.ok || !result.success) {
+                    showToast(result.message || 'Unable to start donation. Please try again.', 'error');
+                    return;
+                }
+
+                const checkoutUrl = payload.authorization_url || payload.authorizationUrl || payload.checkoutUrl || payload.checkout_url || payload.paymentUrl || payload.payment_url || payload.url;
+
+                if (checkoutUrl) {
+                    let parsedCheckoutUrl;
+                    try {
+                        parsedCheckoutUrl = new URL(checkoutUrl, window.location.origin);
+                    } catch {
+                        showToast('Invalid payment link received. Please try again.', 'error');
+                        return;
+                    }
+
+                    if (!['https:', 'http:'].includes(parsedCheckoutUrl.protocol)) {
+                        showToast('Unsafe payment link blocked.', 'error');
+                        return;
+                    }
+
+                    showToast('Redirecting to secure payment...', 'info');
+                    window.setTimeout(() => {
+                        window.location.href = parsedCheckoutUrl.toString()
+                    }, 250);
+                    return;
+                }
+
+                showToast('Donation initiated successfully.', 'success');
+                loadDonations();
+                loadCampaign();
+
+            } catch (error) {
+                console.error('Donation error:', error);
+                showToast('Error starting donation. Please try again.', 'error');
+            } finally {
+                if (donateBtn) {
+                    donateBtn.disabled = false;
+                    donateBtn.innerHTML = originalBtnText;
+                }
+            }
         }
 
         // Share functions
@@ -308,14 +425,21 @@
             window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + window.location.href)}`, '_blank');
         }
 
-        function copyLink() {
-            navigator.clipboard.writeText(window.location.href);
-            alert('Link copied to clipboard!');
+        async function copyLink() {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                showToast('Link copied to clipboard!', 'success');
+            } catch (error) {
+                showToast('Unable to copy link. Please copy it manually from the address bar.', 'warning');
+            }
         }
 
         // Initialize
-        updateNav();
-        loadCampaign();
+        (async () => {
+            updateNav();
+            await handleDonationReturn();
+            await loadCampaign();
+        })();
     </script>
 </body>
 </html>

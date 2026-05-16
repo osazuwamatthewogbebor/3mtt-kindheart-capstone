@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/profile.css">
+    <link rel="stylesheet" href="../assets/css/profile.css">
+    <link rel="stylesheet" href="../assets/css/auth.css">
+    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
 </head>
 <body>
 
@@ -149,6 +151,29 @@
                         <div class="form-group">
                             <label for="newPassword">New Password</label>
                             <input type="password" id="newPassword" minlength="6" required>
+                            <div class="password-requirements">
+                                <p class="requirement-title">Password must contain:</p>
+                                <div class="requirement-item" id="req-upper-profile">
+                                    <i class="fas fa-circle"></i>
+                                    <span>One uppercase letter (A-Z)</span>
+                                </div>
+                                <div class="requirement-item" id="req-lower-profile">
+                                    <i class="fas fa-circle"></i>
+                                    <span>One lowercase letter (a-z)</span>
+                                </div>
+                                <div class="requirement-item" id="req-number-profile">
+                                    <i class="fas fa-circle"></i>
+                                    <span>One number (0-9)</span>
+                                </div>
+                                <div class="requirement-item" id="req-special-profile">
+                                    <i class="fas fa-circle"></i>
+                                    <span>One special character (!@#$%^&*)</span>
+                                </div>
+                                <div class="requirement-item" id="req-length-profile">
+                                    <i class="fas fa-circle"></i>
+                                    <span>Minimum 8 characters</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="confirmPassword">Confirm New Password</label>
@@ -175,6 +200,7 @@
     </footer>
 
     <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/auth.js"></script>
     <script>
         // Check authentication
         if (!isLoggedIn()) {
@@ -256,7 +282,7 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    alert('Profile updated successfully!');
+                    showToast('Profile updated successfully!', 'success');
                     
                     // Update local storage
                     const updatedUser = { ...user, ...data.data };
@@ -265,11 +291,11 @@
                     loadProfile();
                     toggleEdit('info');
                 } else {
-                    alert(data.message || 'Failed to update profile');
+                    showToast(data.message || 'Failed to update profile', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error updating profile');
+                showToast('Error updating profile', 'error');
             }
         });
 
@@ -281,7 +307,13 @@
             const confirmPassword = document.getElementById('confirmPassword').value;
 
             if (newPassword !== confirmPassword) {
-                alert('Passwords do not match!');
+                showToast('Passwords do not match!', 'warning');
+                return;
+            }
+
+            // Validate password strength
+            if (!isPasswordValid(newPassword)) {
+                showToast('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.', 'warning');
                 return;
             }
 
@@ -298,15 +330,15 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    alert('Password changed successfully!');
+                    showToast('Password changed successfully!', 'success');
                     document.getElementById('changePasswordForm').reset();
                     toggleEdit('password');
                 } else {
-                    alert(data.message || 'Failed to change password');
+                    showToast(data.message || 'Failed to change password', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error changing password');
+                showToast('Error changing password', 'error');
             }
         });
 

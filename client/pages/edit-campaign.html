@@ -93,7 +93,7 @@
         const campaignId = urlParams.get('id');
 
         if (!campaignId) {
-            alert('Campaign not found');
+            showToast('Campaign not found', 'error');
             window.location.href = 'my-campaigns.html';
         }
 
@@ -128,7 +128,7 @@
                 const data = await response.json();
 
                 if (!data.success) {
-                    alert('Campaign not found');
+                    showToast('Campaign not found', 'error');
                     window.location.href = 'my-campaigns.html';
                     return;
                 }
@@ -156,7 +156,7 @@
 
             } catch (error) {
                 console.error('Error loading campaign:', error);
-                alert('Error loading campaign');
+                showToast('Error loading campaign', 'error');
             }
         }
 
@@ -193,14 +193,14 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    alert('Campaign updated successfully!');
+                    showToast('Campaign updated successfully!', 'success');
                     window.location.href = 'my-campaigns.html';
                 } else {
-                    alert(data.message || 'Failed to update campaign');
+                    showToast(data.message || 'Failed to update campaign', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error updating campaign. Please try again.');
+                showToast('Error updating campaign. Please try again.', 'error');
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;

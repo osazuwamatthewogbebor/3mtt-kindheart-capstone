@@ -136,14 +136,14 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    alert('Campaign created successfully!');
+                    showToast('Campaign created successfully!', 'success');
                     window.location.href = 'my-campaigns.html';
                 } else {
-                    alert(data.message || 'Failed to create campaign');
+                    showToast(data.message || 'Failed to create campaign', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error creating campaign. Please try again.');
+                showToast('Error creating campaign. Please try again.', 'error');
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
