@@ -101,7 +101,7 @@ if (registerForm) {
 
         // Validate password strength
         if (!isPasswordValid(password)) {
-            showToast('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.', 'warning');
+            showToast('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 6 characters long.', 'warning');
             return;
         }
         

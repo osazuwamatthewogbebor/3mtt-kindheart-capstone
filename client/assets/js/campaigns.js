@@ -46,7 +46,10 @@ let currentPage = 1;
 const limit = 12;
 
 function getCampaignDate(campaign) {
-    return new Date(campaign.createdAt || campaign.created_at || campaign.updatedAt || campaign.updated_at || 0).getTime();
+    const ts = new Date(
+        campaign.createdAt || campaign.created_at || campaign.updatedAt || campaign.updated_at || 0
+    ).getTime();
+    return Number.isFinite(ts) ? ts : 0;
 }
 
 function sortCampaignList(campaigns, sort) {
@@ -63,8 +66,11 @@ function sortCampaignList(campaigns, sort) {
 
     if (sort === 'ending') {
         sorted.sort((a, b) => {
-            const endA = new Date(a.endDate || a.end_date || Number.MAX_SAFE_INTEGER).getTime();
-            const endB = new Date(b.endDate || b.end_date || Number.MAX_SAFE_INTEGER).getTime();
+                    const rawA = new Date(a.endDate || a.end_date || Number.MAX_SAFE_INTEGER).getTime();
+                    const rawB = new Date(b.endDate || b.end_date || Number.MAX_SAFE_INTEGER).getTime();
+                    const endA = Number.isFinite(rawA) ? rawA : Number.MAX_SAFE_INTEGER;
+                    const endB = Number.isFinite(rawB) ? rawB : Number.MAX_SAFE_INTEGER;
+             return endA - endB;
             return endA - endB;
         });
         return sorted;

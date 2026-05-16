@@ -85,16 +85,16 @@
                     <div class="share-section">
                         <h4>Share this campaign</h4>
                         <div class="share-buttons">
-                            <button class="share-btn facebook" onclick="shareOnFacebook()">
+                            <button class="share-btn facebook" onclick="shareOnFacebook()" title="Share on Facebook">
                                 <i class="fab fa-facebook"></i>
                             </button>
-                            <button class="share-btn twitter" onclick="shareOnTwitter()">
+                            <button class="share-btn twitter" onclick="shareOnTwitter()" title="Share on Twitter">
                                 <i class="fab fa-twitter"></i>
                             </button>
-                            <button class="share-btn whatsapp" onclick="shareOnWhatsApp()">
+                            <button class="share-btn whatsapp" onclick="shareOnWhatsApp()" title="Share on WhatsApp">
                                 <i class="fab fa-whatsapp"></i>
                             </button>
-                            <button class="share-btn copy" onclick="copyLink()">
+                            <button class="share-btn copy" onclick="copyLink()" title="Copy link">
                                 <i class="fas fa-link"></i>
                             </button>
                         </div>
@@ -195,7 +195,7 @@
 
                 const campaign = result.data?.campaign || result.campaign;
 
-                if (!result.success && !campaign) {
+                if (!result.success || !campaign) {
                     showToast('Campaign not found', 'error');
                     window.location.href = 'campaigns.html';
                     return;
@@ -375,9 +375,22 @@
                 const checkoutUrl = payload.authorization_url || payload.authorizationUrl || payload.checkoutUrl || payload.checkout_url || payload.paymentUrl || payload.payment_url || payload.url;
 
                 if (checkoutUrl) {
+                    let parsedCheckoutUrl;
+                    try {
+                        parsedCheckoutUrl = new URL(checkoutUrl, window.location.origin);
+                    } catch {
+                        showToast('Invalid payment link received. Please try again.', 'error');
+                        return;
+                    }
+
+                    if (!['https:', 'http:'].includes(parsedCheckoutUrl.protocol)) {
+                        showToast('Unsafe payment link blocked.', 'error');
+                        return;
+                    }
+
                     showToast('Redirecting to secure payment...', 'info');
                     window.setTimeout(() => {
-                        window.location.href = checkoutUrl;
+                        window.location.href = parsedCheckoutUrl.toString()
                     }, 250);
                     return;
                 }
