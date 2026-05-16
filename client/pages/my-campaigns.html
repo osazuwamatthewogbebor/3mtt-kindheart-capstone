@@ -273,15 +273,15 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    alert('Campaign deleted successfully!');
+                    showToast('Campaign deleted successfully!', 'success');
                     closeDeleteModal();
                     loadMyCampaigns();
                 } else {
-                    alert(data.message || 'Failed to delete campaign');
+                    showToast(data.message || 'Failed to delete campaign', 'error');
                 }
             } catch (error) {
                 console.error('Error deleting campaign:', error);
-                alert('Error deleting campaign. Please try again.');
+                showToast('Error deleting campaign. Please try again.', 'error');
             }
         }
 

@@ -6,6 +6,7 @@ const API = {
     // Auth
     REGISTER: `${API_URL}/auth/register`,
     LOGIN: `${API_URL}/auth/login`,
+    RESEND_VERIFICATION: `${API_URL}/auth/resend-verification`,
     ME: `${API_URL}/auth/me`,
     FORGOT_PASSWORD: `${API_URL}/auth/forgot-password`,
     RESET_PASSWORD: `${API_URL}/auth/reset-password`,
@@ -79,11 +80,123 @@ function calculateProgress(raised, goal) {
     return Math.min(Math.round((raised / goal) * 100), 100);
 }
 
-// Helper function to show toast notification
-function showToast(message, type = 'info') {
-    // You can implement a toast library or custom toast here
-    alert(message);
+// Toast system (shared across all pages)
+const TOAST_CLASS_BY_TYPE = {
+    success: 'toast-success',
+    error: 'toast-error',
+    warning: 'toast-warning',
+    info: 'toast-info'
+};
+
+const nativeAlert = window.alert ? window.alert.bind(window) : null;
+
+function ensureToastStyles() {
+    if (document.getElementById('kindheart-toast-styles')) return;
+
+    const style = document.createElement('style');
+    style.id = 'kindheart-toast-styles';
+    style.textContent = `
+        #kindheart-toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 10000;
+            max-width: min(420px, calc(100vw - 2rem));
+        }
+
+        .kindheart-toast {
+            background: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+            border-left: 4px solid #3b82f6;
+            padding: 0.875rem 1rem;
+            color: #1e293b;
+            font-size: 0.9375rem;
+            line-height: 1.4;
+            animation: kindheartToastIn 180ms ease-out;
+        }
+
+        .kindheart-toast.toast-success { border-left-color: #10b981; }
+        .kindheart-toast.toast-error { border-left-color: #ef4444; }
+        .kindheart-toast.toast-warning { border-left-color: #f59e0b; }
+        .kindheart-toast.toast-info { border-left-color: #3b82f6; }
+
+        @keyframes kindheartToastIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            #kindheart-toast-container {
+                right: 0.75rem;
+                left: 0.75rem;
+                max-width: none;
+            }
+        }
+    `;
+
+    document.head.appendChild(style);
 }
+
+function ensureToastContainer() {
+    let container = document.getElementById('kindheart-toast-container');
+    if (container) return container;
+
+    container = document.createElement('div');
+    container.id = 'kindheart-toast-container';
+    document.body.appendChild(container);
+    return container;
+}
+
+function inferToastType(message) {
+    const text = String(message || '').toLowerCase();
+    if (text.includes('success')) return 'success';
+    if (text.includes('error') || text.includes('failed') || text.includes('not found')) return 'error';
+    if (text.includes('please') || text.includes('invalid') || text.includes('match')) return 'warning';
+    return 'info';
+}
+
+function showToast(message, type = 'info') {
+    const text = String(message || '').trim();
+    if (!text) return;
+
+    const safeType = TOAST_CLASS_BY_TYPE[type] ? type : 'info';
+
+    // If the DOM is not ready yet, preserve behavior with native alert fallback.
+    if (!document.body) {
+        if (nativeAlert) nativeAlert(text);
+        return;
+    }
+
+    ensureToastStyles();
+    const container = ensureToastContainer();
+
+    const toast = document.createElement('div');
+    toast.className = `kindheart-toast ${TOAST_CLASS_BY_TYPE[safeType]}`;
+    toast.textContent = text;
+    container.appendChild(toast);
+
+    window.setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-6px)';
+        toast.style.transition = 'opacity 140ms ease, transform 140ms ease';
+        window.setTimeout(() => toast.remove(), 140);
+    }, 3200);
+}
+
+// Backward compatibility for existing pages still using alert().
+window.alert = function (message) {
+    showToast(message, inferToastType(message));
+};
 
 // Helper function to handle API errors
 function handleApiError(error) {
