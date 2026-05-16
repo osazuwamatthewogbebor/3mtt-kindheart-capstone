@@ -20,7 +20,6 @@ const calculateTimeLeft = (endDate, now = new Date()) => {
 };
 
 const calculateCampaignStatus = (campaign, now = new Date()) => {
-	const startDate = new Date(campaign.startDate).getTime();
 	const endDate = new Date(campaign.endDate).getTime();
 	const goalAmount = toNumber(campaign.goalAmount);
 	const amountRaised = toNumber(campaign.amountRaised);
@@ -68,13 +67,6 @@ const formatCampaign = (campaign) => {
 	};
 };
 
-const parsePagination = (query) => {
-	const page = Math.max(1, Number.parseInt(query.page, 10) || 1);
-	const limit = Math.min(100, Math.max(1, Number.parseInt(query.limit, 10) || 10));
-
-	return { page, limit, skip: (page - 1) * limit };
-};
-
 const normalizeStringQuery = (value) => {
 	if (Array.isArray(value)) {
 		return value[0]?.toString().trim() || '';
@@ -96,32 +88,6 @@ const buildSearchWhere = (search) => {
 	};
 };
 
-const applyStatusFilter = (campaigns, statusFilter) => {
-	if (!statusFilter) {
-		return campaigns;
-	}
-
-	return campaigns.filter((campaign) => campaign.status === statusFilter);
-};
-
-const applySorting = (campaigns, sortBy, sortOrder) => {
-	const direction = sortOrder === 'asc' ? 1 : -1;
-	return [...campaigns].sort((left, right) => {
-		const leftValue = left[sortBy];
-		const rightValue = right[sortBy];
-
-		if (leftValue < rightValue) {
-			return -1 * direction;
-		}
-
-		if (leftValue > rightValue) {
-			return 1 * direction;
-		}
-
-		return 0;
-	});
-};
-
 const canManageCampaign = (req, campaignUserId) => req.user?.role === 'ADMIN' || campaignUserId === req.user?.id;
 
 export const createCampaign = async (req, res, next) => {
@@ -137,26 +103,35 @@ export const createCampaign = async (req, res, next) => {
 		const parsedGoalAmount = Number(goalAmount);
 		const parsedEndDate = new Date(endDate);
 
-		if (
-			title === undefined ||
-			title === null ||
-			title === '' ||
-			description === undefined ||
-			description === null ||
-			description === '' ||
-			categoryId === undefined ||
-			categoryId === null ||
-			categoryId === '' ||
-			goalAmount === undefined ||
-			goalAmount === null ||
-			goalAmount === '' ||
-			endDate === undefined ||
-			endDate === null ||
-			endDate === ''
-		) {
-			const error = new Error('title, description, categoryId, goalAmount, and endDate are required');
-			error.statusCode = 400;
-			throw error;
+		// if (
+		// 	title === undefined ||
+		// 	title === null ||
+		// 	title === '' ||
+		// 	description === undefined ||
+		// 	description === null ||
+		// 	description === '' ||
+		// 	categoryId === undefined ||
+		// 	categoryId === null ||
+		// 	categoryId === '' ||
+		// 	goalAmount === undefined ||
+		// 	goalAmount === null ||
+		// 	goalAmount === '' ||
+		// 	endDate === undefined ||
+		// 	endDate === null ||
+		// 	endDate === ''
+		// ) {
+		// 	const error = new Error('title, description, categoryId, goalAmount, and endDate are required');
+		// 	error.statusCode = 400;
+		// 	throw error;
+		// }
+
+		const requiredFields = { title, description, categoryId, goalAmount, endDate };
+		for (const [key, value] of Object.entries(requiredFields)) {
+			if (!value || value.toString().trim() === '') {
+				const error = new Error(`${key} is required`);
+				error.statusCode = 400;
+				throw error;
+			}
 		}
 
 		if (!req.file) {
@@ -183,6 +158,21 @@ export const createCampaign = async (req, res, next) => {
 			throw error;
 		}
 
+		const existingCampaign = await prisma.campaign.findFirst({
+			where: { 
+				title: {
+					equals: title.trim(),
+					mode: "insensitive"
+				}
+			},
+			select: { id: true},
+		})
+
+		if (existingCampaign) { 
+			const error=  new Error("A campaign with this title already exists");
+			error.statusCode = 409;
+			throw error
+		}
 
 		const category = await prisma.category.findUnique({
 			where: { id: categoryId },
@@ -247,42 +237,37 @@ export const getCampaigns = async (req, res, next) => {
 		const skip = (page - 1) * limit;
 		const search = normalizeStringQuery(req.query.search);
 		const userId = normalizeStringQuery(req.query.userId);
-		const category = normalizeStringQuery(req.query.category);
-		const categoryId = Number.parseInt(category, 10);
-		const statusFilter = normalizeStringQuery(req.query.status).toLowerCase();
+		const categoryId = normalizeStringQuery(req.query.category);
 		const requestedSortBy = normalizeStringQuery(req.query.sortBy);
 		const sortBy = ['createdAt', 'startDate', 'endDate', 'goalAmount', 'amountRaised'].includes(requestedSortBy)
 			? requestedSortBy
 			: 'createdAt';
 		const sortOrder = normalizeStringQuery(req.query.sortOrder).toLowerCase() === 'asc' ? 'asc' : 'desc';
 
-		if (statusFilter && !['active', 'fully_funded', 'expired'].includes(statusFilter)) {
-			const error = new Error('status must be one of active, fully_funded, or expired');
-			error.statusCode = 400;
-			throw error;
-		}
-
 		const where = {
+			campaignStatus: 'APPROVED',
 			...(userId ? { userId } : {}),
-			...(category ? { categoryId } : {}),
+			...(categoryId ? { categoryId } : {}),
 			...(buildSearchWhere(search) || {}),
 		};
 
-		const campaigns = await prisma.campaign.findMany({
-			where,
-			orderBy: {
-				createdAt: 'desc',
-			},
-			include: {
-				user: { select: publicUserSelect },
-				category: { select: { id: true, name: true } },
-			},
-		});
+		const [campaigns, total] = await Promise.all([
+			prisma.campaign.findMany({
+				where,
+				orderBy: {
+					[sortBy]: sortOrder,
+				},
+				include: {
+					user: { select: publicUserSelect },
+					category: { select: { id: true, name: true } },
+				},
+				skip,
+				take: limit,
+			}),
+			prisma.campaign.count({ where }),
+		]);
 
-		const formattedCampaigns = campaigns.map(formatCampaign);
-		const filteredCampaigns = applyStatusFilter(formattedCampaigns, statusFilter);
-		const total = filteredCampaigns.length;
-		const paginatedCampaigns = filteredCampaigns.slice(skip, skip + limit);
+		const paginatedCampaigns = campaigns.map(formatCampaign);
 
 		res.status(200).json({
 			success: true,
@@ -317,6 +302,12 @@ export const getCampaignById = async (req, res, next) => {
 			throw error;
 		}
 
+		if (campaign.campaignStatus !== 'APPROVED') {
+			const error = new Error('Campaign not found');
+			error.statusCode = 404;
+			throw error;
+		}
+
 		res.status(200).json({
 			success: true,
 			campaign: formatCampaign(campaign),
@@ -328,10 +319,10 @@ export const getCampaignById = async (req, res, next) => {
 
 export const updateCampaign = async (req, res, next) => {
 	try {
-		const id = Number.parseInt(req.params.id, 10);
+		const id = req.params.id?.trim();
 
-		if (!Number.isInteger(id)) {
-			const error = new Error('Campaign id must be a valid integer');
+		if (!id) {
+			const error = new Error('Campaign id is required');
 			error.statusCode = 400;
 			throw error;
 		}
@@ -357,7 +348,8 @@ export const updateCampaign = async (req, res, next) => {
 		}
 
 		const updateData = {
-			...(req.body.title ? { title: req.body.title } : {}),
+			// users shouldn't be able to update the title after creating it
+			// ...(req.body.title ? { title: req.body.title } : {}), 
 			...(req.body.description ? { description: req.body.description } : {}),
 		};
 
@@ -382,10 +374,10 @@ export const updateCampaign = async (req, res, next) => {
 
 export const updateCampaignImage = async (req, res, next) => {
 	try {
-		const id = Number.parseInt(req.params.id, 10);
+		const id = req.params.id?.trim();
 
-		if (!Number.isInteger(id)) {
-			const error = new Error('Campaign id must be a valid integer');
+		if (!id) {
+			const error = new Error('Campaign id is required');
 			error.statusCode = 400;
 			throw error;
 		}

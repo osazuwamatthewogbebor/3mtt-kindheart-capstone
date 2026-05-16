@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="auth-container">
-        <div class="auth-card" style="max-width: 600px;">
+        <div class="auth-card auth-card-lg">
             <div class="auth-header">
                 <div class="logo">
                     <i class="fas fa-heart"></i>
@@ -68,7 +68,7 @@
                         <i class="fas fa-image"></i> Update Campaign Image (Optional)
                     </label>
                     <input type="file" id="image" name="image" accept="image/*">
-                    <div id="currentImage" style="margin-top: 1rem;"></div>
+                    <div id="currentImage" class="mt-1"></div>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block" id="updateBtn">
@@ -137,20 +137,20 @@
 
                 // Populate form
                 document.getElementById('title').value = campaign.title;
-                document.getElementById('goal').value = campaign.goal_amount;
+                document.getElementById('goal').value = campaign.goalAmount || campaign.goal_amount;
                 document.getElementById('status').value = campaign.status;
                 document.getElementById('description').value = campaign.description;
 
                 // Set category after categories are loaded
                 setTimeout(() => {
-                    document.getElementById('category').value = campaign.category_id;
+                    document.getElementById('category').value = campaign.categoryId || campaign.category_id;
                 }, 500);
 
                 // Show current image
-                if (campaign.image) {
+                if (campaign.imageUrl || campaign.image) {
                     document.getElementById('currentImage').innerHTML = `
-                        <p style="color: var(--gray); margin-bottom: 0.5rem;">Current image:</p>
-                        <img src="${campaign.image}" alt="Current" style="max-width: 200px; border-radius: var(--radius-md);">
+                        <p class="color-gray mb-1">Current image:</p>
+                        <img src="${campaign.imageUrl || campaign.image}" alt="Current" class="img-preview">
                     `;
                 }
 
@@ -172,8 +172,8 @@
             try {
                 const formData = new FormData();
                 formData.append('title', document.getElementById('title').value);
-                formData.append('category_id', document.getElementById('category').value);
-                formData.append('goal_amount', document.getElementById('goal').value);
+                formData.append('categoryId', document.getElementById('category').value);
+                formData.append('goalAmount', document.getElementById('goal').value);
                 formData.append('status', document.getElementById('status').value);
                 formData.append('description', document.getElementById('description').value);
                 

@@ -1,10 +1,10 @@
 import express from 'express';
 import { updateMyImage } from '../controllers/userController.js';
-import { protect } from '../middlewares/authMiddleware.js';
+import { protect, requireVerified } from '../middlewares/authMiddleware.js';
 import { uploadSingleImage } from '../middlewares/uploadMiddleware.js';
 
 const router = express.Router();
 
-router.patch('/me/image', protect, uploadSingleImage, updateMyImage);
+router.patch('/me/image', protect, requireVerified, uploadSingleImage, updateMyImage);
 
 export default router;

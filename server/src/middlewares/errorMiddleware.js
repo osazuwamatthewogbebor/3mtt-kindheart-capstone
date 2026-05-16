@@ -7,12 +7,11 @@ const errorMiddleware = (err, req, res, next) => {
   
   // Handle Zod Validation Errors
   if (err instanceof z.ZodError) {
-
-      message = "Validation failed",
-      errors = err.errors.map((e) => ({
-        path: e.path.join("."),
-        message: e.message
-      }))
+    const message = "Validation failed";
+    const errors = err.errors.map((e) => ({
+      path: e.path.join("."),
+      message: e.message
+    }))
 
     logger.warn(`Validation Error: ${JSON.stringify(errors)}`, {
             url: req.originalUrl,
@@ -29,7 +28,7 @@ const errorMiddleware = (err, req, res, next) => {
 
   // Handle Prisma Known Request Errors
   if (err.code === "P2002") {
-    message = "A record with this value already exists."
+    const message = "A record with this value already exists."
     logger.warn(`Prisma Known Error:`, {
             url: req.originalUrl,
             method: req.method,

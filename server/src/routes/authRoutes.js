@@ -8,7 +8,9 @@ import {
 	logoutUser,
 	refreshAuthToken,
 	registerUser,
+	resetPassword,
 	verifyEmail,
+	resendVerificationEmailLink,
 } from '../controllers/authController.js';
 import { authorizeRoles, protect } from '../middlewares/authMiddleware.js';
 import validateRequest from '../middlewares/validateRequest.js';
@@ -36,7 +38,10 @@ router.get('/google/failure', (req, res) => {
 });
 router.post('/refresh-token', refreshAuthToken);
 router.get('/verify-email', verifyEmail);
+router.post('/resend-verification', resendVerificationEmailLink);
 router.post('/forgot-password', validateRequest(forgotPasswordSchema), forgotPassword);
+router.get('/reset-password/:token', resetPassword);
+router.post('/reset-password/:token', resetPassword);
 router.post('/logout', logoutUser);
 router.get('/me', protect, getMe);
 

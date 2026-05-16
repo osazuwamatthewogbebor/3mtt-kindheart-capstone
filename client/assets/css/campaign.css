@@ -1,0 +1,439 @@
+/* Campaign Specific Styles */
+
+.campaign-header {
+    background: var(--white);
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--gray-lightest);
+}
+
+.campaign-hero {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 3rem;
+    margin-top: 2rem;
+}
+
+.campaign-image-large {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.campaign-sidebar {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--gray-lightest);
+    height: fit-content;
+    position: sticky;
+    top: 2rem;
+}
+
+.amount-raised {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.goal-text {
+    color: var(--gray);
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+}
+
+.donate-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 1.125rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.donors-count {
+    text-align: center;
+    padding: 1rem;
+    background: var(--gray-lightest);
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+}
+
+.donors-count strong {
+    font-size: 1.5rem;
+    color: var(--dark);
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.share-section {
+    border-top: 1px solid var(--gray-lightest);
+    padding-top: 1.5rem;
+}
+
+.share-section h4 {
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.share-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.share-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--gray-lighter);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.25rem;
+}
+
+.share-btn:hover {
+    background: var(--gray-lightest);
+}
+
+.share-btn.facebook { color: #1877f2; }
+.share-btn.twitter { color: #1da1f2; }
+.share-btn.whatsapp { color: #25d366; }
+.share-btn.copy { color: var(--gray); }
+
+.campaign-content {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--gray-lightest);
+    margin-top: 2rem;
+}
+
+.campaign-tabs {
+    display: flex;
+    gap: 2rem;
+    border-bottom: 2px solid var(--gray-lightest);
+    margin-bottom: 2rem;
+}
+
+.tab {
+    padding: 1rem 0;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--gray);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: var(--transition);
+}
+
+.tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.creator-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--gray-lightest);
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+}
+
+.creator-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.creator-details h4 {
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+}
+
+.creator-details p {
+    color: var(--gray);
+    font-size: 0.9375rem;
+}
+
+.donation-item {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--gray-lightest);
+}
+
+.donation-item:last-child {
+    border-bottom: none;
+}
+
+.donation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.donor-name {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.donation-amount {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.donation-time {
+    color: var(--gray);
+    font-size: 0.875rem;
+}
+
+/* Common Campaign Listing Styles */
+.campaigns-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2rem 0 1.5rem;
+}
+
+.campaigns-header h2 {
+    font-size: 1.75rem;
+    color: var(--dark);
+}
+
+.campaigns-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.campaign-card {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: var(--transition);
+    border: 1px solid var(--gray-lightest);
+}
+
+.campaign-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+.campaign-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.campaign-content {
+    padding: 1.5rem;
+}
+
+.campaign-category {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--primary);
+    border-radius: var(--radius-full);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.campaign-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.campaign-description {
+    color: var(--gray);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.campaign-progress {
+    margin-bottom: 1rem;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--gray-lightest);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+    transition: width 0.3s;
+}
+
+.campaign-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-weight: 700;
+    color: var(--dark);
+    font-size: 1rem;
+}
+
+.stat-label {
+    font-size: 0.8125rem;
+    color: var(--gray);
+}
+
+.campaign-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gray-lightest);
+}
+
+.btn-sm {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: var(--white);
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+@media (max-width: 968px) {
+    .campaign-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .campaign-sidebar {
+        position: relative;
+        top: 0;
+    }
+}
+
+/* Filter & Search Styles */
+.filters-section {
+    margin-top: -30px;
+    padding-bottom: 30px;
+}
+
+.filters-wrapper {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    border: 1px solid var(--gray-lightest);
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.875rem 1rem 0.875rem 2.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--gray-lighter);
+    outline: none;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.search-box input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.search-box i {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    color: var(--gray);
+}
+
+.filter-select {
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--gray-lighter);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--gray-lightest);
+    color: var(--dark);
+}
+
+.filter-select:hover {
+    border-color: var(--primary);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--white);
+}
+
+@media (max-width: 768px) {
+    .filters-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+}
