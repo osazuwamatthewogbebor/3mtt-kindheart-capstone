@@ -10,8 +10,31 @@ if (loginForm) {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
         btn.disabled = true;
         
-        const email = document.getElementById('email').value;
+        const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
+        
+        // Validate email format
+        if (!isValidEmail(email)) {
+            showToast('Please enter a valid email address', 'error');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            return;
+        }
+        
+        // Validate password is not empty
+        if (!password || password.length === 0) {
+            showToast('Please enter your password', 'error');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            return;
+        }
+        
+        if (password.length > 500) {
+            showToast('Password is too long', 'error');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            return;
+        }
         
         try {
             const response = await fetch(API.LOGIN, {
@@ -22,9 +45,11 @@ if (loginForm) {
                 body: JSON.stringify({ email, password })
             });
             
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const data = await response.json();
-
-            console.log(data)
             
             if (data.success) {
                 const requiresVerification =
@@ -45,7 +70,6 @@ if (loginForm) {
                 localStorage.setItem('token', data.accessToken);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 
-                // Show success message
                 showToast('Login successful!', 'success');
                 
                 // Redirect based on role
@@ -67,11 +91,17 @@ if (loginForm) {
                     return;
                 }
 
-                showToast(data.message || 'Login failed. Please try again.', 'error');
+                showToast(data.message || 'Login failed. Please check your credentials.', 'error');
             }
         } catch (error) {
             console.error('Login error:', error);
-            showToast('An error occurred. Please try again.', 'error');
+            if (error.message.includes('HTTP error')) {
+                showToast('Server error. Please try again later.', 'error');
+            } else if (error instanceof TypeError) {
+                showToast('Network error. Please check your connection.', 'error');
+            } else {
+                showToast('An error occurred. Please try again.', 'error');
+            }
         } finally {
             btn.innerHTML = originalText;
             btn.disabled = false;
@@ -81,6 +111,7 @@ if (loginForm) {
 
 // Register Form Handler
 const registerForm = document.getElementById('registerForm');
+
 if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -88,26 +119,36 @@ if (registerForm) {
         const btn = document.getElementById('registerBtn');
         const originalText = btn.innerHTML;
         
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         
-        // Validate passwords match
-        if (password !== confirmPassword) {
-            showToast('Passwords do not match!', 'warning');
-            return;
-        }
-
-        // Validate password strength
-        if (!isPasswordValid(password)) {
-            showToast('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 6 characters long.', 'warning');
+        // Validate name
+        if (!isValidName(name)) {
+            showToast('Please enter a valid name (2-100 characters, letters and spaces only)', 'error');
             return;
         }
         
-        // Validate password length
-        if (password.length < 6) {
-            showToast('Password must be at least 6 characters long!', 'warning');
+        // Validate email format
+        if (!isValidEmail(email)) {
+            showToast('Please enter a valid email address', 'error');
+            return;
+        }
+        
+        // Validate passwords match
+        if (password !== confirmPassword) {
+            showToast('Passwords do not match!', 'error');
+            return;
+        }
+
+        // Validate password strength (minimum 8 chars with uppercase, lowercase, number, special char)
+        if (password.length < 8) {
+            showToast('Password must be at least 8 characters long!', 'error');
+            return;
+        }
+        if (!isPasswordValid(password)) {
+            showToast('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.', 'error');
             return;
         }
         
@@ -123,6 +164,10 @@ if (registerForm) {
                 body: JSON.stringify({ name, email, password })
             });
             
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const data = await response.json();
             
             if (data.success) {
@@ -133,25 +178,29 @@ if (registerForm) {
                     data.user?.verified === false ||
                     data.user?.emailVerified === false;
 
-                // New accounts should not be logged in until verification is complete.
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
 
                 if (requiresVerification) {
-                    showToast('Account created. Check your email and verify your account before logging in.', 'warning');
+                    showToast('Account created. Check your email and verify your account before logging in.', 'success');
                     window.location.href = 'login.html?verification=required';
                     return;
                 }
 
-                // Fallback for unexpected backend payloads that do not explicitly flag verification.
-                showToast('Account created. Please verify your email before logging in.', 'warning');
+                showToast('Account created. Please verify your email before logging in.', 'success');
                 window.location.href = 'login.html?verification=required';
             } else {
                 showToast(data.message || 'Registration failed. Please try again.', 'error');
             }
         } catch (error) {
             console.error('Registration error:', error);
-            showToast('An error occurred. Please try again.', 'error');
+            if (error.message.includes('HTTP error')) {
+                showToast('Server error. Please try again later.', 'error');
+            } else if (error instanceof TypeError) {
+                showToast('Network error. Please check your connection.', 'error');
+            } else {
+                showToast('An error occurred. Please try again.', 'error');
+            }
         } finally {
             btn.innerHTML = originalText;
             btn.disabled = false;
@@ -167,10 +216,16 @@ if (forgotPasswordForm) {
         
         const btn = document.getElementById('forgotBtn');
         const originalText = btn.innerHTML;
+        const email = document.getElementById('email').value.trim();
+        
+        // Validate email format
+        if (!isValidEmail(email)) {
+            showToast('Please enter a valid email address', 'error');
+            return;
+        }
+        
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
         btn.disabled = true;
-        
-        const email = document.getElementById('email').value;
         
         try {
             const response = await fetch(API.FORGOT_PASSWORD, {
@@ -180,6 +235,10 @@ if (forgotPasswordForm) {
                 },
                 body: JSON.stringify({ email })
             });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             
             const data = await response.json();
             
@@ -191,7 +250,13 @@ if (forgotPasswordForm) {
             }
         } catch (error) {
             console.error('Forgot password error:', error);
-            showToast('An error occurred. Please try again.', 'error');
+            if (error.message.includes('HTTP error')) {
+                showToast('Server error. Please try again later.', 'error');
+            } else if (error instanceof TypeError) {
+                showToast('Network error. Please check your connection.', 'error');
+            } else {
+                showToast('An error occurred. Please try again.', 'error');
+            }
         } finally {
             btn.innerHTML = originalText;
             btn.disabled = false;
@@ -211,8 +276,9 @@ async function resendVerificationEmail() {
     const resendButton = document.getElementById('resendVerificationBtn');
     const email = emailInput ? emailInput.value.trim() : '';
 
-    if (!email) {
-        showToast('Enter your email first, then resend the verification email.', 'warning');
+    // Validate email format
+    if (!isValidEmail(email)) {
+        showToast('Please enter a valid email address', 'error');
         if (emailInput) emailInput.focus();
         return;
     }
@@ -233,6 +299,10 @@ async function resendVerificationEmail() {
             body: JSON.stringify({ email })
         });
 
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
 
         if (response.ok && data.success !== false) {
@@ -252,48 +322,31 @@ async function resendVerificationEmail() {
     }
 }
 
-// Check if user is already logged in
-// Password strength validation
-const PASSWORD_PATTERN = {
-    uppercase: /[A-Z]/,
-    lowercase: /[a-z]/,
-    number: /[0-9]/,
-    special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
-    minLength: 6
-};
 
-function validatePasswordStrength(password) {
-    return {
-        uppercase: PASSWORD_PATTERN.uppercase.test(password),
-        lowercase: PASSWORD_PATTERN.lowercase.test(password),
-        number: PASSWORD_PATTERN.number.test(password),
-        special: PASSWORD_PATTERN.special.test(password),
-        length: password.length >= PASSWORD_PATTERN.minLength
+// Password requirements update function (works with config.js validation utils)
+function updatePasswordRequirements(password) {
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    const hasLength = password.length >= 8;
+    
+    // Update requirement UI elements if they exist
+    const reqs = {
+        'req-upper': hasUpper,
+        'req-lower': hasLower,
+        'req-number': hasNumber,
+        'req-special': hasSpecial,
+        'req-length': hasLength
     };
-}
-
-function isPasswordValid(password) {
-    const validation = validatePasswordStrength(password);
-    return validation.uppercase && validation.lowercase && validation.number && validation.special && validation.length;
-}
-
-function updatePasswordRequirements(passwordInputId, requirementsPrefix = '') {
-    const passwordInput = document.getElementById(passwordInputId);
-    if (!passwordInput) return;
-
-    const validation = validatePasswordStrength(passwordInput.value);
     
-    const requirements = ['upper', 'lower', 'number', 'special', 'length'];
-    const validationKeys = ['uppercase', 'lowercase', 'number', 'special', 'length'];
-    
-    requirements.forEach((req, index) => {
-        const reqId = requirementsPrefix ? `req-${req}-${requirementsPrefix}` : `req-${req}`;
-        const reqElement = document.getElementById(reqId);
-        if (reqElement) {
-            if (validationKeys[index] && validation[validationKeys[index]]) {
-                reqElement.classList.add('met');
+    Object.entries(reqs).forEach(([id, met]) => {
+        const element = document.getElementById(id);
+        if (element) {
+            if (met) {
+                element.classList.add('met');
             } else {
-                reqElement.classList.remove('met');
+                element.classList.remove('met');
             }
         }
     });
@@ -323,15 +376,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Registration page - attach password validation
+    // Registration page - attach password validation listener
     const registerPasswordInput = document.getElementById('password');
     if (registerPasswordInput) {
-        registerPasswordInput.addEventListener('input', () => updatePasswordRequirements('password'));
+        registerPasswordInput.addEventListener('input', () => {
+            updatePasswordRequirements(registerPasswordInput.value);
+        });
     }
 
-    // Profile password change page - attach password validation
+    // Profile password change page - attach password validation listener
     const profilePasswordInput = document.getElementById('newPassword');
     if (profilePasswordInput) {
-        profilePasswordInput.addEventListener('input', () => updatePasswordRequirements('newPassword', 'profile'));
+        profilePasswordInput.addEventListener('input', () => {
+            updatePasswordRequirements(profilePasswordInput.value);
+        });
     }
 });

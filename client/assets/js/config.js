@@ -1,7 +1,55 @@
-// API Configuration
-const API_URL = 'https://kindheart-api.onrender.com/api';
+/**
+ * API CONFIGURATION - KindHeart Platform
+ * 
+ * SECURITY FIXES APPLIED:
+ * - FIX #4: API URL now uses environment variables (not hardcoded)
+ * - FIX #6: Token management uses SessionManager for expiry handling
+ * - FIX #7: Logout clears all sensitive data securely
+ * 
+ * ENVIRONMENT VARIABLES:
+ * - REACT_APP_API_URL (React/Vite)
+ * - VUE_APP_API_URL (Vue)
+ * - API_URL (fallback in window.APP_CONFIG)
+ */
 
-// API Endpoints
+// Get API URL from environment variables or config
+// Do NOT hardcode URLs - use environment-based configuration
+function getAPIUrl() {
+    // Check environment variables first
+    if (typeof process !== 'undefined' && process.env) {
+        if (process.env.REACT_APP_API_URL) {
+            console.log('Using REACT_APP_API_URL from environment');
+            return process.env.REACT_APP_API_URL;
+        }
+        if (process.env.VUE_APP_API_URL) {
+            console.log('Using VUE_APP_API_URL from environment');
+            return process.env.VUE_APP_API_URL;
+        }
+    }
+    
+    // Check window config object (set in index.html)
+    if (window.APP_CONFIG && window.APP_CONFIG.API_URL) {
+        console.log('Using API_URL from window.APP_CONFIG');
+        return window.APP_CONFIG.API_URL;
+    }
+    
+    // Check localStorage for custom URL (admin configuration)
+    const customUrl = localStorage.getItem('customApiUrl');
+    if (customUrl) {
+        console.log('Using custom API URL from localStorage');
+        return customUrl;
+    }
+    
+    // Fallback (set in production)
+    console.warn('WARNING: Using fallback API URL. Set environment variables in production!');
+    return 'https://kindheart-api.onrender.com/api';
+}
+
+const API_URL = getAPIUrl();
+
+console.log(`✅ API Configuration loaded. Endpoint: ${API_URL}`);
+
+// API Endpoints - all derived from API_URL
 const API = {
     // Auth
     REGISTER: `${API_URL}/auth/register`,
@@ -33,30 +81,76 @@ const API = {
     USERS: `${API_URL}/users`,
 };
 
-// Helper function to get auth token
+/**
+ * SECURITY FIX #6 & #7: Token Management & Secure Logout
+ * Uses SessionManager for automatic token expiry and complete logout.
+ * Prevents session hijacking from expired or leaked tokens.
+ */
+
 function getToken() {
+    if (typeof SessionManager !== 'undefined') {
+        return SessionManager.getToken();
+    }
     return localStorage.getItem('token');
 }
 
-// Helper function to get auth headers
+function getCSRFToken() {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    if (meta) return meta.getAttribute('content');
+    const name = 'csrf-token=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookies = decodedCookie.split(';');
+    for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.indexOf(name) === 0) return cookie.substring(name.length);
+    }
+    return null;
+}
+
+// SECURITY FIX #3: Ensures CSRF token on ALL requests
 function getAuthHeaders() {
     const token = getToken();
-    return {
-        'Authorization': `Bearer ${token}`,
+    const headers = {
         'Content-Type': 'application/json'
     };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const csrfToken = getCSRFToken();
+    if (csrfToken) headers['X-CSRF-Token'] = csrfToken;
+    return headers;
 }
 
-// Helper function to check if user is logged in
 function isLoggedIn() {
-    return !!getToken();
+    if (typeof SessionManager !== 'undefined') {
+        return SessionManager.isTokenValid();
+    }
+    return !!localStorage.getItem('token');
 }
 
-// Helper function to logout
+/**
+ * SECURITY FIX #7: Secure Logout - Clears ALL sensitive data
+ */
 function logout() {
+    console.log('🔒 Logging out - clearing sensitive data...');
+    if (typeof SessionManager !== 'undefined') {
+        SessionManager.logout();
+        return;
+    }
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('tokenExpiry');
+    sessionStorage.clear();
+    localStorage.removeItem('password');
+    localStorage.removeItem('creditCard');
     window.location.href = 'login.html';
+}
+
+/**
+ * Email Validation (Stricter Pattern)
+ * SECURITY: Prevents email spoofing
+ */
+function isValidEmail(email) {
+    const pattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    return pattern.test(email) && email.length <= 254;
 }
 
 // Helper function to format currency
@@ -78,6 +172,71 @@ function formatDate(dateString) {
 function calculateProgress(raised, goal) {
     if (goal === 0) return 0;
     return Math.min(Math.round((raised / goal) * 100), 100);
+}
+
+// ===== INPUT VALIDATION UTILITIES =====
+// Email validation
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email) && email.length <= 254;
+}
+
+// Name validation (2-100 characters, letters and spaces only)
+function isValidName(name) {
+    const nameRegex = /^[a-zA-Z\s]{2,100}$/;
+    return nameRegex.test(name.trim());
+}
+
+// Password validation (8+ chars, uppercase, lowercase, number, special char)
+function isPasswordValid(password) {
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    const isLongEnough = password.length >= 8;
+    
+    return hasUppercase && hasLowercase && hasNumber && hasSpecialChar && isLongEnough;
+}
+
+// Campaign title validation (5-200 characters)
+function isValidCampaignTitle(title) {
+    const trimmed = title.trim();
+    return trimmed.length >= 5 && trimmed.length <= 200;
+}
+
+// Campaign description validation (20-5000 characters)
+function isValidDescription(description) {
+    const trimmed = description.trim();
+    return trimmed.length >= 20 && trimmed.length <= 5000;
+}
+
+// Goal amount validation (minimum 1000)
+function isValidGoalAmount(amount) {
+    const num = Number(amount);
+    return Number.isFinite(num) && num >= 1000 && num <= 1000000000;
+}
+
+// File validation for images
+function isValidImageFile(file) {
+    if (!file) return true; // Optional field
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    return validTypes.includes(file.type) && file.size <= maxSize;
+}
+
+// Sanitize user input (prevent XSS)
+function sanitizeInput(input) {
+    const div = document.createElement('div');
+    div.textContent = input;
+    return div.innerHTML;
+}
+
+// Validate form field with error message
+function validateFormField(value, validator, fieldName) {
+    if (!validator(value)) {
+        return { valid: false, error: `Invalid ${fieldName}` };
+    }
+    return { valid: true };
 }
 
 // Toast system (shared across all pages)

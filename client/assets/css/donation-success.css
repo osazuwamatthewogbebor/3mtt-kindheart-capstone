@@ -1,0 +1,341 @@
+/* Donation Success Styles */
+
+.success-section {
+    padding: 4rem 0;
+    background: var(--gray-lightest);
+    min-height: 90vh;
+}
+
+.success-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Success Icon */
+.success-icon {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.success-icon-circle {
+    width: 100px;
+    height: 100px;
+    background: var(--secondary-container);
+    color: var(--secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 3rem;
+}
+
+/* Success Message */
+.success-message h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.success-message p {
+    font-size: 1.1rem;
+    text-align: center;
+    color: var(--gray);
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+/* Donation Summary Card */
+.donation-summary-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
+}
+
+.donation-summary-card h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.summary-item {
+    text-align: left;
+}
+
+.summary-label {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.summary-amount {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.summary-date {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.campaign-info {
+    padding: 1rem;
+    background: var(--gray-lightest);
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+}
+
+.campaign-info p {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    margin: 0;
+}
+
+.campaign-info .title {
+    font-weight: 700;
+    color: var(--dark);
+    margin-top: 0.5rem;
+}
+
+/* Anonymous Checkbox */
+.anonymous-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.anonymous-option input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+}
+
+.anonymous-option label {
+    cursor: pointer;
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Impact Milestone */
+.impact-milestone {
+    background: var(--primary-container);
+    color: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+}
+
+.milestone-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.milestone-header i {
+    font-size: 1.5rem;
+}
+
+.milestone-header h3 {
+    font-weight: 700;
+    margin: 0;
+}
+
+.milestone-text {
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Words of Support Form */
+.support-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
+}
+
+.support-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+}
+
+.support-description {
+    color: var(--gray);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+.support-form textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--gray-lighter);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-family: inherit;
+    resize: none;
+    margin-bottom: 1rem;
+    transition: all 0.3s;
+}
+
+.support-form textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.support-submit {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--primary);
+    color: var(--white);
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.support-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* Share Section */
+.share-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
+}
+
+.share-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+}
+
+.share-description {
+    color: var(--gray);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+}
+
+.share-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.share-button {
+    padding: 1rem;
+    color: var(--white);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.share-button i {
+    margin-right: 0.5rem;
+}
+
+.share-button:hover {
+    transform: translateY(-2px);
+}
+
+.share-facebook {
+    background: #3b5998;
+}
+
+.share-twitter {
+    background: #1DA1F2;
+}
+
+.share-whatsapp {
+    background: #25D366;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.action-button {
+    padding: 1rem;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-weight: 700;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-button i {
+    margin-right: 0.5rem;
+}
+
+.action-button.primary {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.action-button.secondary {
+    background: var(--secondary-container);
+    color: var(--dark);
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+}
+
+/* Info Section */
+.info-section {
+    background: var(--dark);
+    color: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    margin-top: 2rem;
+}
+
+.info-section p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.info-section strong {
+    font-weight: 700;
+}

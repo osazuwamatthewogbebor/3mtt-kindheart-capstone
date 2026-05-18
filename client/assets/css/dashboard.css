@@ -627,6 +627,57 @@ body {
   100% { transform: rotate(360deg); }
 }
 
+/* INLINE STYLE EXTRACTIONS - Dashboard */
+.sidebar-header.no-border {
+  padding: 2rem !important;
+  border-bottom: none !important;
+}
+
+.logo-icon.icon-custom {
+  width: 45px !important;
+  height: 45px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 12px !important;
+}
+
+.logo-text.text-custom {
+  font-weight: 800 !important;
+  font-size: 1.5rem !important;
+  color: var(--dark) !important;
+}
+
+.stat-card.card-custom {
+  background: var(--white) !important;
+  border: none !important;
+  box-shadow: var(--shadow-xl) !important;
+  border-radius: var(--radius-xl) !important;
+  padding: 2rem !important;
+}
+
+.stat-icon.icon-bg-custom {
+  background: rgba(16, 185, 129, 0.1) !important;
+  color: var(--primary) !important;
+  padding: 1rem !important;
+  border-radius: 12px !important;
+}
+
+.stat-icon i.icon-size-custom {
+  font-size: 1.5rem !important;
+}
+
+.stat-value.value-custom {
+  font-size: 2.25rem !important;
+  font-weight: 800 !important;
+  margin-top: 1rem !important;
+}
+
+.stat-label.label-custom {
+  color: var(--gray) !important;
+  font-weight: 500 !important;
+}
+
 /* RESPONSIVE */
 @media (max-width: 1024px) {
   .main-grid {

@@ -16,11 +16,11 @@
 <!-- SIDEBAR -->
 <div id="sidebar" class="sidebar">
 
-  <div class="sidebar-header" style="padding: 2rem; border-bottom: none;">
-    <div class="logo-icon" style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
+  <div class="sidebar-header no-border">
+    <div class="logo-icon icon-custom">
       <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32">
     </div>
-    <div class="logo-text" style="font-weight: 800; font-size: 1.5rem; color: var(--dark);">KindHeart</div>
+    <div class="logo-text text-custom">KindHeart</div>
   </div>
 
   <div class="menu">
@@ -68,7 +68,7 @@
   <!-- TOP BAR -->
   <div class="topbar">
     <div class="topbar-left">
-      <button class="menu-toggle" onclick="toggleSidebar()">
+      <button class="menu-toggle" onclick="toggleSidebar()" title="Toggle sidebar menu" aria-label="Toggle sidebar menu">
         <i class="fa fa-bars"></i>
       </button>
       <h1 class="topbar-title">Welcome, <span id="username">Loading...</span></h1>
@@ -103,18 +103,18 @@
     <!-- STATS -->
     <div class="stats-grid">
 
-      <div class="stat-card donations" style="background: var(--white); border: none; box-shadow: var(--shadow-xl); border-radius: var(--radius-xl); padding: 2rem;">
+      <div class="stat-card donations card-custom">
         <div class="stat-header">
-          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--primary); padding: 1rem; border-radius: 12px;">
-            <i class="fa fa-money-bill" style="font-size: 1.5rem;"></i>
+          <div class="stat-icon icon-bg-custom">
+            <i class="fa fa-money-bill icon-size-custom"></i>
           </div>
           <div class="stat-trend up">
             <i class="fa fa-arrow-up"></i>
             12.5%
           </div>
         </div>
-        <div class="stat-value" id="donations" style="font-size: 2.25rem; font-weight: 800; margin-top: 1rem;">₦0</div>
-        <div class="stat-label" style="color: var(--gray); font-weight: 500;">Total Donations</div>
+        <div class="stat-value value-custom" id="donations">₦0</div>
+        <div class="stat-label label-custom">Total Donations</div>
       </div>
 
       <div class="stat-card campaigns">
@@ -214,123 +214,7 @@
 </div>
 
 <script src="../assets/js/config.js"></script>
-<script>
-
-// const API = "http://localhost:3000/api";
-
-// ================= SIDEBAR =================
-function toggleSidebar() {
-  let sidebar = document.getElementById("sidebar");
-  let main = document.getElementById("main");
-
-  sidebar.classList.toggle("collapsed");
-  main.classList.toggle("full");
-}
-
-// ================= LOAD USER =================
-async function loadUser() {
-  if (!isLoggedIn()) {
-    window.location.href = "login.html";
-    return;
-  }
-
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (user && user.role !== 'ADMIN') {
-    window.location.href = "my-campaigns.html";
-    return;
-  }
-
-  try {
-    const res = await fetch(API.ME, {
-      headers: getAuthHeaders()
-    });
-
-    const result = await res.json();
-    const data = result.data || result; // Fallback to result if data is missing
-
-    if (!result.success && !data.id) throw new Error();
-
-    const displayName = data.name || data.username || "Admin";
-    document.getElementById("username").innerText = displayName;
-    document.getElementById("username2").innerText = displayName;
-
-  } catch (err) {
-    console.error("Dashboard auth error:", err);
-    // Only logout if it's a 401/auth issue, otherwise show fallback
-    const userLocal = JSON.parse(localStorage.getItem('user'));
-    if (userLocal) {
-        document.getElementById("username").innerText = userLocal.name;
-        document.getElementById("username2").innerText = userLocal.name;
-    } else {
-        logout();
-    }
-  }
-}
-
-// ================= LOAD STATS =================
-async function loadStats() {
-  try {
-    const res = await fetch(API.ADMIN_STATS);
-    const result = await res.json();
-    const data = result.data || result; // Support both structures
-
-    document.getElementById("donations").innerText = formatCurrency(data.donations || data.totalDonations || 0);
-    document.getElementById("campaigns").innerText = data.campaigns || data.totalCampaigns || 0;
-    document.getElementById("users").innerText = data.users || data.totalUsers || 0;
-    document.getElementById("withdrawals").innerText = formatCurrency(data.withdrawals || data.totalWithdrawals || 0);
-
-  } catch (err) {
-    console.log("Stats API error:", err);
-  }
-}
-
-// ================= LOAD CAMPAIGNS =================
-async function loadCampaigns() {
-  try {
-    const res = await fetch(API.CAMPAIGNS);
-    const result = await res.json();
-    const data = result.data || result.campaigns;
-
-    let box = document.getElementById("campaignList");
-    box.innerHTML = "";
-
-    data.forEach(c => {
-      const percentage = calculateProgress(c.amountRaised || c.raised, c.goalAmount || c.goal);
-      
-      box.innerHTML += `
-        <div class="campaign-item">
-          <div class="campaign-title">${c.title}</div>
-          <div class="campaign-progress">
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: ${percentage}%"></div>
-            </div>
-            <div class="campaign-amount">
-              <span class="amount-raised">${formatCurrency(c.amountRaised || c.raised)} raised</span>
-              <span class="amount-goal">of ${formatCurrency(c.goalAmount || c.goal)}</span>
-            </div>
-          </div>
-        </div>
-      `;
-    });
-
-  } catch (err) {
-    document.getElementById("campaignList").innerHTML = `
-      <div class="empty-state">
-        <i class="fa fa-inbox"></i>
-        No campaigns found
-      </div>
-    `;
-  }
-}
-
-// Logout is already defined in config.js
-
-// ================= INIT =================
-loadUser();
-loadStats();
-loadCampaigns();
-
-</script>
+<script src="../assets/js/dashboard.js"></script>
 
 </body>
 </html>
