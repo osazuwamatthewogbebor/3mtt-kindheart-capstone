@@ -83,7 +83,7 @@
     <main class="main-canvas">
         <!-- Header Section -->
         <header class="header-section">
-            <h2 class="header-title">Welcome, <span id="username" class="theme-accent">Loading...</span></h2>
+            <h2 class="header-title" id="pageHeaderTitle">Welcome, <span id="username" class="theme-accent">Loading...</span></h2>
             <p class="header-subtitle" id="headerSubtitle">
                 Curating the narratives that drive change. Manage your editorial queue and monitor the heartbeat of collective empathy.
             </p>
@@ -538,31 +538,32 @@
         if (activeSection) activeSection.classList.add('active');
 
         // Update Headers & Load corresponding View Data
-        const headerTitle = document.getElementById('username').parentNode;
+        const pageHeaderTitle = document.getElementById('pageHeaderTitle');
         const subtitle = document.getElementById('headerSubtitle');
 
         if (tabName === 'overview') {
-            headerTitle.innerHTML = `Welcome, <span id="username" class="theme-accent">Admin</span>`;
+            const displayName = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).name : 'Admin';
+            pageHeaderTitle.innerHTML = `Welcome, <span id="username" class="theme-accent">${displayName}</span>`;
             subtitle.innerText = "Curating the narratives that drive change. Manage your editorial queue and monitor the heartbeat of collective empathy.";
             loadUser(); // Load dynamic profile details
             loadStats(); // Load overall dashboard overview cards
             loadCampaignsOverview(); // Load the overview campaign cards queue
         } else if (tabName === 'campaigns') {
-            headerTitle.innerHTML = `Campaign Database`;
+            pageHeaderTitle.innerText = `Campaign Database`;
             subtitle.innerText = "Search, filter, edit, and moderate all stories published across the KindHeart platform.";
             campaignPage = 1;
             loadAdminCampaigns();
         } else if (tabName === 'users') {
-            headerTitle.innerHTML = `User Management Suite`;
+            pageHeaderTitle.innerText = `User Management Suite`;
             subtitle.innerText = "Monitor registered accounts, audit user profiles, promote roles, and toggle access suspension.";
             donorPage = 1;
             loadAdminUsers();
         } else if (tabName === 'reports') {
-            headerTitle.innerHTML = `Financial & Impact Analytics`;
+            pageHeaderTitle.innerText = `Financial & Impact Analytics`;
             subtitle.innerText = "Audit transaction processing queues, allocation dispersals, and crowdfunding performance.";
             loadImpactReports();
         } else if (tabName === 'verifications') {
-            headerTitle.innerHTML = `Verification Panel`;
+            pageHeaderTitle.innerText = `Verification Panel`;
             subtitle.innerText = "Approve or reject pending campaign pitches to ensure high editorial excellence and platform safety.";
             loadVerificationQueue();
         }
