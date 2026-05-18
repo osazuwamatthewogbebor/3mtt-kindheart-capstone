@@ -66,6 +66,7 @@ export const getUsers = async (req, res, next) => {
 				name: true,
 				email: true,
 				role: true,
+				isVerified: true,
 				createdAt: true,
 			},
 			orderBy: {
@@ -264,3 +265,124 @@ export const bulkUpdateCampaignStatus = async (req, res, next) => {
 		next(error);
 	}
 };
+
+export const updateUserVerification = async (req, res, next) => {
+	try {
+		const id = req.params.id?.trim();
+		const { isVerified } = req.body;
+
+		if (!id) {
+			const error = new Error('User ID is required');
+			error.statusCode = 400;
+			throw error;
+		}
+
+		if (typeof isVerified !== 'boolean') {
+			const error = new Error('isVerified status must be a boolean value');
+			error.statusCode = 400;
+			throw error;
+		}
+
+		const user = await prisma.user.findUnique({
+			where: { id },
+			select: { id: true, name: true, email: true }
+		});
+
+		if (!user) {
+			const error = new Error('User not found');
+			error.statusCode = 404;
+			throw error;
+		}
+
+		const updatedUser = await prisma.user.update({
+			where: { id },
+			data: { isVerified },
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				role: true,
+				isVerified: true,
+				createdAt: true
+			}
+		});
+
+		// Log the action
+		await logAdminAction(
+			req.user.id,
+			`USER_VERIFICATION_${isVerified ? 'VERIFIED' : 'UNVERIFIED'}`,
+			'User',
+			id,
+			{ userName: user.name, userEmail: user.email }
+		);
+
+		res.status(200).json({
+			success: true,
+			message: `User access updated successfully. Verification status: ${isVerified}`,
+			data: updatedUser
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const updateUserRole = async (req, res, next) => {
+	try {
+		const id = req.params.id?.trim();
+		const { role } = req.body;
+
+		if (!id) {
+			const error = new Error('User ID is required');
+			error.statusCode = 400;
+			throw error;
+		}
+
+		if (!['USER', 'ADMIN'].includes(role)) {
+			const error = new Error('Role must be USER or ADMIN');
+			error.statusCode = 400;
+			throw error;
+		}
+
+		const user = await prisma.user.findUnique({
+			where: { id },
+			select: { id: true, name: true, email: true }
+		});
+
+		if (!user) {
+			const error = new Error('User not found');
+			error.statusCode = 404;
+			throw error;
+		}
+
+		const updatedUser = await prisma.user.update({
+			where: { id },
+			data: { role },
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				role: true,
+				isVerified: true,
+				createdAt: true
+			}
+		});
+
+		// Log the action
+		await logAdminAction(
+			req.user.id,
+			`USER_ROLE_UPDATE_${role}`,
+			'User',
+			id,
+			{ userName: user.name, userEmail: user.email }
+		);
+
+		res.status(200).json({
+			success: true,
+			message: `User role successfully updated to ${role}`,
+			data: updatedUser
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+

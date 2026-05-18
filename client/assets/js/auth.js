@@ -42,6 +42,10 @@ if (loginForm) {
                 }
             } else {
                 alert(data.message || 'Login failed. Please try again.');
+                if (data.message && (data.message.toLowerCase().includes('verify') || data.message.toLowerCase().includes('verification'))) {
+                    const resendContainer = document.getElementById('resendVerificationContainer');
+                    if (resendContainer) resendContainer.style.display = 'block';
+                }
             }
         } catch (error) {
             console.error('Login error:', error);
@@ -159,8 +163,47 @@ if (forgotPasswordForm) {
 // Google Login Placeholder
 function googleLogin() {
     alert('Google Login is being integrated. Please use the email login for now.');
-    // In a real implementation, you would use Firebase Auth or another Google OAuth library here
-    // Example: auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+}
+
+// Resend Verification Email Link Handler
+async function resendVerificationEmail() {
+    const emailInput = document.getElementById('email');
+    if (!emailInput || !emailInput.value.trim()) {
+        alert('Please enter your email address to resend the verification link.');
+        return;
+    }
+
+    const email = emailInput.value.trim();
+    const btn = document.getElementById('resendVerificationBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resending...';
+    btn.disabled = true;
+
+    try {
+        const response = await fetch(API.RESEND_VERIFICATION, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('Verification email has been resent successfully. Please check your inbox!');
+            const resendContainer = document.getElementById('resendVerificationContainer');
+            if (resendContainer) resendContainer.style.display = 'none';
+        } else {
+            alert(data.message || 'Failed to resend verification email. Please try again.');
+        }
+    } catch (error) {
+        console.error('Resend verification error:', error);
+        alert('An error occurred while resending the verification email. Please check your network connection.');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
 }
 
 // Check if user is already logged in
