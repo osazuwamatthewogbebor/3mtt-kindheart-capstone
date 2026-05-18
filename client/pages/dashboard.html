@@ -1,336 +1,1347 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KindHeart Dashboard</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
-<link rel="stylesheet" href="../assets/css/dashboard.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KindHeart Admin Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
 </head>
-
 <body>
 
-<!-- SIDEBAR -->
-<div id="sidebar" class="sidebar">
+    <!-- SIDEBAR PANEL -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-section">
+                <div class="logo-icon-wrap">
+                    <span class="material-symbols-outlined">auto_stories</span>
+                </div>
+                <div class="logo-info">
+                    <h1>Admin Portal</h1>
+                    <p>Editorial Oversight</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <!-- Tab switching links -->
+                <a class="nav-link active" href="#" id="nav-overview" onclick="switchTab('overview'); return false;">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span>Overview</span>
+                </a>
+                <a class="nav-link" href="#" id="nav-campaigns" onclick="switchTab('campaigns'); return false;">
+                    <span class="material-symbols-outlined">auto_stories</span>
+                    <span>Campaigns</span>
+                </a>
+                <a class="nav-link" href="#" id="nav-users" onclick="switchTab('users'); return false;">
+                    <span class="material-symbols-outlined">manage_accounts</span>
+                    <span>Users</span>
+                </a>
+                <a class="nav-link" href="#" id="nav-reports" onclick="switchTab('reports'); return false;">
+                    <span class="material-symbols-outlined">leaderboard</span>
+                    <span>Impact Reports</span>
+                </a>
+                <a class="nav-link" href="#" id="nav-verifications" onclick="switchTab('verifications'); return false;">
+                    <span class="material-symbols-outlined">verified_user</span>
+                    <span>Verification</span>
+                </a>
+                <a class="nav-link" href="profile.html">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            
+            <button class="btn-spotlight" onclick="window.location.href='create-campaign.html'">
+                <span class="material-symbols-outlined">add</span>
+                <span>New Spotlight</span>
+            </button>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a class="footer-link" href="#">
+                <span class="material-symbols-outlined">help_outline</span>
+                <span>Help Center</span>
+            </a>
+            <a class="footer-link" href="#" onclick="logout(); return false;">
+                <span class="material-symbols-outlined">logout</span>
+                <span>Log Out</span>
+            </a>
+            
+            <div class="profile-widget">
+                <img id="avatarImg" class="profile-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Admin Avatar">
+                <div class="profile-info">
+                    <p class="profile-name" id="username2">Loading...</p>
+                    <p class="profile-role">Chief Editor</p>
+                </div>
+            </div>
+        </div>
+    </aside>
 
-  <div class="sidebar-header" style="padding: 2rem; border-bottom: none;">
-    <div class="logo-icon" style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">
-      <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32">
+    <!-- MAIN CANVAS -->
+    <main class="main-canvas">
+        <!-- Header Section -->
+        <header class="header-section">
+            <h2 class="header-title" id="pageHeaderTitle">Welcome, <span id="username" class="theme-accent">Loading...</span></h2>
+            <p class="header-subtitle" id="headerSubtitle">
+                Curating the narratives that drive change. Manage your editorial queue and monitor the heartbeat of collective empathy.
+            </p>
+        </header>
+
+        <!-- ==========================================
+             TAB 1: OVERVIEW TAB CONTENT
+             ========================================== -->
+        <div id="tab-overview" class="tab-content active">
+            <!-- Stats Bento Grid -->
+            <div class="stats-grid">
+                <!-- Total Donations (Bento Double Card) -->
+                <div class="stat-card bento-double">
+                    <div>
+                        <p class="stat-card-title">Total Impact</p>
+                        <h3 class="stat-value" id="donations">₦0</h3>
+                    </div>
+                    <div class="donor-facepile-wrap">
+                        <div class="donor-facepile">
+                            <img class="donor-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100" alt="Donor 1">
+                            <img class="donor-avatar" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=100" alt="Donor 2">
+                            <img class="donor-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100" alt="Donor 3">
+                            <div class="donor-count-badge" id="donorCount">+12k</div>
+                        </div>
+                        <p class="donor-facepile-text">Active generous donors in system</p>
+                    </div>
+                    <div class="stat-card-glow"></div>
+                </div>
+
+                <!-- Active Campaigns -->
+                <div class="stat-card bento-single">
+                    <div>
+                        <p class="stat-card-title">Campaigns</p>
+                        <h3 class="stat-value" id="campaigns">0</h3>
+                    </div>
+                    <div class="stat-trend">
+                        <span class="material-symbols-outlined">trending_up</span>
+                        <span>+12% vs last week</span>
+                    </div>
+                </div>
+
+                <!-- Total Users -->
+                <div class="stat-card bento-single">
+                    <div>
+                        <p class="stat-card-title">Total Users</p>
+                        <h3 class="stat-value" id="users">0</h3>
+                    </div>
+                    <div class="stat-trend">
+                        <span class="material-symbols-outlined">trending_up</span>
+                        <span>+15% active</span>
+                    </div>
+                </div>
+
+                <!-- Verification Queue Card (Replaced withdrawals card) -->
+                <div class="stat-card bento-single" style="cursor: pointer;" onclick="switchTab('verifications')">
+                    <div>
+                        <p class="stat-card-title" style="color: var(--secondary);">Verification Queue</p>
+                        <h3 class="stat-value" id="verificationQueueStat">0</h3>
+                    </div>
+                    <div class="stat-attention-badge" id="verificationQueueStatBadge">Requires Attention</div>
+                </div>
+            </div>
+
+            <!-- Main Column Grid -->
+            <div class="layout-columns">
+                <!-- Review Queue Table -->
+                <section class="panel-section">
+                    <div class="panel-header">
+                        <h4 class="panel-title">Campaign Review Queue</h4>
+                        <button class="panel-link-btn" onclick="switchTab('campaigns')">
+                            <span>View All</span>
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="review-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Goal</th>
+                                    <th style="text-align: right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="campaignList">
+                                <tr>
+                                    <td colspan="4" class="table-loading">
+                                        <i class="fa fa-spinner"></i> Loading campaigns review queue...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Donor Activity Sidebar -->
+                <section class="panel-section">
+                    <h4 class="panel-title">Recent Activity</h4>
+                    
+                    <div class="activity-feed">
+                        <div class="activity-card activity-secondary">
+                            <div class="activity-flex">
+                                <img class="activity-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Elena Vance">
+                                <div class="activity-content">
+                                    <p>Elena Vance <span class="activity-normal">donated</span> ₦25,000</p>
+                                    <div class="activity-campaign-title">Ocean Cleanup Project</div>
+                                    <div class="activity-time-stamp">Just Now</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-card activity-tertiary">
+                            <div class="activity-flex">
+                                <div class="activity-icon-wrap">
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                </div>
+                                <div class="activity-content">
+                                    <p>New Campaign <span class="activity-normal">Verified</span></p>
+                                    <div class="activity-campaign-title" style="color: var(--stone-800);">Solar Power for Rural Schools has been approved by Editorial.</div>
+                                    <div class="activity-time-stamp">12 Minutes Ago</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-card activity-neutral">
+                            <div class="activity-flex">
+                                <img class="activity-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100" alt="David Miller">
+                                <div class="activity-content">
+                                    <p>David Miller <span class="activity-normal">reached a</span> Milestone</p>
+                                    <div class="activity-campaign-title" style="color: var(--stone-500); font-weight: 400;">Completed his 50th consecutive month of giving.</div>
+                                    <div class="activity-time-stamp">1 Hour Ago</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn-history">Show More History</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 2: CAMPAIGNS TAB CONTENT
+             ========================================== -->
+        <div id="tab-campaigns" class="tab-content">
+            <section class="panel-section">
+                <!-- Custom Filters / Search Toolbar -->
+                <div class="controls-row">
+                    <div class="search-wrapper">
+                        <i class="fa fa-search"></i>
+                        <input type="text" id="campaignSearch" placeholder="Search by campaign title or creator name..." onkeyup="filterCampaignsList()">
+                    </div>
+                    
+                    <select id="campaignCategorySelect" class="filter-dropdown" onchange="filterCampaignsList()">
+                        <option value="">All Categories</option>
+                        <option value="Health">Health</option>
+                        <option value="Education">Education</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Emergency">Emergency</option>
+                        <option value="Environment">Environment</option>
+                        <option value="Medical">Medical</option>
+                    </select>
+
+                    <select id="campaignStatusSelect" class="filter-dropdown" onchange="filterCampaignsList()">
+                        <option value="">All Statuses</option>
+                        <option value="PENDING">Pending Approval</option>
+                        <option value="APPROVED">Approved / Active</option>
+                        <option value="REJECTED">Rejected</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="review-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Goal</th>
+                                <th>Amount Raised</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="campaignsTabTableBody">
+                            <tr>
+                                <td colspan="6" class="table-loading">
+                                    <i class="fa fa-spinner"></i> Querying admin campaigns database...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Custom Pagination -->
+                <div class="pagination-row">
+                    <button class="btn-pagination" id="campaignPrevBtn" onclick="changeCampaignPage(-1)">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        <span>Previous</span>
+                    </button>
+                    <span class="pagination-info" id="campaignPageInfo">Page 1 of 1</span>
+                    <button class="btn-pagination" id="campaignNextBtn" onclick="changeCampaignPage(1)">
+                        <span>Next</span>
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==========================================
+             TAB 3: USER MANAGEMENT TAB CONTENT
+             ========================================== -->
+        <div id="tab-users" class="tab-content">
+            <!-- User Metrics Bento Stats Grid -->
+            <div class="stats-grid" style="margin-bottom: 2rem;">
+                <div class="stat-card bento-single" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.04) 0%, rgba(16, 185, 129, 0) 100%);">
+                    <div>
+                        <p class="stat-card-title">Total Accounts</p>
+                        <h3 class="stat-value" id="userStatsTotal">0</h3>
+                    </div>
+                    <div class="stat-trend" style="color: var(--primary);">
+                        <span class="material-symbols-outlined">group</span>
+                        <span>Platform Registered</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card bento-single" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.04) 0%, rgba(16, 185, 129, 0) 100%);">
+                    <div>
+                        <p class="stat-card-title" style="color: var(--primary);">Verified (Active)</p>
+                        <h3 class="stat-value" id="userStatsVerified" style="color: var(--primary);">0</h3>
+                    </div>
+                    <div class="stat-trend" style="color: var(--primary);">
+                        <span class="material-symbols-outlined">verified</span>
+                        <span>Full platform access</span>
+                    </div>
+                </div>
+
+                <div class="stat-card bento-single" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.04) 0%, rgba(239, 68, 68, 0) 100%);">
+                    <div>
+                        <p class="stat-card-title" style="color: var(--danger);">Suspended (Unverified)</p>
+                        <h3 class="stat-value" id="userStatsUnverified" style="color: var(--danger);">0</h3>
+                    </div>
+                    <div class="stat-trend" style="color: var(--danger);">
+                        <span class="material-symbols-outlined">block</span>
+                        <span>Access restricted</span>
+                    </div>
+                </div>
+            </div>
+
+            <section class="panel-section">
+                <!-- User Filters and Search -->
+                <div class="controls-row">
+                    <div class="search-wrapper" style="flex: 1;">
+                        <i class="fa fa-search"></i>
+                        <input type="text" id="userSearch" placeholder="Search users by name or email address..." onkeyup="filterUsersList()">
+                    </div>
+                    
+                    <select id="userRoleSelect" class="filter-dropdown" onchange="filterUsersList()">
+                        <option value="">All Account Roles</option>
+                        <option value="USER">Standard User</option>
+                        <option value="ADMIN">System Administrator</option>
+                    </select>
+
+                    <select id="userVerificationSelect" class="filter-dropdown" onchange="filterUsersList()">
+                        <option value="">All Access States</option>
+                        <option value="VERIFIED">Verified / Active</option>
+                        <option value="UNVERIFIED">Suspended / Unverified</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="review-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email Address</th>
+                                <th>Role</th>
+                                <th>Verification Status</th>
+                                <th>Registration Date</th>
+                                <th style="text-align: right; min-width: 200px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTabTableBody">
+                            <tr>
+                                <td colspan="6" class="table-loading">
+                                    <i class="fa fa-spinner"></i> Querying system user records...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination for Users -->
+                <div class="pagination-row">
+                    <button class="btn-pagination" id="userPrevBtn" onclick="changeUserPage(-1)">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        <span>Previous</span>
+                    </button>
+                    <span class="pagination-info" id="userPageInfo">Page 1 of 1</span>
+                    <button class="btn-pagination" id="userNextBtn" onclick="changeUserPage(1)">
+                        <span>Next</span>
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==========================================
+             TAB 4: IMPACT REPORTS TAB CONTENT
+             ========================================== -->
+        <div id="tab-reports" class="tab-content">
+            <!-- Detailed Financial / Impact Summary Cards -->
+            <div class="stats-grid">
+                <div class="stat-card bento-single">
+                    <div>
+                        <p class="stat-card-title">Processed Payments</p>
+                        <h3 class="stat-value" id="reportSuccessfulDonations">₦0</h3>
+                    </div>
+                </div>
+                <div class="stat-card bento-single">
+                    <div>
+                        <p class="stat-card-title">Completed Grants</p>
+                        <h3 class="stat-value" id="reportGrantDisbursements">₦0</h3>
+                    </div>
+                </div>
+                <div class="stat-card bento-single">
+                    <div>
+                        <p class="stat-card-title">Total Platform Campaigns</p>
+                        <h3 class="stat-value" id="reportCampaignCount">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <section class="panel-section" style="margin-top: 2rem;">
+                <div class="panel-header">
+                    <h4 class="panel-title">System Fund Distribution Logs</h4>
+                </div>
+                
+                <!-- Fund Distributions Table -->
+                <div class="table-container">
+                    <table class="review-table">
+                        <thead>
+                            <tr>
+                                <th>Fund Category</th>
+                                <th>Allocation Description</th>
+                                <th>Allocated Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="group">
+                                <td><span class="category-badge category-environment">Environment</span></td>
+                                <td>Andean Reforestation Grant - Seed Capital</td>
+                                <td>₦1,250,000</td>
+                                <td><strong style="color: var(--primary);">DISBURSED</strong></td>
+                            </tr>
+                            <tr class="group">
+                                <td><span class="category-badge category-education">Education</span></td>
+                                <td>Nairobi Tech Hub Learning Material procurement</td>
+                                <td>₦2,800,000</td>
+                                <td><strong style="color: var(--primary);">DISBURSED</strong></td>
+                            </tr>
+                            <tr class="group">
+                                <td><span class="category-badge category-medical">Medical</span></td>
+                                <td>Clinic Expansion Stage-1 Subscriptions</td>
+                                <td>₦842,100</td>
+                                <td><strong style="color: var(--primary);">DISBURSED</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==========================================
+             TAB 5: VERIFICATION QUEUE TAB CONTENT
+             ========================================== -->
+        <div id="tab-verifications" class="tab-content">
+            <section class="panel-section">
+                <!-- Large Verification Cards Grid -->
+                <div class="verification-grid" id="verificationCardsGrid">
+                    <div class="table-loading" style="grid-column: 1 / -1;">
+                        <i class="fa fa-spinner"></i> Querying pending campaigns verification queue...
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer-wrap">
+            <div class="footer-flex">
+                <div>
+                    <h5 class="footer-logo-title">KindHeart</h5>
+                    <p class="footer-copy">© 2026 KindHeart Editorial Crowdfunding. Built for Impact.</p>
+                </div>
+                <div class="footer-links-list">
+                    <a class="footer-link-item" href="#">Privacy Policy</a>
+                    <a class="footer-link-item" href="#">Terms of Service</a>
+                    <a class="footer-link-item" href="#">Editorial Guidelines</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- ==========================================
+         CAMPAIGN STATUS REJECTION MODAL OVERLAY
+         ========================================== -->
+    <div id="rejectionModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Reject Campaign</h3>
+                <button class="modal-close" onclick="closeRejectionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label for="rejectionReasonInput">Reason for Rejection</label>
+                <textarea id="rejectionReasonInput" class="modal-textarea" placeholder="Provide editorial feedback on why this story was rejected (e.g. documentation missing, needs structural edits, safety concern)..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-cancel" onclick="closeRejectionModal()">Cancel</button>
+                <button class="btn-modal-submit" onclick="submitRejection()">Confirm Reject</button>
+            </div>
+        </div>
     </div>
-    <div class="logo-text" style="font-weight: 800; font-size: 1.5rem; color: var(--dark);">KindHeart</div>
-  </div>
 
-  <div class="menu">
-    <div class="menu-section">
-      <div class="menu-label">Main</div>
-      <div class="menu-item active">
-        <i class="fa fa-home"></i>
-        <span>Dashboard</span>
-      </div>
-      <div class="menu-item">
-        <i class="fa fa-bullhorn"></i>
-        <span>Campaigns</span>
-      </div>
-      <div class="menu-item">
-        <i class="fa fa-money-bill"></i>
-        <span>Donations</span>
-      </div>
-    </div>
+    <!-- CORE SCRIPTS -->
+    <script src="../assets/js/config.js"></script>
+    <script>
+    
+    // Global Datastores for SPA caching and filtering
+    let campaignsCache = [];
+    let donorsCache = [];
+    let campaignPage = 1;
+    let campaignLimit = 8;
+    let campaignTotal = 0;
+    
+    let donorPage = 1;
+    let donorLimit = 10;
+    let donorTotal = 0;
 
-    <div class="menu-section">
-      <div class="menu-label">Manage</div>
-      <div class="menu-item">
-        <i class="fa fa-users"></i>
-        <span>Users</span>
-      </div>
-      <div class="menu-item">
-        <i class="fa fa-chart-line"></i>
-        <span>Analytics</span>
-      </div>
-    </div>
+    let campaignToModerateId = null;
 
-    <div class="menu-section menu-footer">
-      <div class="menu-item logout" onclick="logout()">
-        <i class="fa fa-right-from-bracket"></i>
-        <span>Logout</span>
-      </div>
-    </div>
-  </div>
+    // ================= SWITCH TAB ROUTER =================
+    function switchTab(tabName) {
+        // Toggle Sidebar Link Classes
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        const activeLink = document.getElementById(`nav-${tabName}`);
+        if (activeLink) activeLink.classList.add('active');
 
-</div>
+        // Toggle Content Sections
+        document.querySelectorAll('.tab-content').forEach(section => section.classList.remove('active'));
+        const activeSection = document.getElementById(`tab-${tabName}`);
+        if (activeSection) activeSection.classList.add('active');
 
-<!-- MAIN -->
-<div id="main" class="main">
+        // Update Headers & Load corresponding View Data
+        const pageHeaderTitle = document.getElementById('pageHeaderTitle');
+        const subtitle = document.getElementById('headerSubtitle');
 
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="topbar-left">
-      <button class="menu-toggle" onclick="toggleSidebar()">
-        <i class="fa fa-bars"></i>
-      </button>
-      <h1 class="topbar-title">Welcome, <span id="username">Loading...</span></h1>
-    </div>
-
-    <div class="topbar-right">
-      <div class="search-box">
-        <i class="fa fa-search"></i>
-        <input type="text" placeholder="Search campaigns, users...">
-      </div>
-
-      <button class="notification-btn">
-        <i class="fa fa-bell"></i>
-        <span class="notification-badge">3</span>
-      </button>
-
-      <div class="user-profile">
-        <div class="user-avatar">
-          <i class="fa fa-user"></i>
-        </div>
-        <div class="user-info">
-          <div class="user-name" id="username2">Admin</div>
-          <div class="user-role">Administrator</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CONTENT -->
-  <div class="content">
-
-    <!-- STATS -->
-    <div class="stats-grid">
-
-      <div class="stat-card donations" style="background: var(--white); border: none; box-shadow: var(--shadow-xl); border-radius: var(--radius-xl); padding: 2rem;">
-        <div class="stat-header">
-          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--primary); padding: 1rem; border-radius: 12px;">
-            <i class="fa fa-money-bill" style="font-size: 1.5rem;"></i>
-          </div>
-          <div class="stat-trend up">
-            <i class="fa fa-arrow-up"></i>
-            12.5%
-          </div>
-        </div>
-        <div class="stat-value" id="donations" style="font-size: 2.25rem; font-weight: 800; margin-top: 1rem;">₦0</div>
-        <div class="stat-label" style="color: var(--gray); font-weight: 500;">Total Donations</div>
-      </div>
-
-      <div class="stat-card campaigns">
-        <div class="stat-header">
-          <div class="stat-icon">
-            <i class="fa fa-bullhorn"></i>
-          </div>
-          <div class="stat-trend up">
-            <i class="fa fa-arrow-up"></i>
-            8.2%
-          </div>
-        </div>
-        <div class="stat-value" id="campaigns">0</div>
-        <div class="stat-label">Active Campaigns</div>
-      </div>
-
-      <div class="stat-card users">
-        <div class="stat-header">
-          <div class="stat-icon">
-            <i class="fa fa-users"></i>
-          </div>
-          <div class="stat-trend up">
-            <i class="fa fa-arrow-up"></i>
-            15.3%
-          </div>
-        </div>
-        <div class="stat-value" id="users">0</div>
-        <div class="stat-label">Total Users</div>
-      </div>
-
-      <div class="stat-card withdrawals">
-        <div class="stat-header">
-          <div class="stat-icon">
-            <i class="fa fa-wallet"></i>
-          </div>
-          <div class="stat-trend down">
-            <i class="fa fa-arrow-down"></i>
-            3.1%
-          </div>
-        </div>
-        <div class="stat-value" id="withdrawals">₦0</div>
-        <div class="stat-label">Total Withdrawals</div>
-      </div>
-
-    </div>
-
-    <!-- MAIN GRID -->
-    <div class="main-grid">
-
-      <div class="section-card">
-        <div class="section-header">
-          <h3 class="section-title">Featured Campaigns</h3>
-          <a href="#" class="view-all">
-            View All
-            <i class="fa fa-arrow-right"></i>
-          </a>
-        </div>
-        <div id="campaignList">
-          <div class="loading">
-            <i class="fa fa-spinner"></i>&nbsp; Loading campaigns...
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-header">
-          <h3 class="section-title">Recent Activity</h3>
-        </div>
-        <ul class="activity-list">
-          <li class="activity-item">
-            <i class="fa fa-money-bill activity-icon"></i>
-            <div class="activity-text">New donation of ₦50,000 received</div>
-            <div class="activity-time">2 minutes ago</div>
-          </li>
-          <li class="activity-item">
-            <i class="fa fa-bullhorn activity-icon"></i>
-            <div class="activity-text">Campaign "Help Children" created</div>
-            <div class="activity-time">1 hour ago</div>
-          </li>
-          <li class="activity-item">
-            <i class="fa fa-user-plus activity-icon"></i>
-            <div class="activity-text">New user registered</div>
-            <div class="activity-time">3 hours ago</div>
-          </li>
-          <li class="activity-item">
-            <i class="fa fa-check-circle activity-icon"></i>
-            <div class="activity-text">Campaign goal reached</div>
-            <div class="activity-time">5 hours ago</div>
-          </li>
-        </ul>
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-<script src="../assets/js/config.js"></script>
-<script>
-
-// const API = "http://localhost:3000/api";
-
-// ================= SIDEBAR =================
-function toggleSidebar() {
-  let sidebar = document.getElementById("sidebar");
-  let main = document.getElementById("main");
-
-  sidebar.classList.toggle("collapsed");
-  main.classList.toggle("full");
-}
-
-// ================= LOAD USER =================
-async function loadUser() {
-  if (!isLoggedIn()) {
-    window.location.href = "login.html";
-    return;
-  }
-
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (user && user.role !== 'ADMIN') {
-    window.location.href = "my-campaigns.html";
-    return;
-  }
-
-  try {
-    const res = await fetch(API.ME, {
-      headers: getAuthHeaders()
-    });
-
-    const result = await res.json();
-    const data = result.data || result; // Fallback to result if data is missing
-
-    if (!result.success && !data.id) throw new Error();
-
-    const displayName = data.name || data.username || "Admin";
-    document.getElementById("username").innerText = displayName;
-    document.getElementById("username2").innerText = displayName;
-
-  } catch (err) {
-    console.error("Dashboard auth error:", err);
-    // Only logout if it's a 401/auth issue, otherwise show fallback
-    const userLocal = JSON.parse(localStorage.getItem('user'));
-    if (userLocal) {
-        document.getElementById("username").innerText = userLocal.name;
-        document.getElementById("username2").innerText = userLocal.name;
-    } else {
-        logout();
+        if (tabName === 'overview') {
+            const displayName = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).name : 'Admin';
+            pageHeaderTitle.innerHTML = `Welcome, <span id="username" class="theme-accent">${displayName}</span>`;
+            subtitle.innerText = "Curating the narratives that drive change. Manage your editorial queue and monitor the heartbeat of collective empathy.";
+            loadUser(); // Load dynamic profile details
+            loadStats(); // Load overall dashboard overview cards
+            loadCampaignsOverview(); // Load the overview campaign cards queue
+        } else if (tabName === 'campaigns') {
+            pageHeaderTitle.innerText = `Campaign Database`;
+            subtitle.innerText = "Search, filter, edit, and moderate all stories published across the KindHeart platform.";
+            campaignPage = 1;
+            loadAdminCampaigns();
+        } else if (tabName === 'users') {
+            pageHeaderTitle.innerText = `User Management Suite`;
+            subtitle.innerText = "Monitor registered accounts, audit user profiles, promote roles, and toggle access suspension.";
+            donorPage = 1;
+            loadAdminUsers();
+        } else if (tabName === 'reports') {
+            pageHeaderTitle.innerText = `Financial & Impact Analytics`;
+            subtitle.innerText = "Audit transaction processing queues, allocation dispersals, and crowdfunding performance.";
+            loadImpactReports();
+        } else if (tabName === 'verifications') {
+            pageHeaderTitle.innerText = `Verification Panel`;
+            subtitle.innerText = "Approve or reject pending campaign pitches to ensure high editorial excellence and platform safety.";
+            loadVerificationQueue();
+        }
     }
-  }
-}
 
-// ================= LOAD STATS =================
-async function loadStats() {
-  try {
-    const res = await fetch(API.ADMIN_STATS);
-    const result = await res.json();
-    const data = result.data || result; // Support both structures
+    // ================= LOAD USER =================
+    async function loadUser() {
+        if (!isLoggedIn()) {
+            window.location.href = "login.html";
+            return;
+        }
 
-    document.getElementById("donations").innerText = formatCurrency(data.donations || data.totalDonations || 0);
-    document.getElementById("campaigns").innerText = data.campaigns || data.totalCampaigns || 0;
-    document.getElementById("users").innerText = data.users || data.totalUsers || 0;
-    document.getElementById("withdrawals").innerText = formatCurrency(data.withdrawals || data.totalWithdrawals || 0);
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user && user.role !== 'ADMIN') {
+            window.location.href = "my-campaigns.html";
+            return;
+        }
 
-  } catch (err) {
-    console.log("Stats API error:", err);
-  }
-}
+        try {
+            const res = await fetch(API.ME, {
+                headers: getAuthHeaders()
+            });
 
-// ================= LOAD CAMPAIGNS =================
-async function loadCampaigns() {
-  try {
-    const res = await fetch(API.CAMPAIGNS);
-    const result = await res.json();
-    const data = result.data || result.campaigns;
+            const result = await res.json();
+            const data = result.data || result; // Dynamic fallback
 
-    let box = document.getElementById("campaignList");
-    box.innerHTML = "";
+            if (!result.success && !data.id) throw new Error();
 
-    data.forEach(c => {
-      const percentage = calculateProgress(c.amountRaised || c.raised, c.goalAmount || c.goal);
-      
-      box.innerHTML += `
-        <div class="campaign-item">
-          <div class="campaign-title">${c.title}</div>
-          <div class="campaign-progress">
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: ${percentage}%"></div>
-            </div>
-            <div class="campaign-amount">
-              <span class="amount-raised">${formatCurrency(c.amountRaised || c.raised)} raised</span>
-              <span class="amount-goal">of ${formatCurrency(c.goalAmount || c.goal)}</span>
-            </div>
-          </div>
-        </div>
-      `;
-    });
+            const displayName = data.name || data.username || "Admin";
+            
+            const usernameEl = document.getElementById("username");
+            if (usernameEl) usernameEl.innerText = displayName;
+            
+            const username2El = document.getElementById("username2");
+            if (username2El) username2El.innerText = displayName;
 
-  } catch (err) {
-    document.getElementById("campaignList").innerHTML = `
-      <div class="empty-state">
-        <i class="fa fa-inbox"></i>
-        No campaigns found
-      </div>
-    `;
-  }
-}
+            // Profile photo fallback
+            const profilePhoto = data.photo || data.profileImage || data.avatar;
+            const avatarEl = document.getElementById("avatarImg");
+            if (avatarEl) {
+                if (profilePhoto) {
+                    avatarEl.src = profilePhoto;
+                } else {
+                    avatarEl.src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100";
+                }
+                avatarEl.onerror = () => {
+                    avatarEl.src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100";
+                };
+            }
 
-// Logout is already defined in config.js
+        } catch (err) {
+            console.error("Dashboard auth error:", err);
+            const userLocal = JSON.parse(localStorage.getItem('user'));
+            if (userLocal) {
+                const usernameEl = document.getElementById("username");
+                if (usernameEl) usernameEl.innerText = userLocal.name;
+                const username2El = document.getElementById("username2");
+                if (username2El) username2El.innerText = userLocal.name;
+            } else {
+                logout();
+            }
+        }
+    }
 
-// ================= INIT =================
-loadUser();
-loadStats();
-loadCampaigns();
+    // ================= LOAD STATS =================
+    async function loadStats() {
+        try {
+            const res = await fetch(API.ADMIN_STATS, {
+                headers: getAuthHeaders()
+            });
+            const result = await res.json();
+            const data = result.data || result;
 
-</script>
+            document.getElementById("donations").innerText = formatCurrency(data.totalAmountDonated || data.donations || 0);
+            document.getElementById("campaigns").innerText = data.totalCampaigns || data.campaigns || 0;
+            document.getElementById("users").innerText = data.totalUsers || data.users || 0;
+            
+            const donorCountEl = document.getElementById("donorCount");
+            if (donorCountEl && data.totalUsers) {
+                donorCountEl.innerText = `+${Math.max(1, Math.floor(data.totalUsers * 0.8))}`;
+            }
 
+            // Sync dynamic "Verification Queue" stat badge count
+            const verificationRes = await fetch(API.ADMIN_CAMPAIGNS, {
+                headers: getAuthHeaders()
+            });
+            const verificationResult = await verificationRes.json();
+            const allCampaigns = verificationResult.data || [];
+            const pendingCount = allCampaigns.filter(c => c.campaignStatus === 'PENDING').length;
+            
+            const vStatEl = document.getElementById("verificationQueueStat");
+            if (vStatEl) vStatEl.innerText = pendingCount;
+            
+            const vBadgeEl = document.getElementById("verificationQueueStatBadge");
+            if (vBadgeEl) {
+                if (pendingCount > 0) {
+                    vBadgeEl.innerText = "Requires Attention";
+                    vBadgeEl.style.backgroundColor = "var(--secondary-container)";
+                    vBadgeEl.style.color = "var(--on-secondary-container)";
+                } else {
+                    vBadgeEl.innerText = "Queue Clear";
+                    vBadgeEl.style.backgroundColor = "var(--primary-container)";
+                    vBadgeEl.style.color = "var(--primary)";
+                }
+            }
+
+        } catch (err) {
+            console.log("Stats API loading error:", err);
+        }
+    }
+
+    // ================= LOAD CAMPAIGNS (OVERVIEW RE-QUEUE LIST) =================
+    async function loadCampaignsOverview() {
+        try {
+            const res = await fetch(API.ADMIN_CAMPAIGNS, {
+                headers: getAuthHeaders()
+            });
+            const result = await res.json();
+            const data = result.data || [];
+            
+            let tbody = document.getElementById("campaignList");
+            
+            // Limit to Pending Campaigns for the review dashboard queue
+            const pendingCampaigns = data.filter(c => c.campaignStatus === 'PENDING');
+
+            if (pendingCampaigns.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="table-empty-state">
+                            <span class="material-symbols-outlined" style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem; color: var(--gray-light);">verified</span>
+                            Verification queue clear! All active pitches have been edited.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = "";
+            // Show up to 5 elements on quick overview dashboard
+            pendingCampaigns.slice(0, 5).forEach(c => {
+                const coverImg = c.image || c.imageUrl || 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=200';
+                const categoryName = c.category || "Environment";
+                
+                let categoryClass = "category-default";
+                const catLower = categoryName.toLowerCase();
+                if (catLower.includes("env") || catLower.includes("nature") || catLower.includes("green")) {
+                    categoryClass = "category-environment";
+                } else if (catLower.includes("edu") || catLower.includes("school") || catLower.includes("kid")) {
+                    categoryClass = "category-education";
+                } else if (catLower.includes("med") || catLower.includes("health") || catLower.includes("clinic")) {
+                    categoryClass = "category-medical";
+                }
+
+                tbody.innerHTML += `
+                    <tr class="group">
+                        <td>
+                            <div class="campaign-cell-wrap">
+                                <div class="campaign-thumb-wrap">
+                                    <img class="campaign-thumb" src="${coverImg}" alt="${c.title}" onerror="this.src='https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=200'">
+                                </div>
+                                <div>
+                                    <div class="campaign-meta-title">${c.title}</div>
+                                    <div class="campaign-meta-info">By ${c.creator || 'Campaign Creator'} • ${formatDate(c.createdAt || new Date())}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="category-badge ${categoryClass}">${categoryName}</span>
+                        </td>
+                        <td>
+                            <div class="goal-value">${formatCurrency(c.goalAmount || c.goal || 0)}</div>
+                        </td>
+                        <td style="text-align: right;">
+                            <button class="btn-review" onclick="switchTab('verifications')">Review</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+        } catch (err) {
+            console.error("Overview load queue failure:", err);
+            document.getElementById("campaignList").innerHTML = `
+                <tr>
+                    <td colspan="4" class="table-empty-state">
+                        <span class="material-symbols-outlined" style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem; color: var(--danger);">error</span>
+                        Could not connect to database review queues.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    // ================= LOAD CAMPAIGNS TAB DATABASE =================
+    async function loadAdminCampaigns() {
+        try {
+            const tableBody = document.getElementById("campaignsTabTableBody");
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="table-loading">
+                        <i class="fa fa-spinner"></i> Querying campaigns database...
+                    </td>
+                </tr>
+            `;
+
+            const url = new URL(API.ADMIN_CAMPAIGNS);
+            url.searchParams.append('page', campaignPage);
+            url.searchParams.append('limit', campaignLimit);
+
+            const res = await fetch(url, {
+                headers: getAuthHeaders()
+            });
+            const result = await res.json();
+            
+            campaignsCache = result.data || [];
+            campaignTotal = result.total || campaignsCache.length;
+            const totalPages = result.totalPages || Math.ceil(campaignTotal / campaignLimit);
+
+            filterCampaignsList(); // Applies filters and searches on client sides
+            
+            // Sync page button visibility
+            document.getElementById("campaignPageInfo").innerText = `Page ${campaignPage} of ${Math.max(1, totalPages)}`;
+            document.getElementById("campaignPrevBtn").disabled = campaignPage <= 1;
+            document.getElementById("campaignNextBtn").disabled = campaignPage >= totalPages;
+
+        } catch (err) {
+            console.error("Load Admin campaigns failed:", err);
+            document.getElementById("campaignsTabTableBody").innerHTML = `
+                <tr>
+                    <td colspan="6" class="table-empty-state">
+                        <span class="material-symbols-outlined" style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem; color: var(--danger);">error</span>
+                        Could not synchronize with platform campaigns.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    // Client filtering for real-time campaign searches
+    function filterCampaignsList() {
+        const searchQuery = document.getElementById("campaignSearch").value.toLowerCase();
+        const selectedCategory = document.getElementById("campaignCategorySelect").value;
+        const selectedStatus = document.getElementById("campaignStatusSelect").value;
+
+        const tableBody = document.getElementById("campaignsTabTableBody");
+        
+        let filtered = campaignsCache;
+
+        // Apply filters
+        if (searchQuery) {
+            filtered = filtered.filter(c => 
+                c.title.toLowerCase().includes(searchQuery) || 
+                (c.creator && c.creator.toLowerCase().includes(searchQuery))
+            );
+        }
+
+        if (selectedCategory) {
+            filtered = filtered.filter(c => c.category === selectedCategory);
+        }
+
+        if (selectedStatus) {
+            filtered = filtered.filter(c => c.campaignStatus === selectedStatus);
+        }
+
+        if (filtered.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="table-empty-state">
+                        <span class="material-symbols-outlined" style="font-size: 2rem; display: block; margin-bottom: 0.5rem; color: var(--gray-light);">search_off</span>
+                        No matching campaign records found.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tableBody.innerHTML = "";
+        filtered.forEach(c => {
+            const coverImg = c.image || c.imageUrl || 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=200';
+            
+            // Format status badge
+            let statusColor = "color: var(--gray); background-color: var(--gray-lightest);";
+            if (c.campaignStatus === 'APPROVED') {
+                statusColor = "color: var(--primary); background-color: var(--primary-container);";
+            } else if (c.campaignStatus === 'REJECTED') {
+                statusColor = "color: var(--danger); background-color: rgba(239, 68, 68, 0.08);";
+            } else if (c.campaignStatus === 'PENDING') {
+                statusColor = "color: var(--secondary); background-color: var(--secondary-container);";
+            }
+
+            tableBody.innerHTML += `
+                <tr class="group">
+                    <td>
+                        <div class="campaign-cell-wrap">
+                            <div class="campaign-thumb-wrap">
+                                <img class="campaign-thumb" src="${coverImg}" alt="${c.title}" onerror="this.src='https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=200'">
+                            </div>
+                            <div>
+                                <div class="campaign-meta-title">${c.title}</div>
+                                <div class="campaign-meta-info">By ${c.creator || 'Campaign Creator'} • ${formatDate(c.createdAt || new Date())}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="category-badge category-default" style="font-weight:700;">${c.category || 'Environment'}</span>
+                    </td>
+                    <td>
+                        <div class="goal-value">${formatCurrency(c.goalAmount || 0)}</div>
+                    </td>
+                    <td>
+                        <div class="goal-value" style="color: var(--primary);">${formatCurrency(c.amountRaised || 0)}</div>
+                    </td>
+                    <td>
+                        <span class="category-badge" style="${statusColor} font-weight:800;">${c.campaignStatus}</span>
+                    </td>
+                    <td style="text-align: right;">
+                        <a href="campaign-details.html?id=${c.id}" class="btn-review" style="padding: 0.4rem 0.8rem;">View</a>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function changeCampaignPage(direction) {
+        campaignPage += direction;
+        loadAdminCampaigns();
+    }
+
+    // ================= LOAD ADMIN USERS TAB =================
+    async function loadAdminUsers() {
+        try {
+            const tableBody = document.getElementById("usersTabTableBody");
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="table-loading">
+                        <i class="fa fa-spinner"></i> Querying system user records...
+                    </td>
+                </tr>
+            `;
+
+            const res = await fetch(API.ADMIN_USERS + "?limit=1000", {
+                headers: getAuthHeaders()
+            });
+            const result = await res.json();
+
+            donorsCache = result.data || [];
+            donorTotal = donorsCache.length;
+
+            // Compute metrics
+            const total = donorTotal;
+            const verified = donorsCache.filter(u => u.isVerified).length;
+            const unverified = total - verified;
+
+            document.getElementById("userStatsTotal").innerText = total;
+            document.getElementById("userStatsVerified").innerText = verified;
+            document.getElementById("userStatsUnverified").innerText = unverified;
+
+            filterUsersList();
+
+        } catch (err) {
+            console.error("Load users directory failed:", err);
+            document.getElementById("usersTabTableBody").innerHTML = `
+                <tr>
+                    <td colspan="6" class="table-empty-state">
+                        <span class="material-symbols-outlined" style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem; color: var(--danger);">error</span>
+                        Could not synchronize platform registration profiles.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function filterUsersList() {
+        const searchQuery = document.getElementById("userSearch").value.toLowerCase();
+        const selectedRole = document.getElementById("userRoleSelect").value;
+        const selectedVerification = document.getElementById("userVerificationSelect").value;
+
+        const tableBody = document.getElementById("usersTabTableBody");
+
+        let filtered = donorsCache;
+
+        if (searchQuery) {
+            filtered = filtered.filter(u => 
+                (u.name && u.name.toLowerCase().includes(searchQuery)) || 
+                (u.email && u.email.toLowerCase().includes(searchQuery))
+            );
+        }
+
+        if (selectedRole) {
+            filtered = filtered.filter(u => u.role === selectedRole);
+        }
+
+        if (selectedVerification) {
+            const isVer = selectedVerification === "VERIFIED";
+            filtered = filtered.filter(u => u.isVerified === isVer);
+        }
+
+        const totalFiltered = filtered.length;
+        const totalPages = Math.ceil(totalFiltered / donorLimit);
+
+        // Clamp page
+        donorPage = Math.max(1, Math.min(donorPage, totalPages || 1));
+
+        // Slice for pagination
+        const start = (donorPage - 1) * donorLimit;
+        const paginated = filtered.slice(start, start + donorLimit);
+
+        document.getElementById("userPageInfo").innerText = `Page ${donorPage} of ${Math.max(1, totalPages)}`;
+        document.getElementById("userPrevBtn").disabled = donorPage <= 1;
+        document.getElementById("userNextBtn").disabled = donorPage >= totalPages;
+
+        if (paginated.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="table-empty-state">
+                        <span class="material-symbols-outlined" style="font-size: 2rem; display: block; margin-bottom: 0.5rem; color: var(--gray-light);">search_off</span>
+                        No matching user records found.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tableBody.innerHTML = "";
+        paginated.forEach(u => {
+            let roleBadge = "color: var(--gray); background-color: var(--gray-lightest);";
+            if (u.role === 'ADMIN') {
+                roleBadge = "color: var(--on-secondary-container); background-color: var(--secondary-container);";
+            } else if (u.role === 'USER') {
+                roleBadge = "color: var(--on-primary-container); background-color: var(--primary-container);";
+            }
+
+            const verificationBadge = u.isVerified 
+                ? `<span class="category-badge" style="color: var(--primary); background-color: var(--primary-container); font-weight:800;">VERIFIED</span>`
+                : `<span class="category-badge" style="color: var(--danger); background-color: rgba(239, 68, 68, 0.08); font-weight:800;">SUSPENDED</span>`;
+
+            const verificationActionText = u.isVerified ? "Suspend" : "Activate";
+            const verificationActionIcon = u.isVerified ? "block" : "verified";
+            const verificationActionClass = u.isVerified ? "btn-reject" : "btn-approve";
+
+            // Avoid self-demotion or self-suspension
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            const isSelf = currentUser && (currentUser.id === u.id || currentUser.email === u.email);
+
+            const roleActionText = u.role === 'ADMIN' ? "Demote" : "Promote";
+            const roleActionIcon = u.role === 'ADMIN' ? "arrow_downward" : "arrow_upward";
+            const roleActionClass = "btn-review";
+
+            let actionsHtml = "";
+            if (isSelf) {
+                actionsHtml = `<span style="font-size:0.72rem; color:var(--gray); font-weight:700; text-transform:uppercase; letter-spacing:0.05em;">Current Admin</span>`;
+            } else {
+                actionsHtml = `
+                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                        <button class="${verificationActionClass}" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; font-weight:700;" onclick="toggleUserVerification('${u.id}', ${u.isVerified})">
+                            <span class="material-symbols-outlined" style="font-size: 0.875rem;">${verificationActionIcon}</span>
+                            <span>${verificationActionText}</span>
+                        </button>
+                        <button class="${roleActionClass}" style="padding: 0.4rem 0.8rem; font-size: 0.7rem; font-weight:700; background-color: var(--stone-800); color: var(--white);" onclick="toggleUserRole('${u.id}', '${u.role}', '${u.name}')">
+                            <span class="material-symbols-outlined" style="font-size: 0.875rem;">${roleActionIcon}</span>
+                            <span>${roleActionText}</span>
+                        </button>
+                    </div>
+                `;
+            }
+
+            tableBody.innerHTML += `
+                <tr class="group">
+                    <td><strong>${u.name || 'Anonymous User'}</strong></td>
+                    <td>${u.email}</td>
+                    <td>
+                        <span class="category-badge" style="${roleBadge} font-weight:800;">${u.role}</span>
+                    </td>
+                    <td>${verificationBadge}</td>
+                    <td>${formatDate(u.createdAt || new Date())}</td>
+                    <td style="text-align: right;">
+                        ${actionsHtml}
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    async function toggleUserVerification(id, currentStatus) {
+        const nextStatus = !currentStatus;
+        const actionName = nextStatus ? "activate" : "suspend";
+        if (!confirm(`Are you absolutely sure you want to ${actionName} this user account?`)) return;
+
+        try {
+            const res = await fetch(`${API.ADMIN_USERS}/${id}/verification`, {
+                method: 'PUT',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ isVerified: nextStatus })
+            });
+            const result = await res.json();
+
+            if (result.success) {
+                showToast(`User account successfully ${nextStatus ? 'activated' : 'suspended'}.`, "success");
+                loadAdminUsers();
+                loadStats();
+            } else {
+                showToast(result.message || "Failed to toggle verification status.", "error");
+            }
+        } catch (err) {
+            console.error("Verification toggle failed:", err);
+            showToast("Network error. User status was not updated.", "error");
+        }
+    }
+
+    async function toggleUserRole(id, currentRole, name) {
+        const nextRole = currentRole === 'ADMIN' ? 'USER' : 'ADMIN';
+        const actionName = nextRole === 'ADMIN' ? "PROMOTE to System Administrator" : "DEMOTE to Standard User";
+        if (!confirm(`Are you absolutely sure you want to ${actionName} ${name}?`)) return;
+
+        try {
+            const res = await fetch(`${API.ADMIN_USERS}/${id}/role`, {
+                method: 'PUT',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ role: nextRole })
+            });
+            const result = await res.json();
+
+            if (result.success) {
+                showToast(`User successfully updated to ${nextRole} role.`, "success");
+                loadAdminUsers();
+            } else {
+                showToast(result.message || "Failed to update user role.", "error");
+            }
+        } catch (err) {
+            console.error("Role toggle failed:", err);
+            showToast("Network error. User role was not modified.", "error");
+        }
+    }
+
+    function changeUserPage(direction) {
+        donorPage += direction;
+        filterUsersList();
+    }
+
+    // ================= LOAD IMPACT REPORTS TAB =================
+    async function loadImpactReports() {
+        try {
+            const res = await fetch(API.ADMIN_STATS, {
+                headers: getAuthHeaders()
+            });
+            const result = await res.json();
+            const data = result.data || result;
+
+            document.getElementById("reportSuccessfulDonations").innerText = formatCurrency(data.totalAmountDonated || data.donations || 0);
+            document.getElementById("reportGrantDisbursements").innerText = formatCurrency(data.totalAmountRaised || 0);
+            document.getElementById("reportCampaignCount").innerText = data.totalCampaigns || data.campaigns || 0;
+
+        } catch (err) {
+            console.error("Impact Reports metrics fetch failed:", err);
+        }
+    }
+
+    // ================= LOAD VERIFICATION MODERATION QUEUE =================
+    async function loadVerificationQueue() {
+        try {
+            const container = document.getElementById("verificationCardsGrid");
+            container.innerHTML = `
+                <div class="table-loading" style="grid-column: 1 / -1;">
+                    <i class="fa fa-spinner"></i> Querying pending campaigns verification queue...
+                </div>
+            `;
+
+            const res = await fetch(API.ADMIN_CAMPAIGNS, {
+                headers: getAuthHeaders()
+            });
+            const result = await res.json();
+            const data = result.data || [];
+
+            // Display ONLY campaigns awaiting verification (PENDING status)
+            const pendingList = data.filter(c => c.campaignStatus === 'PENDING');
+
+            if (pendingList.length === 0) {
+                container.innerHTML = `
+                    <div class="table-empty-state" style="grid-column: 1 / -1; padding: 4rem;">
+                        <span class="material-symbols-outlined" style="font-size: 3.5rem; display: block; margin-bottom: 1rem; color: var(--primary);">verified</span>
+                        <h3>All pitches cleared!</h3>
+                        <p style="color: var(--gray); margin-top: 0.5rem;">There are no campaigns waiting in verification queue. Excellent editorial moderation!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = "";
+            pendingList.forEach(c => {
+                const coverImg = c.image || c.imageUrl || 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=300';
+                
+                container.innerHTML += `
+                    <div class="verification-card">
+                        <div class="verification-card-hero">
+                            <img src="${coverImg}" alt="${c.title}" onerror="this.src='https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=300'">
+                            <span class="verification-card-badge">${c.category || 'Environment'}</span>
+                        </div>
+                        <div class="verification-card-body">
+                            <div>
+                                <h4 class="verification-card-title">${c.title}</h4>
+                                <div class="verification-card-creator">
+                                    <span class="material-symbols-outlined" style="font-size: 0.875rem;">person</span>
+                                    <span>By ${c.creator || 'Campaign Pitcher'}</span>
+                                </div>
+                            </div>
+                            <p class="verification-card-desc">This editorial campaign pitch requires oversight review. Verify documents and description narrative copy before approval.</p>
+                            <div class="verification-card-meta">
+                                <div class="meta-item">
+                                    <strong>${formatCurrency(c.goalAmount || 0)}</strong>
+                                    Goal Amount
+                                </div>
+                                <div class="meta-item" style="text-align: right;">
+                                    <strong>${formatDate(c.createdAt || new Date())}</strong>
+                                    Pitch Date
+                                </div>
+                            </div>
+                            <div class="verification-card-actions">
+                                <button class="btn-approve" onclick="moderateCampaign('${c.id}', 'APPROVED')">
+                                    <span class="material-symbols-outlined" style="font-size: 0.875rem;">check_circle</span>
+                                    <span>Approve</span>
+                                </button>
+                                <button class="btn-reject" onclick="moderateCampaign('${c.id}', 'REJECTED')">
+                                    <span class="material-symbols-outlined" style="font-size: 0.875rem;">cancel</span>
+                                    <span>Reject</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+        } catch (err) {
+            console.error("Verification queue loading error:", err);
+            document.getElementById("verificationCardsGrid").innerHTML = `
+                <div class="table-empty-state" style="grid-column: 1 / -1;">
+                    <span class="material-symbols-outlined" style="font-size: 3rem; display: block; margin-bottom: 0.5rem; color: var(--danger);">error</span>
+                    Could not synchronize platforms verification queues.
+                </div>
+            `;
+        }
+    }
+
+    // ================= MODERATE CAMPAIGN STATUSES =================
+    async function moderateCampaign(id, action) {
+        if (action === 'APPROVED') {
+            if (!confirm("Are you absolutely sure you want to APPROVE this campaign pitch to go live?")) return;
+            
+            try {
+                const res = await fetch(`${API.ADMIN_CAMPAIGNS}/${id}/status`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ status: 'APPROVED' })
+                });
+                
+                const result = await res.json();
+                if (result.success) {
+                    showToast("Campaign approved and published successfully!", "success");
+                    // Reload tab contents
+                    loadVerificationQueue();
+                    loadStats();
+                } else {
+                    showToast(result.message || "Failed to update campaign status.", "error");
+                }
+            } catch (err) {
+                console.error("Campaign approval moderation failed:", err);
+                showToast("Network error. Campaign status was not updated.", "error");
+            }
+        } else if (action === 'REJECTED') {
+            // Open custom modal for rejection reasoning input
+            campaignToModerateId = id;
+            document.getElementById("rejectionReasonInput").value = "";
+            document.getElementById("rejectionModal").classList.add("open");
+        }
+    }
+
+    function closeRejectionModal() {
+        document.getElementById("rejectionModal").classList.remove("open");
+        campaignToModerateId = null;
+    }
+
+    async function submitRejection() {
+        const reason = document.getElementById("rejectionReasonInput").value.trim();
+        if (!reason) {
+            showToast("Please provide an editorial reason explaining the rejection.", "warning");
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API.ADMIN_CAMPAIGNS}/${campaignToModerateId}/status`, {
+                method: 'PUT',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({
+                    status: 'REJECTED',
+                    rejectionReason: reason
+                })
+            });
+
+            const result = await res.json();
+            if (result.success) {
+                showToast("Campaign pitch successfully rejected.", "success");
+                closeRejectionModal();
+                loadVerificationQueue();
+                loadStats();
+            } else {
+                showToast(result.message || "Failed to moderate campaign.", "error");
+            }
+        } catch (err) {
+            console.error("Campaign rejection failed:", err);
+            showToast("Network error. Campaign was not moderated.", "error");
+        }
+    }
+
+    // Override config.js alerts to inject beautifully animated custom toasts
+    function showToast(message, type = 'info') {
+        const toastId = 'toast_' + Math.random().toString(36).substr(2, 9);
+        const toastDiv = document.createElement('div');
+        toastDiv.id = toastId;
+        
+        let color = '#3b82f6'; // info default blue
+        let icon = 'info';
+        if (type === 'success') { color = '#10b981'; icon = 'check_circle'; }
+        else if (type === 'error') { color = '#ef4444'; icon = 'error'; }
+        else if (type === 'warning') { color = '#f59e0b'; icon = 'warning'; }
+
+        toastDiv.setAttribute('style', `
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #ffffff;
+            color: #1e293b;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-left: 4px solid ${color};
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 200;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 700;
+        `);
+
+        toastDiv.innerHTML = `
+            <span class="material-symbols-outlined" style="color: ${color}; font-variation-settings: 'FILL' 1;">${icon}</span>
+            <span>${message}</span>
+        `;
+
+        document.body.appendChild(toastDiv);
+
+        // Fade in
+        setTimeout(() => {
+            toastDiv.style.transform = 'translateY(0)';
+            toastDiv.style.opacity = '1';
+        }, 50);
+
+        // Auto destroy after 4 seconds
+        setTimeout(() => {
+            toastDiv.style.transform = 'translateY(100px)';
+            toastDiv.style.opacity = '0';
+            setTimeout(() => {
+                toastDiv.remove();
+            }, 300);
+        }, 4000);
+    }
+
+    // Override window.alert globally to use our custom toast
+    window.alert = function(msg) {
+        showToast(msg, 'info');
+    };
+
+    // ================= INIT CORE =================
+    loadUser();
+    loadStats();
+    loadCampaignsOverview();
+
+    </script>
 </body>
 </html>
