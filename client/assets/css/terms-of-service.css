@@ -1,0 +1,224 @@
+/* Terms of Service Styles */
+
+/* Page Header */
+.tos-header-label {
+    color: var(--secondary-container);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.tos-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.tos-header p {
+    font-size: 1.05rem;
+    color: var(--gray);
+    max-width: 600px;
+}
+
+/* Main Content */
+.tos-section {
+    padding: 4rem 0;
+    background: var(--white);
+}
+
+.tos-container {
+    max-width: 900px;
+}
+
+.tos-article {
+    margin-bottom: 3rem;
+}
+
+.tos-article-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.tos-number {
+    min-width: 60px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.tos-content {
+    flex: 1;
+}
+
+.tos-content h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 1rem;
+}
+
+.tos-content p {
+    color: var(--gray);
+    line-height: 1.8;
+}
+
+/* Article Subsections */
+.tos-subsection {
+    margin-bottom: 1.5rem;
+}
+
+.tos-subsection h3 {
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tos-subsection i {
+    color: var(--primary);
+}
+
+.tos-subsection p {
+    color: var(--gray);
+    line-height: 1.8;
+}
+
+/* Highlighted Boxes */
+.tos-highlight-box {
+    background: var(--gray-lightest);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+}
+
+.tos-highlight-box h4 {
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tos-highlight-box p {
+    color: var(--gray);
+    margin: 0;
+}
+
+/* Grid Layout */
+.tos-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.tos-grid-item {
+    background: var(--gray-lightest);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+}
+
+.tos-grid-item h4 {
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+}
+
+.tos-grid-item p {
+    color: var(--gray);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Warning Box */
+.tos-warning-box {
+    background: var(--danger);
+    color: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    margin-top: 1.5rem;
+}
+
+.tos-warning-box h4 {
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tos-warning-box p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* CTA Section */
+.tos-cta {
+    background: var(--primary);
+    color: var(--white);
+    padding: 3rem;
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.tos-cta h2 {
+    font-weight: 800;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: var(--white);
+}
+
+.tos-cta p {
+    margin-bottom: 1.5rem;
+    opacity: 0.95;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--white);
+}
+
+.tos-cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.tos-cta-button {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.tos-cta-button i {
+    margin-right: 0.5rem;
+}
+
+.tos-cta-button.primary {
+    background: var(--secondary-container);
+    color: var(--dark);
+}
+
+.tos-cta-button.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.tos-cta-button.secondary {
+    background: transparent;
+    color: var(--white);
+    border: 2px solid var(--white);
+}
+
+.tos-cta-button.secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}

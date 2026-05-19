@@ -1,0 +1,248 @@
+/* Contact Us Page Styles */
+
+/* Page Header */
+.page-header .subtitle {
+    color: var(--primary);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.page-header h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+}
+
+.page-header p {
+    font-size: 1.1rem;
+    color: var(--gray);
+    max-width: 600px;
+}
+
+/* Main Content Section */
+.contact-section {
+    padding: 4rem 0;
+    background: var(--gray-lightest);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+/* Contact Form */
+.contact-card {
+    background: var(--white);
+    padding: 2.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+}
+
+.contact-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--dark);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--gray);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-bottom: 2px solid var(--gray-lighter);
+    background: var(--gray-lightest);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    font-size: 1rem;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-bottom-color: var(--primary);
+    background: var(--white);
+}
+
+.form-group textarea {
+    resize: none;
+}
+
+.form-submit {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary);
+    color: var(--white);
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.form-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* Contact Info Cards */
+.contact-info-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.info-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+}
+
+.info-card-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+.info-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.5rem;
+}
+
+.info-icon.primary {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.info-icon.secondary {
+    background: var(--primary-container);
+    color: var(--primary);
+}
+
+.info-icon.tertiary {
+    background: var(--tertiary-container);
+    color: var(--tertiary);
+}
+
+.info-card h3 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.info-card p {
+    color: var(--gray);
+    font-size: 0.95rem;
+}
+
+.info-card small {
+    font-size: 0.85rem;
+}
+
+/* Help Center CTA */
+.help-cta {
+    background: var(--dark);
+    color: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    margin-top: 2rem;
+}
+
+.help-cta h3 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.help-cta p {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.help-cta a {
+    color: var(--primary-container);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.help-cta a:hover {
+    text-decoration: underline;
+}
+
+/* FAQ Section */
+.faq-section {
+    margin-top: 4rem;
+}
+
+.faq-section h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--dark);
+}
+
+.faq-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.faq-item {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+}
+
+.faq-item summary {
+    font-weight: 600;
+    color: var(--dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-item p {
+    margin-top: 1rem;
+    color: var(--gray);
+    line-height: 1.6;
+}

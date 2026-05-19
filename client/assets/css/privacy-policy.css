@@ -1,0 +1,271 @@
+/* Privacy Policy Styles */
+
+/* Page Header */
+.pp-header-label {
+    color: var(--tertiary-container);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.pp-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.pp-header p {
+    font-size: 1.05rem;
+    color: var(--gray);
+    max-width: 600px;
+}
+
+/* Main Content */
+.pp-section {
+    padding: 4rem 0;
+    background: var(--white);
+}
+
+.pp-wrapper {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+/* Table of Contents */
+.pp-toc {
+    position: sticky;
+    top: 100px;
+}
+
+.pp-toc h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+}
+
+.pp-toc ul {
+    list-style: none;
+}
+
+.pp-toc li {
+    margin-bottom: 1rem;
+}
+
+.pp-toc a {
+    color: var(--gray);
+    text-decoration: none;
+    transition: all 0.3s;
+    border-left: 3px solid transparent;
+    padding-left: 0.75rem;
+    display: block;
+}
+
+.pp-toc a:hover {
+    color: var(--primary);
+    border-left-color: var(--primary);
+}
+
+/* Content Sections */
+.pp-article {
+    margin-bottom: 3rem;
+}
+
+.pp-article h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+}
+
+.pp-article p {
+    color: var(--gray);
+    line-height: 1.8;
+}
+
+/* Subsection Headers */
+.pp-subsection-header {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pp-subsection-header i {
+    margin-right: 0.5rem;
+}
+
+/* Data Types */
+.pp-data-type {
+    margin-bottom: 2rem;
+}
+
+.pp-data-type p {
+    color: var(--gray);
+    line-height: 1.8;
+}
+
+/* Highlight Box */
+.pp-highlight-box {
+    background: var(--gray-lightest);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+}
+
+.pp-highlight-box h4 {
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+}
+
+.pp-highlight-box p {
+    color: var(--gray);
+    margin: 0;
+}
+
+/* Usage List */
+.pp-usage-list {
+    list-style: none;
+    color: var(--gray);
+    line-height: 1.8;
+}
+
+.pp-usage-list li {
+    margin-bottom: 1rem;
+}
+
+.pp-usage-list i {
+    color: var(--tertiary);
+    margin-right: 0.75rem;
+}
+
+/* Rights Grid */
+.pp-rights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.pp-right-button {
+    padding: 1rem;
+    background: var(--white);
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.pp-right-button:hover {
+    background: var(--primary-container);
+}
+
+.pp-right-button.danger {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.pp-right-button.danger:hover {
+    background: var(--danger);
+    color: var(--white);
+}
+
+.pp-right-button i {
+    margin-right: 0.5rem;
+}
+
+/* Cookies Grid */
+.pp-cookies-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.pp-cookie-item {
+    background: var(--gray-lightest);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+}
+
+.pp-cookie-item h4 {
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+}
+
+.pp-cookie-item p {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+/* CTA Section */
+.pp-cta {
+    background: var(--primary);
+    color: var(--white);
+    padding: 3rem;
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.pp-cta h2 {
+    font-weight: 800;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: var(--white);
+}
+
+.pp-cta p {
+    margin-bottom: 1.5rem;
+    opacity: 0.95;
+    color: var(--white);
+}
+
+.pp-cta-button {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background: var(--white);
+    color: var(--primary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.pp-cta-button i {
+    margin-right: 0.5rem;
+}
+
+.pp-cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pp-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .pp-toc {
+        position: static;
+    }
+
+    .pp-rights-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pp-cookies-grid {
+        grid-template-columns: 1fr;
+    }
+}

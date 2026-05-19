@@ -16,7 +16,7 @@
         <div class="auth-card">
             <div class="auth-header">
                 <div class="logo">
-                    <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" style="margin-right: 0.5rem;">
+                    <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img">
                     <span>KindHeart</span>
                 </div>
                 <h1>Create Account</h1>
@@ -58,10 +58,33 @@
                         type="password" 
                         id="password" 
                         name="password" 
-                        placeholder="Create a password (min. 6 characters)"
+                        placeholder="Create a strong password"
                         required
-                        minlength="6"
+                        minlength="8"
                     >
+                    <div class="password-requirements">
+                        <p class="requirement-title">Password must contain:</p>
+                        <div class="requirement-item" id="req-upper">
+                            <i class="fas fa-circle"></i>
+                            <span>One uppercase letter (A-Z)</span>
+                        </div>
+                        <div class="requirement-item" id="req-lower">
+                            <i class="fas fa-circle"></i>
+                            <span>One lowercase letter (a-z)</span>
+                        </div>
+                        <div class="requirement-item" id="req-number">
+                            <i class="fas fa-circle"></i>
+                            <span>One number (0-9)</span>
+                        </div>
+                        <div class="requirement-item" id="req-special">
+                            <i class="fas fa-circle"></i>
+                            <span>One special character (!@#$%^&*)</span>
+                        </div>
+                        <div class="requirement-item" id="req-length">
+                            <i class="fas fa-circle"></i>
+                            <span>Minimum 8 characters</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -94,7 +117,7 @@
 
                 <div class="social-login">
                     <button type="button" class="btn btn-outline btn-block google-btn" onclick="googleLogin()">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" alt="Google" width="18" height="18" style="margin-right: 10px;">
+                        <i class="fa-brands fa-google" aria-hidden="true"></i>
                         Google
                     </button>
                 </div>
@@ -110,9 +133,9 @@
             </form>
         </div>
 
-        <div class="auth-side" style="background-image: linear-gradient(rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8)), url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=1000'); background-size: cover; background-position: center;">
+        <div class="auth-side side-custom register-bg">
             <div class="testimonial">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1.5rem; opacity: 0.6;"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H5c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 6-2 6"></path><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-3c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 6-2 6"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="quote-icon" aria-hidden="true"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H5c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 6-2 6"></path><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-3c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 6-2 6"></path></svg>
                 <p>"Setting up my campaign was so easy. Received my first donation within hours!"</p>
                 <div class="testimonial-author">
                     <strong>Michael Chen</strong>

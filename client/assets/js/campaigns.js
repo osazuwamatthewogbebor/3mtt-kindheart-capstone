@@ -45,6 +45,42 @@ document.addEventListener('click', (e) => {
 let currentPage = 1;
 const limit = 12;
 
+function getCampaignDate(campaign) {
+    const ts = new Date(
+        campaign.createdAt || campaign.created_at || campaign.updatedAt || campaign.updated_at || 0
+    ).getTime();
+    return Number.isFinite(ts) ? ts : 0;
+}
+
+function sortCampaignList(campaigns, sort) {
+    const sorted = [...campaigns];
+
+    if (sort === 'popular') {
+        sorted.sort((a, b) => {
+            const raisedA = Number(a.amountRaised || a.raised_amount || 0);
+            const raisedB = Number(b.amountRaised || b.raised_amount || 0);
+            return raisedB - raisedA;
+        });
+        return sorted;
+    }
+
+    if (sort === 'ending') {
+        sorted.sort((a, b) => {
+                    const rawA = new Date(a.endDate || a.end_date || Number.MAX_SAFE_INTEGER).getTime();
+                    const rawB = new Date(b.endDate || b.end_date || Number.MAX_SAFE_INTEGER).getTime();
+                    const endA = Number.isFinite(rawA) ? rawA : Number.MAX_SAFE_INTEGER;
+                    const endB = Number.isFinite(rawB) ? rawB : Number.MAX_SAFE_INTEGER;
+             return endA - endB;
+            return endA - endB;
+        });
+        return sorted;
+    }
+
+    // Default: recent
+    sorted.sort((a, b) => getCampaignDate(b) - getCampaignDate(a));
+    return sorted;
+}
+
 async function loadCampaigns() {
     try {
         const searchQuery = document.getElementById('searchInput')?.value || '';
@@ -62,11 +98,12 @@ async function loadCampaigns() {
         // Defensive data parsing - handles both direct and nested data structures
         const data = result.data || result;
         const campaigns = Array.isArray(data.campaigns) ? data.campaigns : (Array.isArray(data) ? data : []);
+        const sortedCampaigns = sortCampaignList(campaigns, sort);
         const totalItems = data.total || campaigns.length;
         const totalPages = data.totalPages || Math.ceil(totalItems / limit);
         const container = document.getElementById('campaignsGrid');
         
-        if (!campaigns || campaigns.length === 0) {
+        if (!sortedCampaigns || sortedCampaigns.length === 0) {
             container.innerHTML = `
                 <div class="loading-state">
                     <i class="fas fa-inbox"></i>
@@ -79,7 +116,7 @@ async function loadCampaigns() {
         
         container.innerHTML = '';
         
-        campaigns.forEach(campaign => {
+        sortedCampaigns.forEach(campaign => {
             const raised = campaign.amountRaised || campaign.raised_amount || 0;
             const goal = campaign.goalAmount || campaign.goal_amount || 0;
             const progress = calculateProgress(raised, goal);

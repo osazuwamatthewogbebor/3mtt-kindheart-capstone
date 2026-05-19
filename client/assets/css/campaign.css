@@ -2,8 +2,50 @@
 
 .campaign-header {
     background: var(--white);
-    padding: 2rem 0;
+    padding: 4rem 0 2rem;
+    border: none;
     border-bottom: 1px solid var(--gray-lightest);
+}
+
+.campaign-header-logo {
+    display: flex;
+    align-items: center;
+}
+
+.campaign-header-logo img {
+    margin-right: 0.5rem;
+}
+
+.campaign-title-large {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--dark);
+}
+
+.campaign-meta {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.campaign-category {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--primary);
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+/* Background image for campaigns page header */
+.page-header.header-large {
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+/* Campaigns page specific background */
+.page-header.campaigns-bg {
+    background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&q=80&w=1200') !important;
 }
 
 .campaign-hero {
@@ -204,7 +246,60 @@
     font-size: 0.875rem;
 }
 
+/* Progress Bar Styling */
+.progress-bar {
+    height: 12px;
+}
+
+.progress-fill {
+    width: 0%;
+}
+
+/* Campaign Description */
+.campaign-description-text {
+    line-height: 1.8;
+    color: var(--dark-light);
+    font-size: 1.0625rem;
+}
+
+/* Icon Sizing */
+.icon-lg {
+    font-size: 3rem;
+}
+
+.icon-lg.opacity-30 {
+    opacity: 0.3;
+}
+
+/* Empty State Styling */
+.empty-state-centered {
+    text-align: center;
+    padding: 3rem;
+    color: var(--gray);
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+}
+
 /* Common Campaign Listing Styles */
+/* Additional styles for campaign details */
+.campaign-details {
+    padding: 1rem;
+    background-color: var(--light);
+}
+
+.campaign-details h2 {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.campaign-details p {
+    font-size: 1rem;
+    color: var(--dark);
+}
 .campaigns-header {
     display: flex;
     justify-content: space-between;
@@ -421,6 +516,76 @@
     outline: none;
     border-color: var(--primary);
     background: var(--white);
+}
+
+/* INLINE STYLE EXTRACTIONS - Campaigns Page */
+.page-header.header-large {
+    background-size: cover !important;
+    background-position: center !important;
+    color: white !important;
+    text-align: center !important;
+    padding: 6rem 0 !important;
+}
+
+.page-header.header-large h1 {
+    font-size: 3.5rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 1rem !important;
+}
+
+.page-header.header-large p {
+    font-size: 1.25rem !important;
+    opacity: 0.9 !important;
+}
+
+.filters-section.section-custom {
+    background: var(--gray-lightest) !important;
+    padding: 2rem 0 !important;
+    border: none !important;
+}
+
+.filters-wrapper.wrapper-custom {
+    background: var(--white) !important;
+    padding: 1.5rem !important;
+    border-radius: var(--radius-xl) !important;
+    box-shadow: var(--shadow-lg) !important;
+    display: flex !important;
+    gap: 1.5rem !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+}
+
+.search-box.box-custom {
+    flex: 1 !important;
+    min-width: 250px !important;
+    position: relative !important;
+}
+
+.search-box.box-custom i {
+    position: absolute !important;
+    left: 1.25rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    color: var(--gray) !important;
+}
+
+.search-box.box-custom input {
+    width: 100% !important;
+    padding: 0.875rem 1.25rem 0.875rem 3rem !important;
+    border-radius: var(--radius-md) !important;
+    border: 1px solid var(--gray-lighter) !important;
+    background: var(--gray-lightest) !important;
+    font-size: 1rem !important;
+}
+
+/* Logo header links */
+.logo-header-link {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.logo-header-img {
+    margin-right: 0.5rem !important;
 }
 
 @media (max-width: 768px) {

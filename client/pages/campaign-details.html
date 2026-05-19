@@ -17,8 +17,8 @@
         <div class="container">
             <div class="nav-wrapper">
                 <div class="logo">
-                    <a href="../index.html" style="display: flex; align-items: center;">
-                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" style="margin-right: 0.5rem;">
+                    <a href="../index.html" class="campaign-header-logo">
+                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32">
                         <span>KindHeart</span>
                     </a>
                 </div>
@@ -39,14 +39,14 @@
     </nav>
 
     <!-- CAMPAIGN HEADER -->
-    <section class="campaign-header" style="background: var(--white); padding: 4rem 0 2rem; border: none;">
+    <section class="campaign-header">
         <div class="container">
-            <a href="campaigns.html" class="btn-link mb-1 d-inline-block" style="color: var(--primary); font-weight: 600;">
+            <a href="campaigns.html" class="btn-link mb-1 d-inline-block">
                 <i class="fas fa-arrow-left"></i> Back to Campaigns
             </a>
-            <h1 id="campaignTitle" class="mb-1" style="font-size: 3rem; font-weight: 800; color: var(--dark);">Loading...</h1>
-            <div class="d-flex gap-1 align-center" style="font-size: 1rem; opacity: 0.8;">
-                <span class="campaign-category" id="campaignCategory" style="background: rgba(16, 185, 129, 0.1); color: var(--primary); padding: 0.4rem 1rem; border-radius: 50px; font-weight: 700; text-transform: uppercase; font-size: 0.75rem;">Category</span>
+            <h1 id="campaignTitle" class="mb-1 campaign-title-large">Loading...</h1>
+            <div class="d-flex gap-1 align-center campaign-meta">
+                <span class="campaign-category" id="campaignCategory">Category</span>
                 <span class="color-gray">
                     <i class="fas fa-user"></i> By <span id="creatorName">Creator</span>
                 </span>
@@ -69,11 +69,11 @@
                     <div class="amount-raised" id="amountRaised">₦0</div>
                     <div class="goal-text">raised of <span id="goalAmount">₦0</span> goal</div>
                     
-                    <div class="progress-bar mb-1" style="height: 12px;">
-                        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                    <div class="progress-bar mb-1">
+                        <div class="progress-fill" id="progressBar"></div>
                     </div>
 
-                    <button class="btn btn-primary donate-btn" onclick="donate()">
+                    <button class="btn btn-primary donate-btn" id="donateButton">
                         <i class="fas fa-heart"></i> Donate Now
                     </button>
 
@@ -85,16 +85,16 @@
                     <div class="share-section">
                         <h4>Share this campaign</h4>
                         <div class="share-buttons">
-                            <button class="share-btn facebook" onclick="shareOnFacebook()">
+                            <button class="share-btn facebook" id="shareFacebook" title="Share on Facebook">
                                 <i class="fab fa-facebook"></i>
                             </button>
-                            <button class="share-btn twitter" onclick="shareOnTwitter()">
+                            <button class="share-btn twitter" id="shareTwitter" title="Share on Twitter">
                                 <i class="fab fa-twitter"></i>
                             </button>
-                            <button class="share-btn whatsapp" onclick="shareOnWhatsApp()">
+                            <button class="share-btn whatsapp" id="shareWhatsapp" title="Share on WhatsApp">
                                 <i class="fab fa-whatsapp"></i>
                             </button>
-                            <button class="share-btn copy" onclick="copyLink()">
+                            <button class="share-btn copy" id="shareCopy" title="Copy link">
                                 <i class="fas fa-link"></i>
                             </button>
                         </div>
@@ -109,9 +109,9 @@
         <div class="container">
             <div class="campaign-content">
                 <div class="campaign-tabs">
-                    <div class="tab active" onclick="switchTab('story')">Story</div>
-                    <div class="tab" onclick="switchTab('donations')">Donations (<span id="donationsCount">0</span>)</div>
-                    <div class="tab" onclick="switchTab('updates')">Updates</div>
+                    <button class="tab active" id="storyTab-btn" data-tab="story">Story</button>
+                    <button class="tab" id="donationsTab-btn" data-tab="donations">Donations (<span id="donationsCount">0</span>)</button>
+                    <button class="tab" id="updatesTab-btn" data-tab="updates">Updates</button>
                 </div>
 
                 <!-- STORY TAB -->
@@ -124,7 +124,7 @@
                         </div>
                     </div>
 
-                    <div id="campaignDescription" style="line-height: 1.8; color: var(--dark-light); font-size: 1.0625rem;">
+                    <div id="campaignDescription" class="campaign-description-text">
                         Loading campaign details...
                     </div>
                 </div>
@@ -142,7 +142,7 @@
                 <!-- UPDATES TAB -->
                 <div class="tab-content" id="updatesTab">
                     <div class="loading-state">
-                        <i class="fas fa-bell opacity-30" style="font-size: 3rem;"></i>
+                        <i class="fas fa-bell opacity-30 icon-lg"></i>
                         <p>No updates yet</p>
                     </div>
                 </div>
@@ -160,162 +160,7 @@
     </footer>
 
     <script src="../assets/js/config.js"></script>
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const campaignId = urlParams.get('id');
+    <script src="../assets/js/campaign-details.js"></script>
 
-        if (!campaignId) {
-            alert('Campaign not found');
-            window.location.href = 'campaigns.html';
-        }
-
-        // Update nav based on login
-        function updateNav() {
-            const navActions = document.getElementById('navActions');
-            if (isLoggedIn()) {
-                const user = JSON.parse(localStorage.getItem('user'));
-                navActions.innerHTML = `
-                    <a href="my-campaigns.html" class="btn-link">My Campaigns</a>
-                    <a href="create-campaign.html" class="btn btn-primary">Create Campaign</a>
-                `;
-            }
-        }
-
-        // Load campaign details
-        async function loadCampaign() {
-            try {
-                const response = await fetch(`${API.CAMPAIGNS}/${campaignId}`);
-                const result = await response.json();
-
-                const campaign = result.data?.campaign || result.campaign;
-
-                if (!result.success && !campaign) {
-                    alert('Campaign not found');
-                    window.location.href = 'campaigns.html';
-                    return;
-                }
-
-                const progress = calculateProgress(campaign.amountRaised, campaign.goalAmount);
-
-                // Update page
-                document.getElementById('campaignTitle').textContent = campaign.title;
-                document.getElementById('campaignCategory').textContent = campaign?.category?.name || campaign?.categoryName || 'General';
-                document.getElementById('creatorName').textContent = campaign?.user?.name || campaign?.creatorName || 'Creator';
-                document.getElementById('creatorNameFull').textContent = campaign?.user?.name || campaign?.creatorName || 'Creator';
-                document.getElementById('createdDate').textContent = formatDate(campaign.createdAt || campaign.created_at);
-                document.getElementById('campaignImage').src = campaign.imageUrl || campaign.image || 'https://via.placeholder.com/800x500';
-                document.getElementById('amountRaised').textContent = formatCurrency(campaign.amountRaised || campaign.raised_amount || 0);
-                document.getElementById('goalAmount').textContent = formatCurrency(campaign.goalAmount || campaign.goal_amount || 0);
-                document.getElementById('progressBar').style.width = progress + '%';
-                document.getElementById('campaignDescription').textContent = campaign.description;
-                
-                // Creator avatar
-                const creatorNameStr = campaign?.user?.name || campaign?.creatorName || 'Creator';
-                const initials = creatorNameStr.split(' ').map(n => n[0]).join('').toUpperCase();
-                document.getElementById('creatorAvatar').textContent = initials;
-
-                // Load donations
-                // loadDonations();
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error loading campaign');
-            }
-        }
-
-        // Load donations
-        async function loadDonations() {
-            try {
-                const response = await fetch(`${API.DONATIONS}/campaign/${campaignId}`);
-                const data = await response.json();
-
-                const donationsCount = data.count || 0;
-                document.getElementById('donorsCount').textContent = donationsCount;
-                document.getElementById('donationsCount').textContent = donationsCount;
-
-                const container = document.getElementById('donationsList');
-
-                if (donationsCount === 0) {
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 3rem; color: var(--gray);">
-                            <i class="fas fa-heart" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                            <p>No donations yet. Be the first to donate!</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                container.innerHTML = '';
-
-                data.data.forEach(donation => {
-                    const item = document.createElement('div');
-                    item.className = 'donation-item';
-                    item.innerHTML = `
-                        <div class="donation-header">
-                            <span class="donor-name">${donation.donorName || donation.donor_name || 'Anonymous'}</span>
-                            <span class="donation-amount">${formatCurrency(donation.amount)}</span>
-                        </div>
-                        <div class="donation-time">${formatDate(donation.createdAt || donation.created_at)}</div>
-                    `;
-                    container.appendChild(item);
-                });
-
-            } catch (error) {
-                console.error('Error loading donations:', error);
-            }
-        }
-
-        // Switch tabs
-        function switchTab(tabName) {
-            // Remove active from all tabs
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-
-            // Add active to clicked tab
-            event.target.classList.add('active');
-            document.getElementById(tabName + 'Tab').classList.add('active');
-        }
-
-        // Donate function
-        function donate() {
-            if (!isLoggedIn()) {
-                alert('Please login to donate');
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            const amount = prompt('Enter donation amount (₦):');
-            if (!amount || isNaN(amount) || amount < 100) {
-                alert('Please enter a valid amount (minimum ₦100)');
-                return;
-            }
-
-            alert('Payment integration coming soon! You would donate ₦' + amount);
-        }
-
-        // Share functions
-        function shareOnFacebook() {
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`, '_blank');
-        }
-
-        function shareOnTwitter() {
-            const text = document.getElementById('campaignTitle').textContent;
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${window.location.href}`, '_blank');
-        }
-
-        function shareOnWhatsApp() {
-            const text = document.getElementById('campaignTitle').textContent;
-            window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + window.location.href)}`, '_blank');
-        }
-
-        function copyLink() {
-            navigator.clipboard.writeText(window.location.href);
-            alert('Link copied to clipboard!');
-        }
-
-        // Initialize
-        updateNav();
-        loadCampaign();
-    </script>
 </body>
 </html>

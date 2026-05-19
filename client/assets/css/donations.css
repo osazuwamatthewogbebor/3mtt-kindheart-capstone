@@ -84,6 +84,15 @@
     color: #dc2626;
 }
 
+/* INLINE STYLE EXTRACTIONS - Donations Pages */
+.bg-gray-lightest.min-height-section {
+    min-height: 60vh !important;
+}
+
+.loading-state.padding-custom {
+    padding: 3rem !important;
+}
+
 @media (max-width: 768px) {
     .donation-row {
         grid-template-columns: 1fr;

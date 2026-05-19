@@ -8,8 +8,7 @@
     <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="../assets/css/campaign.css">
+    <link rel="stylesheet" href="../assets/css/campaign.css">
 </head>
 <body>
 
@@ -18,8 +17,8 @@
         <div class="container">
             <div class="nav-wrapper">
                 <div class="logo">
-                    <a href="../index.html" style="display: flex; align-items: center;">
-                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" style="margin-right: 0.5rem;">
+                    <a href="../index.html" class="logo-header-link">
+                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img">
                         <span>KindHeart</span>
                     </a>
                 </div>
@@ -35,7 +34,7 @@
                     <!-- Will be populated by JavaScript -->
                 </div>
 
-                <button class="mobile-toggle" id="mobileToggle">
+                <button class="mobile-toggle" id="mobileToggle" title="Toggle navigation menu" aria-label="Toggle navigation menu">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
@@ -43,57 +42,98 @@
     </nav>
 
     <!-- PAGE HEADER -->
-    <section class="page-header" style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&q=80&w=1200'); background-size: cover; background-position: center; color: white; text-align: center; padding: 6rem 0;">
+    <section class="page-header">
         <div class="container">
-            <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem;">Browse Campaigns</h1>
-            <p style="font-size: 1.25rem; opacity: 0.9;">Discover causes that need your support</p>
+            <h1>Browse Campaigns</h1>
+            <p>Discover stories that matter and join a community of changemakers</p>
         </div>
     </section>
 
-    <!-- FILTERS & SEARCH -->
-    <section class="filters-section" style="background: var(--gray-lightest); padding: 2rem 0; border: none;">
+    <!-- MAIN CONTENT -->
+    <section style="padding: 3rem 0; background: var(--gray-lightest);">
         <div class="container">
-            <div class="filters-wrapper" style="background: var(--white); padding: 1.5rem; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
-                <div class="search-box" style="flex: 1; min-width: 250px; position: relative;">
-                    <i class="fas fa-search" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--gray);"></i>
-                    <input type="text" id="searchInput" placeholder="Search campaigns..." style="width: 100%; padding: 0.875rem 1.25rem 0.875rem 3rem; border-radius: var(--radius-md); border: 1px solid var(--gray-lighter); background: var(--gray-lightest); font-size: 1rem;">
+            <div style="display: grid; grid-template-columns: 250px 1fr; gap: 2rem; margin-bottom: 2rem;">
+                
+                <!-- SIDEBAR FILTERS -->
+                <aside style="background: var(--white); padding: 2rem; border-radius: var(--radius-md); height: fit-content; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--dark);">CATEGORY</h3>
+                    
+                    <div class="mb-2">
+                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
+                            <input type="checkbox" id="catAll" checked style="margin-right: 0.75rem; cursor: pointer;">
+                            <span style="color: var(--dark); font-weight: 500;">All Categories</span>
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
+                            <input type="checkbox" value="Health" class="categoryCheck" style="margin-right: 0.75rem; cursor: pointer;">
+                            <span style="color: var(--gray); font-weight: 500;">Health</span>
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
+                            <input type="checkbox" value="Education" class="categoryCheck" style="margin-right: 0.75rem; cursor: pointer;">
+                            <span style="color: var(--gray); font-weight: 500;">Education</span>
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
+                            <input type="checkbox" value="Technology" class="categoryCheck" style="margin-right: 0.75rem; cursor: pointer;">
+                            <span style="color: var(--gray); font-weight: 500;">Technology</span>
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
+                            <input type="checkbox" value="Community" class="categoryCheck" style="margin-right: 0.75rem; cursor: pointer;">
+                            <span style="color: var(--gray); font-weight: 500;">Community</span>
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
+                            <input type="checkbox" value="Emergency" class="categoryCheck" style="margin-right: 0.75rem; cursor: pointer;">
+                            <span style="color: var(--gray); font-weight: 500;">Emergency</span>
+                        </label>
+                    </div>
+
+                    <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem; margin-top: 2rem; color: var(--dark); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">GOAL RANGE</h3>
+                    <div class="mb-2">
+                        <input type="range" min="0" max="50000" value="50000" id="goalRange" style="width: 100%; cursor: pointer;">
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray);">$0 - $50k+</p>
+                    </div>
+
+                    <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--dark); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">CAMPAIGN STATUS</h3>
+                    <div class="mb-1">
+                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
+                            <input type="checkbox" value="Active" class="statusCheck" style="margin-right: 0.75rem; cursor: pointer;">
+                            <span style="color: var(--gray); font-weight: 500;">Active</span>
+                        </label>
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" value="Near Goal" class="statusCheck" style="margin-right: 0.75rem; cursor: pointer;">
+                            <span style="color: var(--gray); font-weight: 500;">Near Goal</span>
+                        </label>
+                    </div>
+
+                    <button id="resetFilters" style="width: 100%; padding: 0.75rem; margin-top: 1.5rem; background: var(--white); border: 2px solid var(--gray-lighter); color: var(--primary); border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.3s;">Reset Filters</button>
+                </aside>
+
+                <!-- MAIN CAMPAIGNS AREA -->
+                <div>
+                    <!-- Search & Sort -->
+                    <div class="flex-gap-lg align-center mb-2">
+                        <div style="flex: 1; position: relative;">
+                            <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--gray);"></i>
+                            <input type="text" id="searchInput" placeholder="Search campaigns..." style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--gray-lighter); border-radius: var(--radius-md); font-size: 1rem;">
+                        </div>
+                        <select id="sortFilter" style="padding: 0.75rem 1rem; border: 1px solid var(--gray-lighter); border-radius: var(--radius-md); background: var(--white); cursor: pointer; min-width: 150px;">
+                            <option value="recent">Newest</option>
+                            <option value="popular">Most Popular</option>
+                            <option value="ending">Ending Soon</option>
+                        </select>
+                    </div>
+
+                    <!-- CAMPAIGNS GRID -->
+                    <div class="campaigns-grid" id="campaignsGrid">
+                        <div class="loading-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading campaigns...</p>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div id="pagination" class="flex-gap-xs justify-center mt-2">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
                 </div>
-
-                <select id="categoryFilter" class="filter-select">
-                    <option value="">All Categories</option>
-                    <option value="Health">Health</option>
-                    <option value="Education">Education</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Emergency">Emergency</option>
-                    <option value="Community">Community</option>
-                    <option value="Medical">Medical</option>
-                    <option value="Business">Business</option>
-                    <option value="Charity">Charity</option>
-                    <option value="Environment">Environment</option>
-                </select>
-
-                <select id="sortFilter" class="filter-select">
-                    <option value="recent">Most Recent</option>
-                    <option value="popular">Most Popular</option>
-                    <option value="ending">Ending Soon</option>
-                </select>
-            </div>
-        </div>
-    </section>
-
-    <!-- CAMPAIGNS GRID -->
-    <section class="campaigns-section">
-        <div class="container">
-            <div class="campaigns-grid" id="campaignsGrid">
-                <div class="loading-state">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <p>Loading campaigns...</p>
-                </div>
-            </div>
-
-            <!-- Pagination -->
-            <div class="pagination" id="pagination">
-                <!-- Will be populated by JavaScript -->
             </div>
         </div>
     </section>
@@ -109,10 +149,10 @@
                     </div>
                     <p>Making fundraising simple and accessible for everyone.</p>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" title="Follow us on Facebook" aria-label="Follow us on Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" title="Follow us on Twitter" aria-label="Follow us on Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Follow us on Instagram" aria-label="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="Follow us on LinkedIn" aria-label="Follow us on LinkedIn"><i class="fab fa-linkedin"></i></a>
                     </div>
                 </div>
 
@@ -157,3 +197,6 @@
     <script src="../assets/js/campaigns.js"></script>
 </body>
 </html>
+
+
+
