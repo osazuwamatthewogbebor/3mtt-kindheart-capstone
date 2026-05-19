@@ -11,6 +11,10 @@
  * - VUE_APP_API_URL (Vue)
  * - API_URL (fallback in window.APP_CONFIG)
  */
+// API Configuration
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:'
+    ? 'http://localhost:3000/api'
+    : 'https://kindheart-api.onrender.com/api';
 
 // Get API URL from environment variables or config
 // Do NOT hardcode URLs - use environment-based configuration
@@ -57,6 +61,7 @@ const API = {
     RESEND_VERIFICATION: `${API_URL}/auth/resend-verification`,
     ME: `${API_URL}/auth/me`,
     FORGOT_PASSWORD: `${API_URL}/auth/forgot-password`,
+    RESEND_VERIFICATION: `${API_URL}/auth/resend-verification`,
     RESET_PASSWORD: `${API_URL}/auth/reset-password`,
     UPDATE_PROFILE: `${API_URL}/auth/update-profile`,
     CHANGE_PASSWORD: `${API_URL}/auth/change-password`,
@@ -76,6 +81,7 @@ const API = {
     // Admin
     ADMIN_STATS: `${API_URL}/admin/stats`,
     ADMIN_USERS: `${API_URL}/admin/users`,
+    ADMIN_CAMPAIGNS: `${API_URL}/admin/campaigns`,
 
     // Users
     USERS: `${API_URL}/users`,
@@ -355,6 +361,56 @@ function showToast(message, type = 'info') {
 // Backward compatibility for existing pages still using alert().
 window.alert = function (message) {
     showToast(message, inferToastType(message));
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast-item toast-${type}`;
+    
+    let iconClass = 'fa-info-circle';
+    if (type === 'success') iconClass = 'fa-check-circle';
+    else if (type === 'error') iconClass = 'fa-exclamation-circle';
+    else if (type === 'warning') iconClass = 'fa-exclamation-triangle';
+
+    toast.innerHTML = `
+        <div class="toast-icon">
+            <i class="fas ${iconClass}"></i>
+        </div>
+        <div class="toast-message">${message}</div>
+        <button class="toast-close" onclick="this.parentElement.style.animation='toastSlideOut 0.3s forwards'; setTimeout(() => this.parentElement.remove(), 300);">&times;</button>
+    `;
+
+    container.appendChild(toast);
+
+    // Auto remove
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.style.animation = 'toastSlideOut 0.3s forwards';
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 300);
+        }
+    }, 4500);
+}
+
+// Seamlessly override default alert to use beautiful premium Toast notifications!
+window.alert = function(message) {
+    // Guess status based on keywords
+    let type = 'info';
+    const msgLower = message.toLowerCase();
+    if (msgLower.includes('success') || msgLower.includes('approve') || msgLower.includes('verified') || msgLower.includes('activated')) {
+        type = 'success';
+    } else if (msgLower.includes('error') || msgLower.includes('fail') || msgLower.includes('invalid') || msgLower.includes('reject') || msgLower.includes('suspend') || msgLower.includes('cannot') || msgLower.includes('required')) {
+        type = 'error';
+    } else if (msgLower.includes('warning') || msgLower.includes('attention') || msgLower.includes('sure')) {
+        type = 'warning';
+    }
+    showToast(message, type);
 };
 
 // Helper function to handle API errors
