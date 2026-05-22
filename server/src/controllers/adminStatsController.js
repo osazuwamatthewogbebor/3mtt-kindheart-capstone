@@ -1,6 +1,58 @@
 import prisma from '../config/db.js';
 import { logAdminAction } from '../services/auditLogService.js';
 
+export const getPublicStats = async (req, res, next) => {
+	try {
+		// Fetch all required statistics in parallel
+		const [
+			totalUsersResult,
+			totalCampaignsResult,
+			totalDonationsResult,
+			totalAmountDonatedResult,
+			totalAmountRaisedResult,
+		] = await Promise.all([
+			// Count total users
+			prisma.user.count(),
+
+			// Count total campaigns
+			prisma.campaign.count(),
+
+			// Count total donations
+			prisma.donation.count(),
+
+			// Sum of successful donations
+			prisma.donation.aggregate({
+				where: {
+					status: 'SUCCESS',
+				},
+				_sum: {
+					amount: true,
+				},
+			}),
+
+			// Sum of campaign amountRaised
+			prisma.campaign.aggregate({
+				_sum: {
+					amountRaised: true,
+				},
+			}),
+		]);
+
+		res.status(200).json({
+			success: true,
+			data: {
+				totalUsers: totalUsersResult,
+				totalCampaigns: totalCampaignsResult,
+				totalDonations: totalDonationsResult,
+				totalAmountDonated: totalAmountDonatedResult._sum.amount || 0,
+				totalAmountRaised: totalAmountRaisedResult._sum.amountRaised || 0,
+			},
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
 export const getStats = async (req, res, next) => {
 	try {
 		// Fetch all required statistics in parallel

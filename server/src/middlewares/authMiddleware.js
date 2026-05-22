@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import prisma from '../config/db.js';
 import { isTokenBlacklisted } from '../utils/tokenBlacklist.js';
+import logger from '../config/logger.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 

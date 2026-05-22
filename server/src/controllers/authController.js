@@ -3,12 +3,7 @@ import { createHash, randomBytes, randomUUID } from 'crypto';
 import jwt from 'jsonwebtoken';
 import prisma from '../config/db.js';
 import logger from '../config/logger.js';
-import {
-	sendVerificationEmail,
-	sendWelcomeEmail,
-	sendResetPasswordEmail,
-	sendResetSuccessEmail
-} from '../services/emailService.js';
+import { emailService } from '../config/email.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const ACCESS_TOKEN_EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN || '15m';
@@ -61,6 +56,7 @@ const sanitizeUser = (user) => ({
 	name: user.name,
 	email: user.email,
 	role: user.role,
+	isVerified: user.isVerified,
 	profileImageUrl: user.profileImageUrl,
 	createdAt: user.createdAt,
 	profile_picture: user.profileImageUrl,
@@ -70,7 +66,7 @@ const sanitizeUser = (user) => ({
 export const registerUser = async (req, res, next) => {
 	try {
 		const { name, email, password } = req.body;
-
+		
 		const existingUser = await prisma.user.findUnique({
 			where: { email: email.toLowerCase() },
 		});
@@ -100,12 +96,12 @@ export const registerUser = async (req, res, next) => {
 		});
 
 		const token = createAccessToken(user);
-		const appUrl = process.env.APP_URL || 'http://localhost:3000';
-		const verificationLink = `${appUrl}/api/auth/verify-email?token=${rawVerificationToken}`;
+		const clientUrl = process.env.CLIENT_URL || process.env.APP_URL || 'http://localhost:5500/client';
+		const verificationLink = `${clientUrl}/pages/verify.html?token=${rawVerificationToken}`;
 		let emailSent = true;
 
 		try {
-			await sendVerificationEmail({
+			await emailService.sendVerificationEmail({
 				to: user.email,
 				name: user.name,
 				verificationLink,
@@ -153,9 +149,11 @@ export const loginUser = async (req, res, next) => {
 		}
 
 		if (!user.isVerified) {
-			const error = new Error('Account not verified. Please check your email for a verification link or contact support.');
-			error.statusCode = 403;
-			throw error;
+			return res.status(403).json({
+				success: false,
+				message: 'Account not verified. Please verify your email before logging in.',
+				requiresVerification: true,
+			});
 		}
 
 		const accessToken = createAccessToken(user);
@@ -339,6 +337,12 @@ export const forgotPassword = async (req, res, next) => {
 			throw error;
 		}
 
+		if (!user.isVerified) {
+			const error = new Error('Account not verified. Please verify your email before resetting your password.');
+			error.statusCode = 403;
+			throw error;
+		}
+
 		const rawToken = randomBytes(32).toString('hex');
 		const hashedToken = createHash('sha256').update(rawToken).digest('hex');
 		const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000);
@@ -351,16 +355,17 @@ export const forgotPassword = async (req, res, next) => {
 			},
 		});
 
-		const appUrl = process.env.APP_URL || 'http://localhost:3000';
-		const resetLink = `${appUrl}/api/auth/reset-password/${rawToken}`;
+		const clientUrl = process.env.CLIENT_URL || process.env.APP_URL || 'http://localhost:5500/client';
+		const resetLink = `${clientUrl}/pages/reset-password.html?token=${rawToken}`;
 
 		let emailSent = true;
 		try {
-			await sendResetPasswordEmail({
+			await emailService.sendResetPasswordEmail({
 				to: user.email,
 				name: user.name,
 				resetLink,
 			});
+			logger.info("Reset Password Email Sent")
 		} catch (error) {
 			emailSent = false;
 			logger.error(`Reset email failed: ${error.message}`);
@@ -389,6 +394,12 @@ export const resetPassword = async (req, res, next) => {
 			throw error;
 		}
 
+		if (!password || typeof password !== 'string' || password.length < 6) {
+			const error = new Error('A valid new password is required');
+			error.statusCode = 400;
+			throw error;
+		}
+
 		const hashedToken = createHash('sha256').update(token).digest('hex');
 
 		const user = await prisma.user.findFirst({
@@ -408,7 +419,7 @@ export const resetPassword = async (req, res, next) => {
 
 		const hashedPassword = await bcrypt.hash(password, 10);
 
-		await prisma.user.update({
+		const updatedUser = await prisma.user.update({
 			where: { id: user.id },
 			data: {
 				password: hashedPassword,
@@ -417,16 +428,23 @@ export const resetPassword = async (req, res, next) => {
 			},
 		});
 
+		if (!updatedUser) {
+			const error = new Error('Failed to reset password. Please try again.');
+			error.statusCode = 500;
+			throw error;
+		}
+
 		res.status(200).json({
 			success: true,
 			message: 'Password reset successful',
 		});
 
 		// Send success email in background
-		sendResetSuccessEmail({
+		emailService.sendResetSuccessEmail({
 			to: user.email,
 			name: user.name,
 		}).catch((err) => logger.error(`Reset success email failed: ${err.message}`));
+		logger.info("Reset Success Email Sent")
 	} catch (error) {
 		next(error);
 	}
@@ -474,10 +492,11 @@ export const verifyEmail = async (req, res, next) => {
 		});
 
 		// Send welcome email in background
-		sendWelcomeEmail({
+		emailService.sendWelcomeEmail({
 			to: user.email,
 			name: user.name,
 		}).catch((err) => logger.error(`Welcome email failed: ${err.message}`));
+		logger.info("Welcome Email Sent")
 	} catch (error) {
 		next(error);
 	}
@@ -518,16 +537,17 @@ export const resendVerificationEmailLink = async (req, res, next) => {
 			},
 		});
 
-		const appUrl = process.env.APP_URL || 'http://localhost:3000';
-		const verificationLink = `${appUrl}/api/auth/verify-email?token=${rawVerificationToken}`;
+		const clientUrl = process.env.CLIENT_URL || process.env.APP_URL || 'http://localhost:5500/client';
+		const verificationLink = `${clientUrl}/pages/verify.html?token=${rawVerificationToken}`;
 
 		let emailSent = true;
 		try {
-			await sendVerificationEmail({
+			await emailService.sendVerificationEmail({
 				to: user.email,
 				name: user.name,
 				verificationLink,
 			});
+			logger.info("Verification Link Email Resent.")
 		} catch (emailError) {
 			emailSent = false;
 			logger.error(`Resend verification failed: ${emailError.message}`);

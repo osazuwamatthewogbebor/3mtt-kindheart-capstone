@@ -11,7 +11,7 @@ if (mobileToggle) {
 // Load dashboard stats
 async function loadStats() {
     try {
-        const response = await fetch(API.ADMIN_STATS);
+        const response = await fetch(API.PUBLIC_STATS);
         const result = await response.json();
         const data = result.data || result;
         
@@ -28,7 +28,7 @@ async function loadStats() {
 // Load featured campaigns
 async function loadFeaturedCampaigns() {
     try {
-        const response = await fetch(`${API.CAMPAIGNS}?status=ACTIVE&limit=6`);
+        const response = await fetch(`${API.CAMPAIGNS}?limit=6`);
         const result = await response.json();
         const data = result.data || result.campaigns || result;
         

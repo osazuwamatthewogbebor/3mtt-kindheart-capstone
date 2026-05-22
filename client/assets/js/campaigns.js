@@ -15,7 +15,7 @@ function updateNavActions() {
                 <div class="user-dropdown" id="userDropdown">
                     <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
                     <a href="my-donations.html"><i class="fas fa-heart"></i> My Donations</a>
-                    ${user.role === 'ADMIN' ? '<a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>' : ''}
+                    ${user.role === 'ADMIN' ? '<a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>' : ''}
                     <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
@@ -87,7 +87,7 @@ async function loadCampaigns() {
         const category = document.getElementById('categoryFilter')?.value || '';
         const sort = document.getElementById('sortFilter')?.value || '';
         
-        let url = `${API.CAMPAIGNS}?status=ACTIVE&limit=${limit}&page=${currentPage}`;
+        let url = `${API.CAMPAIGNS}?limit=${limit}&page=${currentPage}`;
         
         if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`;
         if (category) url += `&category=${encodeURIComponent(category)}`;

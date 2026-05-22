@@ -74,12 +74,16 @@ export const getResetPasswordTemplate = (name, link) => baseTemplate(`
   <p>If you didn't request a password reset, please ignore this email or contact support if you have concerns.</p>
 `);
 
-export const getResetSuccessTemplate = (name) => baseTemplate(`
+export const getResetSuccessTemplate = (name) => {
+  const frontendUrl = process.env.CLIENT_URL || process.env.FRONTEND_URL || process.env.APP_URL || 'http://localhost:5500/client';
+  const loginLink = `${frontendUrl}/pages/login.html`;
+  return baseTemplate(`
   <h2 style="color: ${PRIMARY_COLOR};">Password Changed Successfully</h2>
   <p>Hi ${name},</p>
   <p>Your password for <strong>${APP_NAME}</strong> has been successfully updated.</p>
   <p>If you did not perform this change, please contact our security team immediately.</p>
   <div style="text-align: center;">
-    <a href="${process.env.FRONTEND_URL || '#'}" class="button">Login Now</a>
+    <a href="${loginLink}" class="button">Login Now</a>
   </div>
 `);
+};

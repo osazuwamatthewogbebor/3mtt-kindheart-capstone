@@ -7,42 +7,33 @@
  * - FIX #7: Logout clears all sensitive data securely
  * 
  * ENVIRONMENT VARIABLES:
- * - REACT_APP_API_URL (React/Vite)
- * - VUE_APP_API_URL (Vue)
  * - API_URL (fallback in window.APP_CONFIG)
  */
 // API Configuration
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:'
-    ? 'http://localhost:3000/api'
-    : 'https://kindheart-api.onrender.com/api';
 
 // Get API URL from environment variables or config
 // Do NOT hardcode URLs - use environment-based configuration
 function getAPIUrl() {
-    // Check environment variables first
-    if (typeof process !== 'undefined' && process.env) {
-        if (process.env.REACT_APP_API_URL) {
-            console.log('Using REACT_APP_API_URL from environment');
-            return process.env.REACT_APP_API_URL;
-        }
-        if (process.env.VUE_APP_API_URL) {
-            console.log('Using VUE_APP_API_URL from environment');
-            return process.env.VUE_APP_API_URL;
-        }
+    // Check localhost first
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') {
+        return 'http://localhost:3000/api';
     }
+
+
     
-    // Check window config object (set in index.html)
+    // // Check window config object (set in index.html)
     if (window.APP_CONFIG && window.APP_CONFIG.API_URL) {
         console.log('Using API_URL from window.APP_CONFIG');
         return window.APP_CONFIG.API_URL;
     }
     
-    // Check localStorage for custom URL (admin configuration)
+    // // Check localStorage for custom URL (admin configuration)
     const customUrl = localStorage.getItem('customApiUrl');
     if (customUrl) {
         console.log('Using custom API URL from localStorage');
         return customUrl;
     }
+
     
     // Fallback (set in production)
     console.warn('WARNING: Using fallback API URL. Set environment variables in production!');
@@ -61,10 +52,11 @@ const API = {
     RESEND_VERIFICATION: `${API_URL}/auth/resend-verification`,
     ME: `${API_URL}/auth/me`,
     FORGOT_PASSWORD: `${API_URL}/auth/forgot-password`,
-    RESEND_VERIFICATION: `${API_URL}/auth/resend-verification`,
     RESET_PASSWORD: `${API_URL}/auth/reset-password`,
     UPDATE_PROFILE: `${API_URL}/auth/update-profile`,
     CHANGE_PASSWORD: `${API_URL}/auth/change-password`,
+    VERIFY_EMAIL: `${API_URL}/auth/verify-email`,
+    GOOGLE_AUTH: `${API_URL}/auth/google`,
 
     // Campaigns
     CAMPAIGNS: `${API_URL}/campaigns`,
@@ -77,6 +69,9 @@ const API = {
 
     // Categories
     CATEGORIES: `${API_URL}/categories`,
+
+    // Public Stats (no auth required)
+    PUBLIC_STATS: `${API_URL}/stats`,
 
     // Admin
     ADMIN_STATS: `${API_URL}/admin/stats`,
@@ -181,11 +176,6 @@ function calculateProgress(raised, goal) {
 }
 
 // ===== INPUT VALIDATION UTILITIES =====
-// Email validation
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email) && email.length <= 254;
-}
 
 // Name validation (2-100 characters, letters and spaces only)
 function isValidName(name) {
@@ -330,7 +320,7 @@ function inferToastType(message) {
     return 'info';
 }
 
-function showToast(message, type = 'info') {
+function showToast(message, type = 'info', duration = 8000) {
     const text = String(message || '').trim();
     if (!text) return;
 
@@ -350,53 +340,28 @@ function showToast(message, type = 'info') {
     toast.textContent = text;
     container.appendChild(toast);
 
-    window.setTimeout(() => {
+    const timeoutId = window.setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(-6px)';
         toast.style.transition = 'opacity 140ms ease, transform 140ms ease';
         window.setTimeout(() => toast.remove(), 140);
-    }, 3200);
+    }, duration);
+
+    toast.addEventListener('mouseover', () => {
+        window.clearTimeout(timeoutId);
+    });
+
+    toast.addEventListener('mouseleave', () => {
+        window.setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-6px)';
+            toast.style.transition = 'opacity 140ms ease, transform 140ms ease';
+            window.setTimeout(() => toast.remove(), 140);
+        }, 2000);
+    });
 }
 
-// Backward compatibility for existing pages still using alert().
-window.alert = function (message) {
-    showToast(message, inferToastType(message));
-    let container = document.getElementById('toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        container.className = 'toast-container';
-        document.body.appendChild(container);
-    }
 
-    const toast = document.createElement('div');
-    toast.className = `toast-item toast-${type}`;
-    
-    let iconClass = 'fa-info-circle';
-    if (type === 'success') iconClass = 'fa-check-circle';
-    else if (type === 'error') iconClass = 'fa-exclamation-circle';
-    else if (type === 'warning') iconClass = 'fa-exclamation-triangle';
-
-    toast.innerHTML = `
-        <div class="toast-icon">
-            <i class="fas ${iconClass}"></i>
-        </div>
-        <div class="toast-message">${message}</div>
-        <button class="toast-close" onclick="this.parentElement.style.animation='toastSlideOut 0.3s forwards'; setTimeout(() => this.parentElement.remove(), 300);">&times;</button>
-    `;
-
-    container.appendChild(toast);
-
-    // Auto remove
-    setTimeout(() => {
-        if (toast.parentNode) {
-            toast.style.animation = 'toastSlideOut 0.3s forwards';
-            setTimeout(() => {
-                if (toast.parentNode) toast.remove();
-            }, 300);
-        }
-    }, 4500);
-}
 
 // Seamlessly override default alert to use beautiful premium Toast notifications!
 window.alert = function(message) {

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - KindHeart</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/auth.css">
+    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .verify-card {
+            text-align: center;
+            padding: 2rem;
+        }
+        .verify-card i {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #ef4444;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-card verify-card">
+            <div class="auth-header">
+                <div class="logo" style="justify-content: center;">
+                    <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img">
+                    <span>KindHeart</span>
+                </div>
+                <h1>Email Verification</h1>
+                <p>We are verifying your email address...</p>
+            </div>
+
+            <div id="verifyStatus">
+                <i class="fas fa-spinner fa-spin" style="font-size: 3rem; margin: 1rem 0;"></i>
+                <p>Please wait while we verify your token.</p>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <a href="login.html" class="btn btn-primary btn-block">
+                    Go to Login
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/auth.js"></script>
+</body>
+</html>

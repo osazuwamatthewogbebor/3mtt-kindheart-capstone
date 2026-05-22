@@ -7,6 +7,7 @@ import './config/passport.js';
 import authRoutes from './routes/authRoutes.js';
 import adminCategoryRoutes from './routes/adminCategoryRoutes.js';
 import adminStatsRoutes from './routes/adminStatsRoutes.js';
+import publicStatsRoutes from './routes/publicStatsRoutes.js';
 import campaignRoutes from './routes/campaignRoutes.js';
 
 import userRoutes from './routes/userRoutes.js';
@@ -18,6 +19,7 @@ import donationRoutes from './routes/donationRoutes.js'
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
 import { gatekeeper } from './middlewares/gatekeeperMiddleware.js';
+import { healthcare } from 'googleapis/build/src/apis/healthcare/index.js';
 
 const app = express();
 
@@ -103,6 +105,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api-docs', gatekeeper, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/stats', publicStatsRoutes);
 app.use('/api/admin', adminLimiter);
 app.use('/api/admin/categories', adminCategoryRoutes);
 app.use('/api/admin', adminStatsRoutes);

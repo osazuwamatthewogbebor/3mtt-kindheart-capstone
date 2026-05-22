@@ -20,7 +20,7 @@ kindheart-frontend/
 │   ├── register.html          # Registration page
 │   ├── forgot-password.html   # Password reset
 │   ├── campaigns.html         # Browse campaigns
-│   └── dashboard.html         # Admin dashboard (from previous file)
+│   └── admin-dashboard.html   # Admin dashboard (from previous file)
 └── images/                    # Image assets
 ```
 
@@ -126,7 +126,7 @@ Make sure your backend is running on `http://localhost:5000`
 - Sort options
 - Pagination (ready for implementation)
 
-### Dashboard (`pages/dashboard.html`)
+### Dashboard (`pages/admin-dashboard.html`)
 - Admin statistics
 - Campaign overview
 - User management

@@ -18,6 +18,7 @@ import {
 	forgotPasswordSchema,
 	loginSchema,
 	registerSchema,
+	resetPasswordSchema,
 } from '../validations/authValidation.js';
 
 const router = express.Router();
@@ -41,7 +42,7 @@ router.get('/verify-email', verifyEmail);
 router.post('/resend-verification', resendVerificationEmailLink);
 router.post('/forgot-password', validateRequest(forgotPasswordSchema), forgotPassword);
 router.get('/reset-password/:token', resetPassword);
-router.post('/reset-password/:token', resetPassword);
+router.post('/reset-password/:token', validateRequest(resetPasswordSchema), resetPassword);
 router.post('/logout', logoutUser);
 router.get('/me', protect, getMe);
 
