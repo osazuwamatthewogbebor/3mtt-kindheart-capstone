@@ -1,5 +1,5 @@
 import express from 'express';
-import { createCampaign, getCampaignById, listCampaigns, updateCampaign, updateCampaignImage } from '../controllers/campaignController.js';
+import { createCampaign, getCampaignById, listCampaigns, updateCampaign, updateCampaignImage, getMyCampaigns } from '../controllers/campaignController.js';
 import { isAuth, protect, requireVerified } from '../middlewares/authMiddleware.js';
 import validateRequest from '../middlewares/validateRequest.js';
 import { createCampaignSchema, getCampaignByIdSchema, updateCampaignSchema } from '../validations/campaignValidation.js';
@@ -11,6 +11,7 @@ const router = express.Router();
 
 router.post('/', isAuth, requireVerified, uploadCampaignImage, validateRequest(createCampaignSchema), createCampaign);
 router.get('/', listCampaigns);
+router.get("/me", protect, requireVerified, getMyCampaigns);
 router.get("/search", validateRequest(searchSchema, "query"), handleSearch)
 router.get('/:id', getCampaignById);
 router.put('/:id', protect, requireVerified, validateRequest(updateCampaignSchema), updateCampaign);

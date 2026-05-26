@@ -448,3 +448,43 @@ export const updateCampaignImage = async (req, res, next) => {
 		next(error);
 	}
 };
+
+export const getMyCampaigns = async (req, res, next) => {
+	try {
+		const userId = req.user.id;
+		const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
+		const limit = Math.min(100, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
+		const skip = (page - 1) * limit;
+
+		const [campaigns, total] = await Promise.all([
+			prisma.campaign.findMany({
+				where: {
+					userId,
+				},
+				orderBy: {
+					createdAt: 'desc',
+				},
+				include: {
+					user: { select: publicUserSelect },
+					category: { select: { id: true, name: true } },
+				},
+				skip,
+				take: limit,
+			}),
+			prisma.campaign.count({ where: { userId } }),
+		]);
+
+		const paginatedCampaigns = campaigns.map(formatCampaign);
+
+		res.status(200).json({
+			success: true,
+			count: paginatedCampaigns.length,
+			total,
+			page,
+			limit,
+			data: paginatedCampaigns,
+		});
+	} catch (error) {
+		next(error);
+	}
+};

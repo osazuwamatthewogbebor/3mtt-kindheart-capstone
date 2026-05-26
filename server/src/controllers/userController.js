@@ -81,3 +81,75 @@ export const updateMyImage = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getUserStats = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Check if user exists
+    const userExists = await prisma.user.findUnique({
+      where: { id },
+      select: { id: true }
+    });
+
+    if (!userExists) {
+      const error = new Error('User not found');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const [totalCampaigns, totalDonations, totalRaisedResult, totalDonatedResult, totalSupporters] = await Promise.all([
+      // Count total campaigns created by user
+      prisma.campaign.count({
+        where: { userId: id }
+      }),
+      // Count total successful donations made by user
+      prisma.donation.count({
+        where: {
+          donorId: id,
+          status: 'SUCCESS'
+        }
+      }),
+      // Sum of amountRaised of campaigns created by user
+      prisma.campaign.aggregate({
+        where: { userId: id },
+        _sum: {
+          amountRaised: true
+        }
+      }),
+      // Sum of donations made by user
+      prisma.donation.aggregate({
+        where: {
+          donorId: id,
+          status: 'SUCCESS'
+        },
+        _sum: {
+          amount: true
+        }
+      }),
+      // Count total successful donations received on user's campaigns
+      prisma.donation.count({
+        where: {
+          campaign: {
+            userId: id
+          },
+          status: 'SUCCESS'
+        }
+      })
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        total_campaigns: totalCampaigns,
+        total_donations: totalDonations,
+        total_raised: Number(totalRaisedResult._sum.amountRaised || 0),
+        total_donated: Number(totalDonatedResult._sum.amount || 0),
+        total_supporters: totalSupporters
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
