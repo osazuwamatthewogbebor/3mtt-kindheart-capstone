@@ -145,7 +145,7 @@
                     <!-- Active Campaigns Section -->
                     <div class="dashboard-content-header">
                         <h2 class="dashboard-content-title">My Active Campaigns</h2>
-                        <a href="my-campaigns.html" class="dashboard-content-link">View All</a>
+                        <button onclick="openCampaignsModal()" class="dashboard-content-link" style="background: none; border: none; cursor: pointer; color: var(--primary); font-weight: 600; font-size: 0.875rem;">View All</button>
                     </div>
                     
                     <div class="campaign-grid-mini" id="activeCampaignsContainer">
@@ -162,7 +162,7 @@
                     <div class="recent-support-card">
                         <div class="dashboard-content-header" style="padding: 1.5rem 1.5rem 0.5rem; margin-bottom: 0;">
                             <h2 class="dashboard-content-title" style="font-size: 1.25rem;">Recent Donations Made</h2>
-                            <a href="my-donations.html" class="dashboard-content-link">All Donations</a>
+                            <button onclick="openDonationsModal()" class="dashboard-content-link" style="background: none; border: none; cursor: pointer; color: var(--primary); font-weight: 600; font-size: 0.875rem;">All Donations</button>
                         </div>
                         
                         <div class="table-responsive">
@@ -173,7 +173,7 @@
                                         <th>Date</th>
                                         <th>Amount</th>
                                         <th>Status</th>
-                                        <th style="text-align: right;">Action</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="recentDonationsContainer">
@@ -198,6 +198,53 @@
             </div>
         </div>
     </section>
+
+    <!-- ALL CAMPAIGNS MODAL -->
+    <div id="campaignsModal" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2>My Campaigns</h2>
+                <button onclick="closeCampaignsModal()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="allCampaignsContainer" class="campaigns-list">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALL DONATIONS MODAL -->
+    <div id="donationsModal" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2>All Donations</h2>
+                <button onclick="closeDonationsModal()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="support-table">
+                        <thead>
+                            <tr>
+                                <th>Campaign</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allDonationsContainer">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <footer class="footer">
