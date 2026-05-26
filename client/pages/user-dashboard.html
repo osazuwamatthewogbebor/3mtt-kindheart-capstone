@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - KindHeart</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/profile.css">
+    <link rel="stylesheet" href="../assets/css/user-dashboard.css">
+    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <a href="../index.html">
+                        <i class="fas fa-heart"></i>
+                        <span>KindHeart</span>
+                    </a>
+                </div>
+                
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="campaigns.html">Campaigns</a></li>
+                    <li><a href="my-campaigns.html">My Campaigns</a></li>
+                </ul>
+
+                <div class="nav-actions">
+                    <a href="create-campaign.html" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create Campaign
+                    </a>
+                    <div class="user-menu">
+                        <button class="user-btn" onclick="toggleUserMenu()">
+                            <i class="fas fa-user-circle"></i> <span id="userName">User</span>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="user-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                            <a href="my-donations.html"><i class="fas fa-heart"></i> My Donations</a>
+                            <a href="admin-dashboard.html" id="adminLink" class="hidden"><i class="fas fa-shield-alt"></i> Admin Panel</a>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <section class="dashboard-section">
+        <div class="container">
+            <div class="dashboard-grid">
+                
+                <!-- LEFT SIDEBAR: PROFILE & QUICK NAV -->
+                <aside class="sidebar-wrapper">
+                    
+                    <!-- Profile Summary Card -->
+                    <div class="profile-summary-card">
+                        <div class="profile-avatar-container">
+                            <div id="sidebarAvatar" class="profile-avatar-placeholder">U</div>
+                            <span class="verified-badge" id="verifiedBadge" title="Verified Account">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </div>
+                        <h2 class="profile-name" id="sidebarName">Loading User...</h2>
+                        <p class="profile-role" id="sidebarMemberSince">Member since 2024</p>
+                        
+                        <div class="profile-actions">
+                            <a href="create-campaign.html" class="btn btn-primary w-full">
+                                <i class="fas fa-plus-circle"></i> Start Campaign
+                            </a>
+                            <a href="profile.html" class="btn btn-outline w-full">
+                                <i class="fas fa-user-edit"></i> Edit Profile
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Navigation Card -->
+                    <div class="quick-nav-card">
+                        <h3 class="quick-nav-title">Quick Navigation</h3>
+                        <nav class="quick-nav-list">
+                            <a href="user-dashboard.html" class="quick-nav-item active">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Overview</span>
+                            </a>
+                            <a href="my-campaigns.html" class="quick-nav-item">
+                                <i class="fas fa-bullhorn"></i>
+                                <span>My Campaigns</span>
+                            </a>
+                            <a href="my-donations.html" class="quick-nav-item">
+                                <i class="fas fa-heart"></i>
+                                <span>My Donations</span>
+                            </a>
+                            <a href="profile.html" class="quick-nav-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                        </nav>
+                    </div>
+                    
+                </aside>
+
+                <!-- RIGHT MAIN CONTENT PANEL -->
+                <main class="main-panel-wrapper">
+                    
+                    <!-- Bento Statistics Grid -->
+                    <div class="bento-stats-grid">
+                        
+                        <!-- Card 1: Total Raised -->
+                        <div class="bento-stat-card">
+                            <span class="stat-card-label">Total Raised</span>
+                            <div class="stat-card-value" id="statsTotalRaised">₦0</div>
+                            <div class="stat-card-footer">
+                                <span class="stat-trend"><i class="fas fa-arrow-up"></i> Active</span>
+                                <span>from your campaigns</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Card 2: Campaigns Created -->
+                        <div class="bento-stat-card accent-secondary">
+                            <span class="stat-card-label">Campaigns Created</span>
+                            <div class="stat-card-value" id="statsTotalCampaigns">0</div>
+                            <div class="stat-card-footer">
+                                <span>Aggregated campaigns</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Card 3: Total Contributors / Donated -->
+                        <div class="bento-stat-card accent-tertiary">
+                            <span class="stat-card-label">Contributions</span>
+                            <div class="stat-card-value" id="statsTotalDonated">₦0</div>
+                            <div class="stat-card-footer">
+                                <span class="stat-trend" style="color: #6366f1;"><i class="fas fa-heart"></i> Supporting</span>
+                                <span>donated to other causes</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <!-- Active Campaigns Section -->
+                    <div class="dashboard-content-header">
+                        <h2 class="dashboard-content-title">My Active Campaigns</h2>
+                        <a href="my-campaigns.html" class="dashboard-content-link">View All</a>
+                    </div>
+                    
+                    <div class="campaign-grid-mini" id="activeCampaignsContainer">
+                        <!-- Loaded dynamically or empty state -->
+                        <div class="empty-dashboard-state w-full">
+                            <i class="fas fa-bullhorn"></i>
+                            <h4>No active campaigns found</h4>
+                            <p>Get started by creating a fundraising campaign for a worthy cause.</p>
+                            <a href="create-campaign.html" class="btn btn-primary btn-sm">Create Campaign</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Support Table Section -->
+                    <div class="recent-support-card">
+                        <div class="dashboard-content-header" style="padding: 1.5rem 1.5rem 0.5rem; margin-bottom: 0;">
+                            <h2 class="dashboard-content-title" style="font-size: 1.25rem;">Recent Donations Made</h2>
+                            <a href="my-donations.html" class="dashboard-content-link">All Donations</a>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="support-table">
+                                <thead>
+                                    <tr>
+                                        <th>Campaign</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentDonationsContainer">
+                                    <!-- Loaded dynamically or empty state -->
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; padding: 3rem 0; color: var(--gray);">
+                                            <div class="empty-dashboard-state">
+                                                <i class="fas fa-hand-holding-heart"></i>
+                                                <h4>No donations made yet</h4>
+                                                <p>Explore existing campaigns and contribute to make a difference.</p>
+                                                <a href="campaigns.html" class="btn btn-primary btn-sm">Explore Campaigns</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </main>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <span class="footer-logo"><i class="fas fa-heart"></i> KindHeart</span>
+                    <p>Empowering individuals to make a real difference through compassionate crowdfunding.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="campaigns.html">Campaigns</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 KindHeart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/user-dashboard.js"></script>
+    <script>
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(e) {
+            const userMenu = document.querySelector('.user-menu');
+            if (userMenu && !userMenu.contains(e.target)) {
+                const dropdown = document.getElementById('userDropdown');
+                if (dropdown && dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

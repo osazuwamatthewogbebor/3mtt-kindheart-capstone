@@ -60,11 +60,11 @@ const API = {
 
     // Campaigns
     CAMPAIGNS: `${API_URL}/campaigns`,
-    MY_CAMPAIGNS: `${API_URL}/campaigns/my-campaigns`,
+    MY_CAMPAIGNS: `${API_URL}/campaigns/me`,
 
     // Donations
     DONATIONS: `${API_URL}/donations`,
-    MY_DONATIONS: `${API_URL}/donations/my-donations`,
+    MY_DONATIONS: `${API_URL}/donations/me`,
     VERIFY_DONATION: `${API_URL}/donations/verify`,
 
     // Categories

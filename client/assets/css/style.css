@@ -607,6 +607,11 @@ ul {
     font-size: 1rem;
 }
 
+.btn-sm {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8rem;
+}
+
 .btn-link {
     color: var(--gray);
     font-weight: 500;

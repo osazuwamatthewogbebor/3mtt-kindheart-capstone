@@ -55,55 +55,62 @@
             <div style="display: grid; grid-template-columns: 250px 1fr; gap: 2rem; margin-bottom: 2rem;">
                 
                 <!-- SIDEBAR FILTERS -->
-                <aside style="background: var(--white); padding: 2rem; border-radius: var(--radius-md); height: fit-content; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--dark);">CATEGORY</h3>
-                    
-                    <div class="mb-2">
-                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
-                            <input type="checkbox" id="catAll" checked style="margin-right: 0.75rem; cursor: pointer;">
-                            <span style="color: var(--dark); font-weight: 500;">All Categories</span>
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
-                            <input type="checkbox" value="Health" class="categoryCheck" style="margin-right: 0.75rem; cursor: pointer;">
-                            <span style="color: var(--gray); font-weight: 500;">Health</span>
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
-                            <input type="checkbox" value="Education" class="categoryCheck" style="margin-right: 0.75rem; cursor: pointer;">
-                            <span style="color: var(--gray); font-weight: 500;">Education</span>
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
-                            <input type="checkbox" value="Technology" class="categoryCheck" style="margin-right: 0.75rem; cursor: pointer;">
-                            <span style="color: var(--gray); font-weight: 500;">Technology</span>
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
-                            <input type="checkbox" value="Community" class="categoryCheck" style="margin-right: 0.75rem; cursor: pointer;">
-                            <span style="color: var(--gray); font-weight: 500;">Community</span>
-                        </label>
-                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
-                            <input type="checkbox" value="Emergency" class="categoryCheck" style="margin-right: 0.75rem; cursor: pointer;">
-                            <span style="color: var(--gray); font-weight: 500;">Emergency</span>
-                        </label>
+                <aside class="filters-sidebar">
+                    <div class="filter-group">
+                        <h3 class="filter-title"><i class="fas fa-filter"></i> CATEGORY</h3>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="catAll" checked data-category="">
+                                <span class="checkbox-label">All Categories</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="categoryCheck" data-category="Health">
+                                <span class="checkbox-label">Health</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="categoryCheck" data-category="Education">
+                                <span class="checkbox-label">Education</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="categoryCheck" data-category="Technology">
+                                <span class="checkbox-label">Technology</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="categoryCheck" data-category="Community">
+                                <span class="checkbox-label">Community</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="categoryCheck" data-category="Emergency">
+                                <span class="checkbox-label">Emergency</span>
+                            </label>
+                        </div>
                     </div>
 
-                    <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem; margin-top: 2rem; color: var(--dark); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">GOAL RANGE</h3>
-                    <div class="mb-2">
-                        <input type="range" min="0" max="50000" value="50000" id="goalRange" style="width: 100%; cursor: pointer;">
-                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray);">$0 - $50k+</p>
+                    <div class="filter-group" style="margin-top: 2rem;">
+                        <h3 class="filter-title"><i class="fas fa-coins"></i> GOAL RANGE</h3>
+                        <div class="range-input">
+                            <input type="range" min="0" max="50000" value="50000" id="goalRange" class="range-slider">
+                            <p class="range-value">$0 - $<span id="goalValue">50,000</span></p>
+                        </div>
                     </div>
 
-                    <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--dark); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">CAMPAIGN STATUS</h3>
-                    <div class="mb-1">
-                        <label style="display: flex; align-items: center; margin-bottom: 0.75rem; cursor: pointer;">
-                            <input type="checkbox" value="Active" class="statusCheck" style="margin-right: 0.75rem; cursor: pointer;">
-                            <span style="color: var(--gray); font-weight: 500;">Active</span>
-                        </label>
-                        <label style="display: flex; align-items: center; cursor: pointer;">
-                            <input type="checkbox" value="Near Goal" class="statusCheck" style="margin-right: 0.75rem; cursor: pointer;">
-                            <span style="color: var(--gray); font-weight: 500;">Near Goal</span>
-                        </label>
+                    <div class="filter-group" style="margin-top: 2rem;">
+                        <h3 class="filter-title"><i class="fas fa-check-circle"></i> CAMPAIGN STATUS</h3>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="statusCheck" data-status="active">
+                                <span class="checkbox-label">Active</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="statusCheck" data-status="near_goal">
+                                <span class="checkbox-label">Near Goal</span>
+                            </label>
+                        </div>
                     </div>
 
-                    <button id="resetFilters" style="width: 100%; padding: 0.75rem; margin-top: 1.5rem; background: var(--white); border: 2px solid var(--gray-lighter); color: var(--primary); border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.3s;">Reset Filters</button>
+                    <button id="resetFilters" class="btn-reset-filters">
+                        <i class="fas fa-redo"></i> Reset Filters
+                    </button>
                 </aside>
 
                 <!-- MAIN CAMPAIGNS AREA -->
