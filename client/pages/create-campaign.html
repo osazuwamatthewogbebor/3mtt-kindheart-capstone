@@ -5,77 +5,237 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Campaign - KindHeart</title>
     <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/auth.css">
+    <link rel="stylesheet" href="../assets/css/campaign.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-card auth-card-lg">
-            <div class="auth-header">
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
                 <div class="logo">
-                    <i class="fas fa-heart"></i>
-                    <span>KindHeart</span>
+                    <a href="../index.html">
+                        <i class="fas fa-heart"></i>
+                        <span>KindHeart</span>
+                    </a>
                 </div>
-                <h1>Create Campaign</h1>
-                <p>Start your fundraising journey</p>
+                
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="campaigns.html">Campaigns</a></li>
+                    <li><a href="my-campaigns.html">My Campaigns</a></li>
+                </ul>
+
+                <div class="nav-actions">
+                    <div class="user-menu">
+                        <button class="user-btn" onclick="toggleUserMenu()">
+                            <i class="fas fa-user-circle"></i> <span id="navUserName">User</span>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="user-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                            <a href="my-donations.html"><i class="fas fa-heart"></i> My Donations</a>
+                            <a href="admin-dashboard.html" id="adminLink" class="hidden"><i class="fas fa-shield-alt"></i> Admin Panel</a>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <form id="createCampaignForm" class="auth-form">
-                <div class="form-group">
-                    <label for="title">
-                        <i class="fas fa-bullhorn"></i> Campaign Title
-                    </label>
-                    <input type="text" id="title" name="title" placeholder="Enter campaign title" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="category">
-                        <i class="fas fa-tag"></i> Category
-                    </label>
-                    <select id="category" name="category" required>
-                        <option value="">Select a category</option>
-                        <option value="Health">Health</option>
-                        <option value="Education">Education</option>
-                        <option value="Business">Business</option>
-                        <option value="Charity">Charity</option>
-                        <option value="Emergency">Emergency</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="goal">
-                        <i class="fas fa-money-bill"></i> Goal Amount (₦)
-                    </label>
-                    <input type="number" id="goal" name="goal" placeholder="Enter goal amount" min="1000" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="description">
-                        <i class="fas fa-align-left"></i> Description
-                    </label>
-                    <textarea id="description" name="description" placeholder="Tell your story..." required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="image">
-                        <i class="fas fa-image"></i> Campaign Image (Optional)
-                    </label>
-                    <input type="file" id="image" name="image" accept="image/*">
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-block" id="createBtn">
-                    <i class="fas fa-rocket"></i> Create Campaign
-                </button>
-
-                <a href="my-campaigns.html" class="back-home">
-                    <i class="fas fa-arrow-left"></i> Back to My Campaigns
-                </a>
-            </form>
         </div>
-    </div>
+    </nav>
+
+    <!-- HEADER SECTION -->
+    <section class="create-campaign-header">
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <h1>Create a New Campaign</h1>
+                    <p>Share your story and make a difference. Fill in the details below to launch your fundraising campaign.</p>
+                </div>
+                <div class="header-icon">
+                    <i class="fas fa-megaphone"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN FORM SECTION -->
+    <section class="create-campaign-section">
+        <div class="container">
+            <div class="form-wrapper">
+                <div id="formFeedback" class="form-feedback hidden" role="status" aria-live="polite"></div>
+                <!-- Progress Indicator -->
+                <div class="progress-indicator">
+                    <div class="progress-step active" data-step="1">
+                        <span class="step-number">1</span>
+                        <span class="step-label">Campaign Info</span>
+                    </div>
+                    <div class="progress-line"></div>
+                    <div class="progress-step" data-step="2">
+                        <span class="step-number">2</span>
+                        <span class="step-label">Details</span>
+                    </div>
+                    <div class="progress-line"></div>
+                    <div class="progress-step" data-step="3">
+                        <span class="step-number">3</span>
+                        <span class="step-label">Media</span>
+                    </div>
+                </div>
+
+                <form id="createCampaignForm" class="create-campaign-form">
+                    <!-- Step 1: Campaign Info -->
+                    <fieldset class="form-section active" data-section="1">
+                        <legend class="section-title">
+                            <i class="fas fa-info-circle"></i> Campaign Information
+                        </legend>
+                        
+                        <div class="form-group">
+                            <label for="title" class="form-label">
+                                Campaign Title
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-bullhorn input-icon"></i>
+                                <input 
+                                    type="text" 
+                                    id="title" 
+                                    name="title" 
+                                    class="form-input"
+                                    placeholder="e.g., Help Build a School in Rural Nigeria"
+                                    maxlength="200"
+                                    required
+                                >
+                                <span class="char-count"><span id="titleCount">0</span>/200</span>
+                            </div>
+                            <p class="form-helper">Keep it clear and compelling (5-200 characters)</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category" class="form-label">
+                                Category
+                                <span class="required">*</span>
+                            </label>
+                            <div class="select-wrapper">
+                                <i class="fas fa-tag select-icon"></i>
+                                <select id="category" name="category" class="form-select" required>
+                                    <option value="">Select a category</option>
+                                </select>
+                            </div>
+                            <p class="form-helper">Choose the category that best fits your campaign</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="goal" class="form-label">
+                                Funding Goal (₦)
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <span class="input-prefix">₦</span>
+                                <input 
+                                    type="number" 
+                                    id="goal" 
+                                    name="goal" 
+                                    class="form-input"
+                                    placeholder="50,000"
+                                    min="1000"
+                                    max="1000000000"
+                                    required
+                                >
+                            </div>
+                            <p class="form-helper">Set a realistic goal between ₦1,000 and ₦1,000,000,000</p>
+                        </div>
+                    </fieldset>
+
+                    <!-- Step 2: Description -->
+                    <fieldset class="form-section" data-section="2">
+                        <legend class="section-title">
+                            <i class="fas fa-align-left"></i> Campaign Details
+                        </legend>
+                        
+                        <div class="form-group">
+                            <label for="description" class="form-label">
+                                Campaign Story
+                                <span class="required">*</span>
+                            </label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                class="form-textarea"
+                                placeholder="Tell your story... Explain why you need help, what the funds will be used for, and how it will make a difference."
+                                maxlength="5000"
+                                required
+                            ></textarea>
+                            <p class="form-helper"><span id="descCount">0</span>/5000 characters</p>
+                        </div>
+                    </fieldset>
+
+                    <!-- Step 3: Media -->
+                    <fieldset class="form-section" data-section="3">
+                        <legend class="section-title">
+                            <i class="fas fa-image"></i> Campaign Image
+                        </legend>
+                        
+                        <div class="form-group">
+                            <label for="image" class="form-label">
+                                Campaign Image
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            
+                            <!-- Image Upload Area -->
+                            <div class="image-upload-area" id="imageUploadArea">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <h3>Upload Campaign Image</h3>
+                                <p>Drag and drop your image here or click to browse</p>
+                                <input 
+                                    type="file" 
+                                    id="image" 
+                                    name="image" 
+                                    class="file-input"
+                                    accept="image/*"
+                                >
+                            </div>
+
+                            <!-- Image Preview -->
+                            <div id="imagePreview" class="image-preview hidden">
+                                <div class="preview-header">
+                                    <h4>Image Preview</h4>
+                                    <button type="button" class="btn btn-text remove-image-btn" onclick="removeImage()">
+                                        <i class="fas fa-times"></i> Remove
+                                    </button>
+                                </div>
+                                <img id="previewImage" src="" alt="Preview" class="preview-img">
+                                <p id="imageInfo" class="text-small"></p>
+                            </div>
+
+                            <p class="form-helper">JPG, PNG, GIF, or WebP (max 5MB). Recommended: 800x600px</p>
+                        </div>
+                    </fieldset>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" id="prevBtn" onclick="previousSection()" style="display: none;">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextSection()">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button type="submit" class="btn btn-success hidden" id="submitBtn">
+                            <i class="fas fa-check"></i> Create Campaign
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
 
     <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/ui-helpers.js"></script>
+    <script src="../assets/js/main.js"></script>
     <script src="../assets/js/create-campaign.js"></script>
 
 </body>

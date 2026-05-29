@@ -170,12 +170,14 @@ async function loadCampaigns() {
         
         // Parse campaigns from response
         let allCampaigns = [];
-        if (result.campaigns && Array.isArray(result.campaigns)) {
+        if (Array.isArray(result.campaigns)) {
             allCampaigns = result.campaigns;
-        } else if (result.data && Array.isArray(result.data)) {
+        } else if (Array.isArray(result.data)) {
             allCampaigns = result.data;
         } else if (Array.isArray(result)) {
             allCampaigns = result;
+        } else if (result.success && result.data && Array.isArray(result.data.campaigns)) {
+            allCampaigns = result.data.campaigns;
         }
 
         // Apply client-side filters
@@ -234,9 +236,9 @@ async function loadCampaigns() {
                         </div>
                     </div>
                     <div class="campaign-actions">
-                        <a href="campaign-details.html?id=${campaign.id || campaign._id}" class="btn btn-outline btn-sm" style="flex: 1;">
-                            <i class="fas fa-eye"></i> View Details
-                        </a>
+                                    <a href="campaign-details.html?id=${campaign.id || campaign._id}" class="btn btn-outline btn-sm" style="flex: 1;">
+                                        <i class="fas fa-eye"></i> See More
+                                    </a>
                         <a href="campaign-details.html?id=${campaign.id || campaign._id}" class="btn btn-primary btn-sm" style="flex: 1;">
                             <i class="fas fa-heart"></i> Donate
                         </a>
@@ -344,6 +346,9 @@ function setupEventListeners() {
                 if (catAllCheckbox) catAllCheckbox.checked = false;
             }
             filters.categories = getSelectedCategories();
+            if (filters.categories.length === 0 && catAllCheckbox) {
+                catAllCheckbox.checked = true;
+            }
             filters.page = 1;
             loadCampaigns();
         });

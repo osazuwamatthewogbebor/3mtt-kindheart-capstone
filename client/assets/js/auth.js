@@ -93,7 +93,7 @@ if (loginForm) {
                     if (data.user?.role === 'ADMIN') {
                         window.location.href = 'admin-dashboard.html';
                     } else {
-                        window.location.href = 'my-campaigns.html';
+                        window.location.href = 'user-dashboard.html';
                     }
                 }, 1500);
             } else {

@@ -675,3 +675,541 @@
 .logo-header-img {
     margin-right: 0.5rem !important;
 }
+
+/* ============================================
+   CREATE CAMPAIGN PAGE STYLES
+   ============================================ */
+.create-campaign-header {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--gray-lightest);
+}
+
+.create-campaign-header .container {
+    max-width: 1000px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.header-content h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.header-content p {
+    font-size: 1rem;
+    color: var(--gray);
+    max-width: 500px;
+}
+
+.header-icon {
+    font-size: 4.5rem;
+    color: var(--primary);
+    opacity: 0.35;
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .header-icon {
+        display: block;
+    }
+}
+
+/* Create Campaign Section */
+.create-campaign-section {
+    padding: 3rem 0;
+    background: var(--gray-lightest);
+    min-height: calc(100vh - 200px);
+}
+
+.create-campaign-section .container {
+    max-width: 900px;
+}
+
+.form-wrapper {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 8px 30px rgba(2,6,23,0.08);
+    padding: 2.25rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Progress Indicator */
+.progress-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2.25rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 1 140px;
+    position: relative;
+    min-width: 0;
+}
+
+.step-number {
+    width: 44px;
+    height: 44px;
+    background: var(--gray-lighter);
+    border: 2px solid var(--gray-lighter);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--gray);
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.progress-step.active .step-number {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.step-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gray);
+    text-align: center;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.progress-step.active .step-label {
+    color: var(--dark);
+    font-weight: 700;
+}
+
+.progress-line {
+    flex: 1;
+    height: 2px;
+    background: var(--gray-lighter);
+    transition: var(--transition);
+    min-width: 20px;
+}
+
+.progress-step.active ~ .progress-line {
+    background: var(--primary);
+}
+
+/* On larger screens place the icon left of the label for better readability */
+@media (min-width: 700px) {
+    .progress-step {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .progress-line {
+        margin-top: 0;
+        align-self: center;
+    }
+
+    .step-label {
+        text-align: left;
+    }
+}
+
+/* Form Styles */
+.create-campaign-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-section {
+    display: none;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.form-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-section fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.section-title i {
+    color: var(--primary);
+    font-size: 1.75rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.required {
+    color: var(--danger);
+}
+
+.optional {
+    color: var(--gray);
+    font-weight: 400;
+    font-size: 0.85rem;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon,
+.select-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--gray);
+    pointer-events: none;
+    font-size: 1rem;
+}
+
+.input-prefix {
+    position: absolute;
+    left: 1rem;
+    color: var(--gray);
+    font-weight: 600;
+    pointer-events: none;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--gray-lighter);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--dark);
+    transition: var(--transition);
+    background: var(--white);
+}
+
+.input-wrapper > .form-input {
+    padding-left: 2.5rem;
+}
+
+.input-wrapper.prefix > .form-input {
+    padding-left: 2.5rem;
+}
+
+.select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.select-wrapper > .form-select {
+    padding-left: 2.5rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 20px;
+    padding-right: 2.5rem;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 140px;
+    font-family: inherit;
+}
+
+.form-helper {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+}
+
+.char-count {
+    position: absolute;
+    right: 1rem;
+    font-size: 0.85rem;
+    color: var(--gray);
+    pointer-events: none;
+}
+
+/* Image Upload Area */
+.image-upload-area {
+    border: 2px dashed var(--gray-lighter);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    background: rgba(16, 185, 129, 0.02);
+}
+
+.image-upload-area:hover {
+    border-color: var(--primary);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.image-upload-area.drag-over {
+    border-color: var(--primary);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.upload-icon {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.image-upload-area h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+}
+
+.image-upload-area p {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.file-input {
+    display: none;
+}
+
+/* Image Preview */
+.image-preview {
+    border: 1px solid var(--gray-lighter);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    background: var(--gray-lightest);
+}
+
+.image-preview.hidden {
+    display: none;
+}
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.preview-header h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.remove-image-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+.preview-img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    margin-bottom: 0.75rem;
+}
+
+#imageInfo {
+    font-size: 0.85rem;
+    color: var(--gray);
+    text-align: center;
+}
+
+.text-small {
+    font-size: 0.85rem;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-lighter);
+    justify-content: flex-end;
+}
+
+/* Inline form feedback banner */
+.form-feedback {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: block;
+}
+
+.form-feedback.success {
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    color: var(--dark);
+}
+
+.form-feedback.error {
+    background: rgba(239, 68, 68, 0.04);
+    border: 1px solid rgba(239, 68, 68, 0.18);
+    color: var(--danger);
+}
+
+.form-feedback.info {
+    background: rgba(15, 155, 255, 0.04);
+    border: 1px solid rgba(15, 155, 255, 0.12);
+    color: var(--dark);
+}
+
+.form-actions .btn {
+    min-width: 150px;
+    padding: 0.875rem 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-text {
+    background: transparent;
+    color: var(--primary);
+    border: none;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.btn-text:hover {
+    color: var(--primary-dark);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: var(--white);
+    border: none;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-wrapper {
+        padding: 1.5rem;
+    }
+
+    .progress-indicator {
+        gap: 0;
+    }
+
+    .progress-step {
+        gap: 0.5rem;
+    }
+
+    .progress-line {
+        flex: 1;
+        margin: 0 0.5rem;
+        margin-top: 20px;
+    }
+
+    .step-label {
+        font-size: 0.7rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .create-campaign-header {
+        padding: 2rem 0;
+    }
+
+    .header-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .header-content p {
+        max-width: 100%;
+    }
+}
