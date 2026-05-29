@@ -103,11 +103,21 @@ class DonationService {
     async getDonationsByUser(userId) {
         return await prisma.donation.findMany({
             where: { donorId: userId},
-            include: { campaign: { select: {title: true}}},
-            orderBy: { createdAt: "desc"}
-        })
+            include: { campaign: { select: { title: true } } },
+            orderBy: { createdAt: "desc" }
+        });
+    }
+
+    async getDonationsByCampaign(campaignId) {
+        return await prisma.donation.findMany({
+            where: { campaignId },
+            include: {
+                donor: { select: { name: true } },
+                campaign: { select: { title: true } }
+            },
+            orderBy: { createdAt: "desc" }
+        });
     }
 }
-
 
 export default new DonationService(new PaystackService());

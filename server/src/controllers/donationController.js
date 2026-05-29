@@ -47,8 +47,17 @@ export const handlePaymentRedirect = async (req, res) => {
 export const getMyDonations = async (req, res) => {
     try {
         const donations = await donationService.getDonationsByUser(req.user.id);
-        res.status(200).json({ status: "success", data: donations});
+        res.status(200).json({ status: "success", data: donations });
     } catch (error) {
-        res.status(500).json({status: "error", message: error.message})
+        res.status(500).json({ status: "error", message: error.message });
+    }
+}
+
+export const getCampaignDonations = async (req, res) => {
+    try {
+        const donations = await donationService.getDonationsByCampaign(req.params.id);
+        res.status(200).json({ status: "success", count: donations.length, data: donations });
+    } catch (error) {
+        res.status(500).json({ status: "error", message: error.message });
     }
 }
