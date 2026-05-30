@@ -348,10 +348,23 @@ export const updateCampaign = async (req, res, next) => {
 		}
 
 		const updateData = {
-			// users shouldn't be able to update the title after creating it
-			// ...(req.body.title ? { title: req.body.title } : {}), 
-			...(req.body.description ? { description: req.body.description } : {}),
+			...(req.body.title ? { title: req.body.title.trim() } : {}),
+			...(req.body.description ? { description: req.body.description.trim() } : {}),
+			...(req.body.categoryId ? { categoryId: req.body.categoryId } : {}),
 		};
+
+		// If categoryId is provided, verify it exists
+		if (req.body.categoryId) {
+			const category = await prisma.category.findUnique({
+				where: { id: req.body.categoryId },
+				select: { id: true },
+			});
+			if (!category) {
+				const error = new Error('Invalid category');
+				error.statusCode = 400;
+				throw error;
+			}
+		}
 
 		const updatedCampaign = await prisma.campaign.update({
 			where: { id },

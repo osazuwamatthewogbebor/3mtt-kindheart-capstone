@@ -787,17 +787,63 @@
     }
 }
 
-/* Print Styles */
-@media print {
-    .dashboard-section {
-        background: white;
-    }
+/* Tab Transitions & Visibility */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
 
-    .bento-stat-card,
-    .campaign-card-mini,
-    .recent-support-card {
-        page-break-inside: avoid;
-    }
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tab-header h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+/* Campaign Deletion Modal Enhancements */
+#deleteModal .modal-content {
+    max-width: 400px;
+    text-align: center;
+}
+
+#deleteModal .modal-footer {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding-top: 1rem;
+}
+
+/* Campaigns Grid Adjustments */
+.campaigns-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* Helper button style for quick-nav logout/settings */
+button.quick-nav-item {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    font: inherit;
 }
 
 /* MODAL STYLES */

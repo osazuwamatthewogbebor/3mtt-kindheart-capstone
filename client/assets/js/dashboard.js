@@ -19,7 +19,7 @@ async function loadUser() {
 
   const user = JSON.parse(localStorage.getItem('user'));
   if (user && user.role !== 'ADMIN') {
-    window.location.href = "my-campaigns.html";
+    window.location.href = "user-dashboard.html#campaigns";
     return;
   }
 

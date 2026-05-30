@@ -7,6 +7,7 @@
 let currentUser = null;
 let activeCampaigns = [];
 let recentDonations = [];
+let campaignToDelete = null;
 
 /**
  * Initialize Dashboard
@@ -22,16 +23,60 @@ async function initDashboard() {
         // Load user profile
         await loadUserProfile();
 
-        // Load dashboard data
+        // Load initial dashboard data (Overview)
         await Promise.all([
             loadDashboardStats(),
             loadActiveCampaigns(),
             loadRecentDonations()
         ]);
 
+        // Check if there's a tab in the URL (e.g., #campaigns)
+        const hash = window.location.hash.substring(1);
+        if (hash && ['overview', 'campaigns', 'donations'].includes(hash)) {
+            switchTab(hash);
+        }
+
     } catch (error) {
         console.error('Dashboard initialization error:', error);
         showErrorNotification('Failed to load dashboard. Please refresh the page.');
+    }
+}
+
+/**
+ * Switch Dashboard Tabs
+ */
+function switchTab(tabName) {
+    // Update URL hash
+    window.location.hash = tabName;
+
+    // Update active tab visibility
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    
+    const activeTab = document.getElementById(`tab-${tabName}`);
+    if (activeTab) {
+        activeTab.classList.add('active');
+    }
+
+    // Update sidebar navigation active state
+    const navItems = document.querySelectorAll('#userDashboardNav .quick-nav-item');
+    navItems.forEach(item => {
+        if (item.getAttribute('data-tab') === tabName) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+
+    // Load data specific to the tab if needed
+    if (tabName === 'campaigns') {
+        loadFullCampaigns();
+    } else if (tabName === 'donations') {
+        loadFullDonations();
+    } else if (tabName === 'overview') {
+        loadDashboardStats();
+        loadActiveCampaigns();
+        loadRecentDonations();
     }
 }
 
@@ -157,7 +202,13 @@ async function loadDashboardStats() {
         // Calculate statistics
         const totalRaised = campaigns.reduce((sum, campaign) => sum + (campaign.amountRaised || 0), 0);
         const totalCampaigns = campaigns.length;
-        const totalDonated = donations.reduce((sum, donation) => sum + (donation.amount || 0), 0);
+        const totalDonated = donations.reduce((sum, donation) => {
+            const status = donation.donationStatus || donation.status || '';
+            if (status === 'SUCCESS' || status === 'COMPLETED' || status === '') {
+                return sum + (donation.amount || 0);
+            }
+            return sum;
+        }, 0);
 
         // Update UI
         updateStatistic('statsTotalRaised', formatCurrency(totalRaised));
@@ -174,7 +225,7 @@ async function loadDashboardStats() {
 }
 
 /**
- * Load Active Campaigns
+ * Load Active Campaigns (Overview Tab)
  */
 async function loadActiveCampaigns() {
     try {
@@ -190,7 +241,7 @@ async function loadActiveCampaigns() {
         activeCampaigns = Array.isArray(data.data) ? data.data : (data.data?.campaigns || []);
 
         // Filter active campaigns (not completed)
-        const active = activeCampaigns.filter(c => c.status !== 'COMPLETED').slice(0, 2);
+        const active = activeCampaigns.filter(c => (c.campaignStatus || c.status) !== 'COMPLETED').slice(0, 2);
 
         renderActiveCampaigns(active);
 
@@ -200,8 +251,16 @@ async function loadActiveCampaigns() {
     }
 }
 
+function getCampaignId(campaign) {
+    return campaign?.id || campaign?._id || campaign?.campaignId || campaign?.campaign?.id || campaign?.campaign?._id || '';
+}
+
+function getCampaignTitle(campaign) {
+    return campaign?.title || campaign?.name || campaign?.campaign?.title || campaign?.campaign?.name || 'Campaign';
+}
+
 /**
- * Render Active Campaigns
+ * Render Active Campaigns (Overview Preview)
  */
 function renderActiveCampaigns(campaigns) {
     const container = document.getElementById('activeCampaignsContainer');
@@ -212,38 +271,47 @@ function renderActiveCampaigns(campaigns) {
         return;
     }
 
-    container.innerHTML = campaigns.map(campaign => `
-        <div class="campaign-card-mini">
-            <div class="campaign-card-img-container">
-                <img src="${campaign.image || '../assets/image/Relief for Flood Victims.jfif'}" alt="${campaign.title}" class="campaign-card-img">
-                <span class="campaign-card-badge">${campaign.category || 'General'}</span>
-            </div>
-            <div class="campaign-card-content">
-                <h3 class="campaign-card-title">${escapeHtml(campaign.title)}</h3>
-                <p class="campaign-card-description">${escapeHtml(campaign.description).substring(0, 80)}...</p>
-                
-                <div class="campaign-card-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${calculateProgress(campaign)}%"></div>
-                    </div>
-                    <div class="progress-text">
-                        <span>${formatCurrency(campaign.amountRaised)}</span>
-                        <span class="goal-text">of ${formatCurrency(campaign.goal)}</span>
-                    </div>
-                </div>
+    container.innerHTML = campaigns.map(campaign => {
+        const campaignId = getCampaignId(campaign);
+        const campaignTitle = getCampaignTitle(campaign);
+        const campaignImg = campaign.imageUrl || campaign.image || '../assets/images/placeholder-campaign.jpg';
+        const categoryName = (typeof campaign.category === 'object') ? campaign.category.name : (campaign.category || 'General');
+        const campaignStatus = campaign.campaignStatus || campaign.status || 'PENDING';
+        const progress = calculateProgress(campaign);
 
-                <div class="campaign-card-stats">
-                    <span><i class="fas fa-heart"></i> ${campaign.donors || 0} donors</span>
-                    <span class="campaign-status-badge ${campaign.status.toLowerCase()}">${campaign.status}</span>
+        return `
+            <div class="campaign-card-mini">
+                <div class="campaign-card-img-container">
+                    <img src="${campaignImg}" alt="${campaignTitle}" class="campaign-card-img" onerror="this.src='../assets/images/placeholder-campaign.jpg'">
+                    <span class="campaign-card-badge">${categoryName}</span>
                 </div>
+                <div class="campaign-card-content">
+                    <h3 class="campaign-card-title">${escapeHtml(campaignTitle)}</h3>
+                    <p class="campaign-card-description">${escapeHtml(campaign.description || '').substring(0, 80)}...</p>
 
-                <div class="campaign-card-actions">
-                    <a href="campaign-details.html?id=${campaign.id}" class="btn btn-sm btn-outline">View</a>
-                    <a href="edit-campaign.html?id=${campaign.id}" class="btn btn-sm btn-primary">Edit</a>
+                    <div class="campaign-card-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>${formatCurrency(campaign.amountRaised)}</span>
+                            <span class="goal-text">of ${formatCurrency(campaign.goalAmount || campaign.goal)}</span>
+                        </div>
+                    </div>
+
+                    <div class="campaign-card-stats">
+                        <span><i class="fas fa-heart"></i> ${campaign.donors || 0} donors</span>
+                        <span class="campaign-status-badge ${campaignStatus.toLowerCase()}">${campaignStatus}</span>
+                    </div>
+
+                    <div class="campaign-card-actions">
+                        <a href="campaign-details.html?id=${campaignId}" class="btn btn-sm btn-outline">View</a>
+                        <a href="edit-campaign.html?id=${campaignId}" class="btn btn-sm btn-primary">Edit</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 /**
@@ -264,7 +332,94 @@ function renderEmptyActiveCampaigns() {
 }
 
 /**
- * Load Recent Donations
+ * Load Full Campaigns List (Campaigns Tab)
+ */
+async function loadFullCampaigns() {
+    const container = document.getElementById('fullCampaignsGrid');
+    if (container) container.innerHTML = '<div class="loading-state" style="grid-column: 1/-1; text-align: center; padding: 3rem;"><i class="fas fa-spinner fa-spin"></i><p>Loading campaigns...</p></div>';
+
+    try {
+        const response = await fetch(API.MY_CAMPAIGNS, {
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch campaigns');
+
+        const data = await response.json();
+        const campaigns = Array.isArray(data.data) ? data.data : (data.data?.campaigns || []);
+        
+        renderFullCampaigns(campaigns);
+
+    } catch (error) {
+        console.error('Error loading full campaigns:', error);
+        if (container) container.innerHTML = '<p class="error-msg">Failed to load campaigns. Please try again.</p>';
+    }
+}
+
+/**
+ * Render Full Campaigns List
+ */
+function renderFullCampaigns(campaigns) {
+    const container = document.getElementById('fullCampaignsGrid');
+    if (!container) return;
+
+    if (campaigns.length === 0) {
+        container.innerHTML = `
+            <div class="empty-dashboard-state" style="grid-column: 1 / -1;">
+                <i class="fas fa-bullhorn"></i>
+                <h4>No campaigns yet</h4>
+                <p>You haven't created any campaigns. Start one today!</p>
+                <a href="create-campaign.html" class="btn btn-primary">Create Campaign</a>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = campaigns.map(campaign => {
+        const campaignId = getCampaignId(campaign);
+        const campaignTitle = getCampaignTitle(campaign);
+        const campaignImg = campaign.imageUrl || campaign.image || '../assets/images/placeholder-campaign.jpg';
+        const categoryName = (typeof campaign.category === 'object') ? campaign.category.name : (campaign.category || 'General');
+        const campaignStatus = campaign.campaignStatus || campaign.status || 'PENDING';
+        const progress = calculateProgress(campaign);
+
+        return `
+        <div class="campaign-card-mini">
+            <div class="campaign-card-img-container" style="height: 200px;">
+                <img src="${campaignImg}" alt="${campaignTitle}" class="campaign-card-img" onerror="this.src='../assets/images/placeholder-campaign.jpg'">
+                <span class="campaign-card-badge">${categoryName}</span>
+            </div>
+            <div class="campaign-card-content">
+                <span class="campaign-status-badge ${campaignStatus.toLowerCase()}" style="align-self: flex-start; margin-bottom: 0.75rem;">${campaignStatus}</span>
+                <h3 class="campaign-card-title" style="white-space: normal; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical;">${escapeHtml(campaignTitle)}</h3>
+                
+                <div class="campaign-card-progress" style="margin-top: 1rem;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>${formatCurrency(campaign.amountRaised)}</span>
+                        <span>${progress}% funded</span>
+                    </div>
+                </div>
+
+                <div class="campaign-card-stats">
+                    <span><i class="fas fa-heart"></i> ${campaign.donors || 0} donors</span>
+                    <span>Goal: ${formatCurrency(campaign.goalAmount || campaign.goal)}</span>
+                </div>
+
+                <div class="campaign-card-actions">
+                    <a href="campaign-details.html?id=${campaignId}" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i></a>
+                    <a href="edit-campaign.html?id=${campaignId}" class="btn btn-sm btn-primary" style="flex: 1;"><i class="fas fa-edit"></i> Edit</a>
+                    <button type="button" onclick="openDeleteModal('${campaignId}')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+    `}).join('');
+}
+
+/**
+ * Load Recent Donations (Overview Tab)
  */
 async function loadRecentDonations() {
     try {
@@ -291,7 +446,7 @@ async function loadRecentDonations() {
 }
 
 /**
- * Render Recent Donations
+ * Render Recent Donations (Overview Table)
  */
 function renderRecentDonations(donations) {
     const container = document.getElementById('recentDonationsContainer');
@@ -305,23 +460,100 @@ function renderRecentDonations(donations) {
     container.innerHTML = donations.map(donation => {
         const date = new Date(donation.createdAt);
         const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        const campaignId = donation.campaignId || donation.campaign?.id || donation.campaign?._id || '';
+        const campaignTitle = donation.campaignTitle || donation.campaign?.title || donation.campaign?.name || 'Campaign';
+        const donationStatus = donation.donationStatus || donation.status || 'SUCCESS';
 
         return `
             <tr>
                 <td class="campaign-name-cell">
-                    <span>${escapeHtml(donation.campaignTitle || 'Campaign')}</span>
+                    <span>${escapeHtml(campaignTitle)}</span>
                 </td>
                 <td>${formattedDate}</td>
                 <td class="amount-cell">${formatCurrency(donation.amount)}</td>
                 <td>
-                    <span class="status-badge ${donation.status.toLowerCase()}">
-                        ${donation.status}
+                    <span class="status-badge ${donationStatus.toLowerCase()}">
+                        ${donationStatus}
                     </span>
                 </td>
                 <td class="action-cell">
-                    <a href="campaign-details.html?id=${donation.campaignId}" class="action-link">
-                        <i class="fas fa-eye"></i> View Campaign
+                    <a href="campaign-details.html?id=${campaignId}" class="action-link">
+                        <i class="fas fa-eye"></i> View
                     </a>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+/**
+ * Load Full Donation History (Donations Tab)
+ */
+async function loadFullDonations() {
+    const container = document.getElementById('fullDonationsContainer');
+    if (container) container.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 3rem;"><i class="fas fa-spinner fa-spin"></i><p>Loading donation history...</p></td></tr>';
+
+    try {
+        const response = await fetch(API.MY_DONATIONS, {
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch donations');
+
+        const data = await response.json();
+        const donations = Array.isArray(data.data) ? data.data : (data.data?.donations || []);
+        
+        renderFullDonations(donations);
+
+    } catch (error) {
+        console.error('Error loading full donations:', error);
+        if (container) container.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--danger);">Failed to load donation records.</td></tr>';
+    }
+}
+
+/**
+ * Render Full Donation History
+ */
+function renderFullDonations(donations) {
+    const container = document.getElementById('fullDonationsContainer');
+    if (!container) return;
+
+    if (donations.length === 0) {
+        container.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 4rem 2rem;">
+                    <div class="empty-dashboard-state">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <h4>No donations yet</h4>
+                        <p>Explore campaigns and start making an impact today.</p>
+                        <a href="campaigns.html" class="btn btn-primary btn-sm">Explore Campaigns</a>
+                    </div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    container.innerHTML = donations.map(donation => {
+        const date = new Date(donation.createdAt);
+        const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        const reference = donation.paymentReference || donation.payment_reference || 'N/A';
+        const campaignTitle = donation.campaignTitle || donation.campaign?.title || donation.campaign?.name || 'Campaign';
+        const donationStatus = donation.donationStatus || donation.status || 'SUCCESS';
+
+        return `
+            <tr>
+                <td class="campaign-name-cell">
+                    <div class="support-campaign-title">${escapeHtml(campaignTitle)}</div>
+                </td>
+                <td style="font-family: monospace; font-size: 0.75rem; color: #6b7280;">${reference}</td>
+                <td>${formattedDate}</td>
+                <td class="amount-cell">${formatCurrency(donation.amount)}</td>
+                <td>
+                    <span class="status-badge ${donationStatus.toLowerCase()}">
+                        <i class="fas ${donationStatus.toLowerCase() === 'success' || donationStatus.toLowerCase() === 'completed' ? 'fa-check-circle' : 'fa-clock'}"></i>
+                        ${donationStatus}
+                    </span>
                 </td>
             </tr>
         `;
@@ -350,6 +582,55 @@ function renderEmptyDonations() {
 }
 
 /**
+ * Campaign Deletion Logic
+ */
+function openDeleteModal(campaignId) {
+    campaignToDelete = campaignId;
+    const modal = document.getElementById('deleteModal');
+    if (modal) modal.classList.add('show');
+}
+
+function closeDeleteModal() {
+    campaignToDelete = null;
+    const modal = document.getElementById('deleteModal');
+    if (modal) modal.classList.remove('show');
+}
+
+async function confirmDelete() {
+    if (!campaignToDelete) return;
+
+    try {
+        const response = await fetch(`${API.CAMPAIGNS}/${campaignToDelete}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Updated feedback system if available, else alert
+            if (typeof showToast === 'function') {
+                showToast('Campaign deleted successfully', 'success');
+            } else {
+                alert('Campaign deleted successfully');
+            }
+            
+            closeDeleteModal();
+            // Refresh campaigns tab
+            loadFullCampaigns();
+            // Also refresh overview stats
+            loadDashboardStats();
+        } else {
+            console.error('Delete failed:', data.message);
+            alert('Failed to delete campaign: ' + (data.message || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error deleting campaign:', error);
+        alert('An error occurred while deleting the campaign.');
+    }
+}
+
+/**
  * Helper: Update Statistic Display
  */
 function updateStatistic(elementId, value) {
@@ -363,9 +644,10 @@ function updateStatistic(elementId, value) {
  * Helper: Calculate Progress Percentage
  */
 function calculateProgress(campaign) {
-    if (!campaign.goal || campaign.goal === 0) return 0;
-    const percentage = (campaign.amountRaised / campaign.goal) * 100;
-    return Math.min(percentage, 100);
+    const goal = campaign.goalAmount || campaign.goal;
+    if (!goal || goal === 0) return 0;
+    const percentage = ((campaign.amountRaised || 0) / goal) * 100;
+    return Math.min(Math.round(percentage), 100);
 }
 
 /**
@@ -384,6 +666,7 @@ function formatCurrency(amount) {
  * Helper: Escape HTML
  */
 function escapeHtml(text) {
+    if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
@@ -405,167 +688,34 @@ function redirectToLogin() {
 }
 
 /**
- * MODAL FUNCTIONS
+ * Event Listeners
  */
-
-/**
- * Open Campaigns Modal
- */
-function openCampaignsModal() {
-    const modal = document.getElementById('campaignsModal');
-    if (modal) {
-        modal.classList.add('show');
-        renderAllCampaigns();
-    }
-}
-
-/**
- * Close Campaigns Modal
- */
-function closeCampaignsModal() {
-    const modal = document.getElementById('campaignsModal');
-    if (modal) {
-        modal.classList.remove('show');
-    }
-}
-
-/**
- * Open Donations Modal
- */
-function openDonationsModal() {
-    const modal = document.getElementById('donationsModal');
-    if (modal) {
-        modal.classList.add('show');
-        renderAllDonations();
-    }
-}
-
-/**
- * Close Donations Modal
- */
-function closeDonationsModal() {
-    const modal = document.getElementById('donationsModal');
-    if (modal) {
-        modal.classList.remove('show');
-    }
-}
-
-/**
- * Render All Campaigns in Modal
- */
-function renderAllCampaigns() {
-    const container = document.getElementById('allCampaignsContainer');
-    if (!container) return;
-
-    if (activeCampaigns.length === 0) {
-        container.innerHTML = `
-            <div class="empty-dashboard-state" style="grid-column: 1 / -1;">
-                <i class="fas fa-bullhorn"></i>
-                <h4>No campaigns found</h4>
-                <p>Get started by creating a fundraising campaign for a worthy cause.</p>
-                <a href="create-campaign.html" class="btn btn-primary btn-sm">Create Campaign</a>
-            </div>
-        `;
-        return;
-    }
-
-    container.innerHTML = activeCampaigns.map(campaign => `
-        <div class="modal-campaign-card">
-            <img src="${campaign.image || '../assets/image/Relief for Flood Victims.jfif'}" alt="${campaign.title}" class="modal-campaign-img">
-            <div class="modal-campaign-info">
-                <h3 class="modal-campaign-title">${escapeHtml(campaign.title)}</h3>
-                <p class="modal-campaign-desc">${escapeHtml(campaign.description).substring(0, 100)}...</p>
-                
-                <div class="modal-campaign-stats">
-                    <div class="modal-campaign-stat">
-                        <span class="modal-campaign-stat-value">${formatCurrency(campaign.amountRaised)}</span>
-                        <div class="modal-campaign-stat">of ${formatCurrency(campaign.goal)}</div>
-                    </div>
-                    <span class="campaign-status-badge ${campaign.status.toLowerCase()}">${campaign.status}</span>
-                </div>
-
-                <div class="modal-campaign-actions">
-                    <a href="campaign-details.html?id=${campaign.id}" class="btn btn-sm btn-outline">View</a>
-                    <a href="edit-campaign.html?id=${campaign.id}" class="btn btn-sm btn-primary">Edit</a>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-/**
- * Render All Donations in Modal
- */
-function renderAllDonations() {
-    const container = document.getElementById('allDonationsContainer');
-    if (!container) return;
-
-    if (recentDonations.length === 0) {
-        container.innerHTML = `
-            <tr>
-                <td colspan="5" style="text-align: center; padding: 3rem 0;">
-                    <div class="empty-dashboard-state">
-                        <i class="fas fa-hand-holding-heart"></i>
-                        <h4>No donations made yet</h4>
-                        <p>Explore existing campaigns and contribute to make a difference.</p>
-                        <a href="campaigns.html" class="btn btn-primary btn-sm">Explore Campaigns</a>
-                    </div>
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    container.innerHTML = recentDonations.map(donation => {
-        const date = new Date(donation.createdAt);
-        const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-
-        return `
-            <tr>
-                <td class="campaign-name-cell">
-                    <span>${escapeHtml(donation.campaignTitle || 'Campaign')}</span>
-                </td>
-                <td>${formattedDate}</td>
-                <td class="amount-cell">${formatCurrency(donation.amount)}</td>
-                <td>
-                    <span class="status-badge ${donation.status.toLowerCase()}">
-                        ${donation.status}
-                    </span>
-                </td>
-                <td class="action-cell">
-                    <a href="campaign-details.html?id=${donation.campaignId}" class="action-link">
-                        <i class="fas fa-eye"></i> View
-                    </a>
-                </td>
-            </tr>
-        `;
-    }).join('');
-}
-
-/**
- * Close modals when clicking outside
- */
-window.addEventListener('click', function(e) {
-    const campaignsModal = document.getElementById('campaignsModal');
-    const donationsModal = document.getElementById('donationsModal');
-
-    if (campaignsModal && e.target === campaignsModal) {
-        closeCampaignsModal();
-    }
-    if (donationsModal && e.target === donationsModal) {
-        closeDonationsModal();
-    }
-});
-
-/**
- * Close modals with Escape key
- */
-window.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeCampaignsModal();
-        closeDonationsModal();
-    }
-});
 
 // Initialize dashboard when page loads
 document.addEventListener('DOMContentLoaded', initDashboard);
+
+// Handle hash changes for tab navigation
+window.addEventListener('hashchange', function() {
+    const hash = window.location.hash.substring(1);
+    const activeTab = document.querySelector('.tab-content.active');
+    const activeTabId = activeTab ? activeTab.id.replace('tab-', '') : null;
+    
+    if (hash && hash !== activeTabId && ['overview', 'campaigns', 'donations'].includes(hash)) {
+        switchTab(hash);
+    }
+});
+
+// Close modals when clicking outside
+window.addEventListener('click', function(e) {
+    const deleteModal = document.getElementById('deleteModal');
+    if (deleteModal && e.target === deleteModal) {
+        closeDeleteModal();
+    }
+});
+
+// Close modals with Escape key
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDeleteModal();
+    }
+});

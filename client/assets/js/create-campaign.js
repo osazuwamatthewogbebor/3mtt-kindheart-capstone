@@ -9,11 +9,13 @@ if (!isLoggedIn()) {
 let currentSection = 1;
 const totalSections = 3;
 
-// Load categories on page load
+// Load basics on page load
 document.addEventListener('DOMContentLoaded', () => {
     loadCategories();
     initializeFormListeners();
     loadUserName();
+    // Initialize hero parallax or subtle effects if any
+    document.querySelector('.page-hero').style.opacity = '1';
 });
 
 // Load categories from API
@@ -161,6 +163,7 @@ function updateSection() {
     document.querySelectorAll('.form-section').forEach((section, index) => {
         if (index + 1 === currentSection) {
             section.classList.add('active');
+            section.style.animation = 'fadeIn 0.5s ease-out forwards';
         } else {
             section.classList.remove('active');
         }
@@ -324,7 +327,7 @@ async function submitForm(e) {
             submitBtn.disabled = true;
             // Wait a bit longer to ensure toast and inline feedback are visible
             setTimeout(() => {
-                window.location.href = 'my-campaigns.html';
+                window.location.href = 'user-dashboard.html#campaigns';
             }, 2200);
         } else {
             showToast(data.message || 'Failed to create campaign', 'error');
