@@ -13,57 +13,42 @@
     <nav class="navbar">
         <div class="container">
             <div class="nav-wrapper">
-                <div class="logo">
-                    <a href="../index.html" class="logo-header-link">
-                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img">
-                        <span>KindHeart</span>
-                    </a>
-                </div>
-                <ul class="nav-links">
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="campaigns.html">Campaigns</a></li>
-                    <li><a href="how-it-works.html" class="active">How It Works</a></li>
-                    <li><a href="about.html">About</a></li>
-                </ul>
-                <div class="nav-actions">
-                    <a href="login.html" class="btn-link">Login</a>
-                    <a href="register.html" class="btn btn-primary">Get Started</a>
-                </div>
+                <div class="logo"><a href="../index.html" class="logo-header-link"><img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img"><span>KindHeart</span></a></div>
+                <ul class="nav-links"><li><a href="../index.html">Home</a></li><li><a href="campaigns.html">Campaigns</a></li><li><a href="how-it-works.html" class="active">How It Works</a></li><li><a href="about.html">About</a></li></ul>
+                <div class="nav-actions"><a href="login.html" class="btn-link">Login</a><a href="register.html" class="btn btn-primary">Get Started</a></div>
             </div>
         </div>
     </nav>
 
-    <section class="page-hero">
-        <div class="container">
-            <h1>How KindHeart Works</h1>
-            <p>Create a campaign, share it, and start raising support in a few simple steps.</p>
-        </div>
+    <section class="page-hero" style="background-image: linear-gradient(180deg, rgba(16,185,129,0.85), rgba(16,185,129,0.3)), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80');">
+        <div class="container text-center"><span class="subtitle">Crowdfunding made simple</span><h1>Launch campaigns, inspire donors, and track every donation</h1><p>KindHeart makes it easy to turn your cause into a powerful fundraising story.</p></div>
     </section>
 
-    <main class="steps">
-        <section class="step-card">
-            <div class="step-number">1</div>
-            <div>
-                <h2>Create an account</h2>
-                <p>Register as a user so you can create campaigns, manage your profile, and track your activity in one place.</p>
+    <main class="container content-wrap">
+        <section class="content-card feature-grid">
+            <article class="feature-card"><div class="feature-icon green"><i class="fas fa-bullhorn"></i></div><h3>Fast campaign setup</h3><p>Create your fundraiser quickly with an intuitive campaign builder and clear guidance.</p></article>
+            <article class="feature-card"><div class="feature-icon blue"><i class="fas fa-hand-holding-heart"></i></div><h3>Secure giving</h3><p>Supporters donate confidently using secure payment processing and transparent tracking.</p></article>
+            <article class="feature-card"><div class="feature-icon purple"><i class="fas fa-chart-line"></i></div><h3>Impact insights</h3><p>Monitor donation progress, share updates, and keep your supporters engaged.</p></article>
+        </section>
+
+        <section class="content-card">
+            <div class="section-header"><h2>How it works</h2><p>A simple four-step process to start raising funds for your cause.</p></div>
+            <div class="steps-grid">
+                <div class="step-card"><div class="step-number">1</div><div class="step-icon"><i class="fas fa-user-plus"></i></div><h3>Create your account</h3><p>Register in minutes and access the tools you need to launch your campaign.</p></div>
+                <div class="step-card"><div class="step-number">2</div><div class="step-icon"><i class="fas fa-lightbulb"></i></div><h3>Tell your story</h3><p>Share your campaign goal, images, and the impact your project will make.</p></div>
+                <div class="step-card"><div class="step-number">3</div><div class="step-icon"><i class="fas fa-share-alt"></i></div><h3>Share with supporters</h3><p>Promote your campaign through social media, email, and your network.</p></div>
+                <div class="step-card"><div class="step-number">4</div><div class="step-icon"><i class="fas fa-heart"></i></div><h3>Receive donations</h3><p>Track funds as they arrive and thank donors with updates and progress reports.</p></div>
             </div>
         </section>
-        <section class="step-card">
-            <div class="step-number">2</div>
-            <div>
-                <h2>Start a campaign</h2>
-                <p>Add your title, category, goal, description, and image. The campaign page gives supporters the context they need to help.</p>
-            </div>
-        </section>
-        <section class="step-card">
-            <div class="step-number">3</div>
-            <div>
-                <h2>Share and raise funds</h2>
-                <p>Share your campaign link with your network and monitor donations as support comes in.</p>
-            </div>
+
+        <section class="content-card text-center">
+            <h2>Ready to get started?</h2>
+            <p>Launch your campaign today and let KindHeart help you connect with people who care.</p>
+            <a href="create-campaign.html" class="btn btn-primary">Create a Campaign</a>
         </section>
     </main>
 
     <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/footer.js"></script>
 </body>
 </html>

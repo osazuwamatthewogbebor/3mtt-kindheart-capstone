@@ -1,207 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile - KindHeart</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/profile.css">
-    <link rel="stylesheet" href="../assets/css/auth.css">
-    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - KindHeart</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
 </head>
 <body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-wrapper">
+        <div class="logo"><a href="../index.html"><i class="fas fa-heart"></i><span>KindHeart</span></a></div>
+        <ul class="nav-links"><li><a href="../index.html">Home</a></li><li><a href="campaigns.html">Campaigns</a></li><li><a href="my-campaigns.html">My Campaigns</a></li><li><a href="my-donations.html">My Donations</a></li></ul>
+        <div class="nav-actions"><button class="btn btn-primary" onclick="logout()">Logout</button></div>
+      </div>
+    </div>
+  </nav>
 
-    <!-- NAVIGATION -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <div class="logo">
-                    <a href="../index.html">
-                        <i class="fas fa-heart"></i>
-                        <span>KindHeart</span>
-                    </a>
-                </div>
-                
-                <ul class="nav-links">
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="campaigns.html">Campaigns</a></li>
-                    <li><a href="my-campaigns.html">My Campaigns</a></li>
-                </ul>
+  <section class="profile-hero" style="background-image: linear-gradient(135deg, rgba(16,185,129,0.87), rgba(52,211,153,0.38)), url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80');">
+    <div class="container profile-hero-inner">
+      <div class="profile-avatar" id="profileAvatar">K</div>
+      <div>
+        <span class="subtitle">Your profile</span>
+        <h1 id="profileName">Loading...</h1>
+        <p id="profileEmail">user@example.com</p>
+      </div>
+      <div class="hero-actions"><a href="my-campaigns.html" class="btn btn-outline">My Campaigns</a><a href="my-donations.html" class="btn btn-primary">My Donations</a></div>
+    </div>
+  </section>
 
-                <div class="nav-actions">
-                    <div class="user-menu">
-                        <button class="user-btn" onclick="toggleUserMenu()">
-                            <i class="fas fa-user-circle"></i> <span id="navUserName">User</span>
-                        </button>
-                        <div class="user-dropdown" id="userDropdown">
-                            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
-                            <a href="my-donations.html"><i class="fas fa-heart"></i> My Donations</a>
-                            <a href="admin-dashboard.html" id="adminLink" class="hidden"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+  <main class="container profile-main">
+    <div class="stats-grid">
+      <div class="stat-card"><h3 id="totalCampaigns">0</h3><p>Campaigns</p></div>
+      <div class="stat-card"><h3 id="totalDonations">0</h3><p>Donations</p></div>
+      <div class="stat-card"><h3 id="totalRaised">₦0</h3><p>Raised</p></div>
+      <div class="stat-card"><h3 id="totalDonated">₦0</h3><p>Donated</p></div>
+    </div>
 
-    <!-- PROFILE HEADER -->
-    <section class="profile-header">
-        <div class="container">
-            <div class="profile-avatar" id="profileAvatar">A</div>
-            <h1 id="profileName" class="mb-1">Loading...</h1>
-            <p id="profileEmail" class="opacity-90">email@example.com</p>
-            <p class="opacity-80 mt-1">
-                <i class="fas fa-calendar"></i> Member since <span id="memberSince">2024</span>
-            </p>
-        </div>
+    <section class="profile-card">
+      <div class="profile-card-header"><h2>Account details</h2><button class="btn btn-outline" onclick="toggleEdit('info')"><i class="fas fa-edit"></i> Edit</button></div>
+      <div id="infoView" class="profile-info-view">
+        <div class="info-row"><span>Name</span><strong id="displayName">-</strong></div>
+        <div class="info-row"><span>Email</span><strong id="displayEmail">-</strong></div>
+        <div class="info-row"><span>Role</span><strong id="displayRole">-</strong></div>
+        <div class="info-row"><span>Joined</span><strong id="displayJoined">-</strong></div>
+      </div>
+      <div id="infoEdit" class="hidden">
+        <form id="updateProfileForm">
+          <div class="form-group"><label for="editName">Full Name</label><input type="text" id="editName" required></div>
+          <div class="form-group"><label for="editEmail">Email Address</label><input type="email" id="editEmail" required></div>
+          <div class="profile-form-actions"><button type="button" class="btn btn-outline" onclick="toggleEdit('info')">Cancel</button><button type="submit" class="btn btn-primary">Save</button></div>
+        </form>
+      </div>
     </section>
 
-    <!-- PROFILE CONTENT -->
-    <section class="p-3 bg-gray-lightest">
-        <div class="profile-content">
-            
-            <!-- STATS -->
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <h3 id="totalCampaigns">0</h3>
-                    <p>Campaigns</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="totalDonations">0</h3>
-                    <p>Donations Made</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="totalRaised">₦0</h3>
-                    <p>Total Raised</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="totalDonated">₦0</h3>
-                    <p>Total Donated</p>
-                </div>
-            </div>
-
-            <!-- PERSONAL INFO -->
-            <div class="profile-card">
-                <div class="card-header">
-                    <h2>Personal Information</h2>
-                    <button class="edit-btn" onclick="toggleEdit('info')">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                </div>
-
-                <div id="infoView">
-                    <div class="info-row">
-                        <div class="info-label">Full Name</div>
-                        <div class="info-value" id="displayName">-</div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">Email</div>
-                        <div class="info-value" id="displayEmail">-</div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">Role</div>
-                        <div class="info-value" id="displayRole">-</div>
-                    </div>
-                    <div class="info-row">
-                        <div class="info-label">Joined</div>
-                        <div class="info-value" id="displayJoined">-</div>
-                    </div>
-                </div>
-
-                <div id="infoEdit" class="hidden">
-                    <form id="updateProfileForm">
-                        <div class="form-group">
-                            <label for="editName">Full Name</label>
-                            <input type="text" id="editName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="editEmail">Email</label>
-                            <input type="email" id="editEmail" required>
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-outline" onclick="toggleEdit('info')">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- CHANGE PASSWORD -->
-            <div class="profile-card">
-                <div class="card-header">
-                    <h2>Change Password</h2>
-                    <button class="edit-btn" onclick="toggleEdit('password')">
-                        <i class="fas fa-key"></i> Change
-                    </button>
-                </div>
-
-                <div id="passwordView">
-                    <p class="color-gray">••••••••</p>
-                </div>
-
-                <div id="passwordEdit" class="hidden">
-                    <form id="changePasswordForm">
-                        <div class="form-group">
-                            <label for="currentPassword">Current Password</label>
-                            <input type="password" id="currentPassword" minlength="8" maxlength="500" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="newPassword">New Password</label>
-                            <input type="password" id="newPassword" minlength="8" required>
-                            <div class="password-requirements">
-                                <p class="requirement-title">Password must contain:</p>
-                                <div class="requirement-item" id="req-upper-profile">
-                                    <i class="fas fa-circle"></i>
-                                    <span>One uppercase letter (A-Z)</span>
-                                </div>
-                                <div class="requirement-item" id="req-lower-profile">
-                                    <i class="fas fa-circle"></i>
-                                    <span>One lowercase letter (a-z)</span>
-                                </div>
-                                <div class="requirement-item" id="req-number-profile">
-                                    <i class="fas fa-circle"></i>
-                                    <span>One number (0-9)</span>
-                                </div>
-                                <div class="requirement-item" id="req-special-profile">
-                                    <i class="fas fa-circle"></i>
-                                    <span>One special character (!@#$%^&*)</span>
-                                </div>
-                                <div class="requirement-item" id="req-length-profile">
-                                    <i class="fas fa-circle"></i>
-                                    <span>Minimum 8 characters</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword">Confirm New Password</label>
-                            <input type="password" id="confirmPassword" required>
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-outline" onclick="toggleEdit('password')">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Update Password</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-        </div>
+    <section class="profile-card">
+      <div class="profile-card-header"><h2>Change password</h2><button class="btn btn-outline" onclick="toggleEdit('password')"><i class="fas fa-key"></i> Update</button></div>
+      <div id="passwordView" class="profile-info-view"><p>************</p></div>
+      <div id="passwordEdit" class="hidden">
+        <form id="changePasswordForm">
+          <div class="form-group"><label for="currentPassword">Current password</label><input type="password" id="currentPassword" minlength="8" required></div>
+          <div class="form-group"><label for="newPassword">New password</label><input type="password" id="newPassword" minlength="8" required></div>
+          <div class="form-group"><label for="confirmPassword">Confirm new password</label><input type="password" id="confirmPassword" minlength="8" required></div>
+          <div class="profile-form-actions"><button type="button" class="btn btn-outline" onclick="toggleEdit('password')">Cancel</button><button type="submit" class="btn btn-primary">Update password</button></div>
+        </form>
+      </div>
     </section>
+  </main>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-bottom">
-                <p>&copy; 2024 KindHeart. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="../assets/js/config.js"></script>
-    <script src="../assets/js/auth.js"></script>
-    <script src="../assets/js/profile.js"></script>
-
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/profile.js"></script>
+  <script src="../assets/js/footer.js"></script>
 </body>
 </html>

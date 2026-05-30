@@ -1,188 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donation Success - KindHeart</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/donation-success.css">
-    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donation Success - KindHeart</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/donation-success.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
 </head>
 <body>
-
-    <!-- NAVIGATION -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <div class="logo">
-                    <a href="../index.html" class="logo-header-link">
-                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img">
-                        <span>KindHeart</span>
-                    </a>
-                </div>
-                
-                <ul class="nav-links" id="navLinks">
-                    <li><a href="campaigns.html">Campaigns</a></li>
-                    <li><a href="how-it-works.html">How It Works</a></li>
-                    <li><a href="about.html">About</a></li>
-                </ul>
-
-                <div class="nav-actions" id="navActions">
-                    <!-- Will be populated by JavaScript -->
-                </div>
-
-                <button class="mobile-toggle" id="mobileToggle" title="Toggle navigation menu" aria-label="Toggle navigation menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- SUCCESS SECTION -->
-    <section class="success-section">
-        <div class="success-container">
-            
-            <!-- SUCCESS ICON -->
-            <div class="success-icon">
-                <div class="success-icon-circle">
-                    <i class="fas fa-heart"></i>
-                </div>
-            </div>
-
-            <!-- SUCCESS MESSAGE -->
-            <div class="success-message">
-                <h1>Thank You for Your Kindness</h1>
-                <p>Your contribution brings Sarah one step closer to her recovery. Every bit of support makes a world of difference.</p>
-            </div>
-
-            <!-- DONATION SUMMARY -->
-            <div class="card-modern mb-2">
-                <h2 class="heading-md">Donation Summary</h2>
-                
-                <div class="grid-2-col mb-2">
-                    <div>
-                        <p class="text-gray" style="font-size: 0.9rem; margin-bottom: 0.5rem;">AMOUNT</p>
-                        <p style="font-size: 1.75rem; font-weight: 800; color: var(--primary);">₦10,000 NGN</p>
-                    </div>
-                    <div>
-                        <p class="text-gray" style="font-size: 0.9rem; margin-bottom: 0.5rem;">DATE</p>
-                        <p style="font-size: 1.1rem; font-weight: 600; color: var(--dark);">October 24, 2024</p>
-                    </div>
-                </div>
-
-                <div class="p-1" style="background: var(--gray-lightest); border-radius: var(--radius-md); margin-bottom: 1rem;">
-                    <p class="text-gray" style="font-size: 0.9rem; margin-bottom: 0.5rem;">SUPPORTING</p>
-                    <p style="font-weight: 700; color: var(--dark);">Help Sarah Fight Leukemia</p>
-                </div>
-
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <input type="checkbox" id="anonymous" style="cursor: pointer;">
-                    <label for="anonymous" style="cursor: pointer; color: var(--gray); font-size: 0.9rem;">Remain anonymous to the public (Organizer still sees your name)</label>
-                </div>
-            </div>
-
-            <!-- IMPACT MILESTONE -->
-            <div style="background: var(--primary-container); color: var(--white); padding: 2rem; border-radius: var(--radius-md); margin-bottom: 2rem; box-shadow: var(--shadow-md);">
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                    <i class="fas fa-star" style="font-size: 1.5rem;"></i>
-                    <h3 style="font-weight: 700; margin: 0;">You've reached a milestone!</h3>
-                </div>
-                <p style="margin: 0; line-height: 1.6;">Sarah has now reached 85% of her medical goal thanks to supporters like you. She's getting $2,550 away from reaching her lifetime visionary badge.</p>
-            </div>
-
-            <!-- WORDS OF SUPPORT -->
-            <div style="background: var(--white); padding: 2rem; border-radius: var(--radius-md); box-shadow: var(--shadow-md); margin-bottom: 2rem;">
-                <h3 class="heading-md">Words of Support</h3>
-                <p style="color: var(--gray); font-size: 0.95rem; margin-bottom: 1rem;">Want to leave a message of encouragement for Sarah?</p>
-                
-                <form id="supportForm">
-                    <textarea placeholder="Write your message here..." rows="4" style="width: 100%; padding: 1rem; border: 1px solid var(--gray-lighter); border-radius: var(--radius-md); font-size: 1rem; font-family: inherit; resize: none; margin-bottom: 1rem;"></textarea>
-                    <button type="submit" style="width: 100%; padding: 0.75rem; background: var(--primary); color: var(--white); font-weight: 700; border: none; border-radius: var(--radius-md); cursor: pointer; transition: all 0.3s;">
-                        <i class="fas fa-paper-plane" style="margin-right: 0.5rem;"></i>Post Encouragement
-                    </button>
-                </form>
-            </div>
-
-            <!-- SHARE SECTION -->
-            <div style="background: var(--white); padding: 2rem; border-radius: var(--radius-md); box-shadow: var(--shadow-md); margin-bottom: 2rem;">
-                <h3 class="heading-md">Share this Campaign</h3>
-                <p style="color: var(--gray); font-size: 0.95rem; margin-bottom: 1.5rem;">Increase Sarah's impact by sharing her story with your network.</p>
-                
-                <div class="grid-3-col">
-                    <a href="#" style="padding: 1rem; background: #3b5998; color: var(--white); text-decoration: none; border-radius: var(--radius-md); text-align: center; font-weight: 600; transition: all 0.3s;">
-                        <i class="fab fa-facebook" style="margin-right: 0.5rem;"></i>Facebook
-                    </a>
-                    <a href="#" style="padding: 1rem; background: #1DA1F2; color: var(--white); text-decoration: none; border-radius: var(--radius-md); text-align: center; font-weight: 600; transition: all 0.3s;">
-                        <i class="fab fa-twitter" style="margin-right: 0.5rem;"></i>Twitter
-                    </a>
-                    <a href="#" style="padding: 1rem; background: #25D366; color: var(--white); text-decoration: none; border-radius: var(--radius-md); text-align: center; font-weight: 600; transition: all 0.3s;">
-                        <i class="fab fa-whatsapp" style="margin-right: 0.5rem;"></i>WhatsApp
-                    </a>
-                </div>
-            </div>
-
-            <!-- ACTION BUTTONS -->
-            <div class="grid-2-col">
-                <a href="admin-dashboard.html" style="padding: 1rem; background: var(--primary); color: var(--white); text-decoration: none; border-radius: var(--radius-md); text-align: center; font-weight: 700; transition: all 0.3s; border: none; cursor: pointer;">
-                    <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>Back to Campaign
-                </a>
-                <a href="campaigns.html" style="padding: 1rem; background: var(--secondary-container); color: var(--dark); text-decoration: none; border-radius: var(--radius-md); text-align: center; font-weight: 700; transition: all 0.3s; border: none; cursor: pointer;">
-                    <i class="fas fa-search" style="margin-right: 0.5rem;"></i>Browse Other Campaigns
-                </a>
-            </div>
-
-            <!-- ADDITIONAL INFO -->
-            <div style="background: var(--dark); color: var(--white); padding: 2rem; border-radius: var(--radius-md); margin-top: 2rem;">
-                <p style="margin: 0; font-size: 0.95rem; line-height: 1.6;">
-                    <strong>📧 What's next?</strong><br>
-                    A confirmation email has been sent to your inbox. You'll receive regular updates about Sarah's progress. Thank you for being part of the change!
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <div class="footer-logo">
-                        <i class="fas fa-heart"></i>
-                        <span>KindHeart</span>
-                    </div>
-                    <p>Making fundraising simple and accessible for everyone.</p>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Support</h4>
-                    <ul>
-                        <li><a href="contact-us.html">Contact Us</a></li>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                        <li><a href="terms-of-service.html">Terms of Service</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                        <li><a href="terms-of-service.html">Terms of Service</a></li>
-                        <li><a href="contact-us.html">Contact Us</a></li>
-                        <li><a href="#">Careers</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2024 KindHeart. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="../assets/js/config.js"></script>
+  <nav class="navbar"><div class="container"><div class="nav-wrapper"><div class="logo"><a href="../index.html" class="logo-header-link"><img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img"><span>KindHeart</span></a></div><ul class="nav-links"><li><a href="campaigns.html">Campaigns</a></li><li><a href="how-it-works.html">How It Works</a></li><li><a href="about.html">About</a></li></ul><div class="nav-actions"><a href="campaigns.html" class="btn btn-primary">Browse Campaigns</a></div></div></div></nav>
+  <main class="success-section"><div class="success-container"><div class="success-icon"><div class="success-icon-circle"><i class="fas fa-heart"></i></div></div><div class="success-message"><h1>Thank you for your donation</h1><p id="successStatusMessage">Your donation has been received and will be applied shortly.</p></div><div class="card-modern"><h2 class="heading-md">Donation summary</h2><div class="grid-2-col"><div><p class="text-gray">Amount</p><p id="donationAmountValue" style="font-size: 1.75rem; font-weight: 800; color: var(--primary);">₦0</p></div><div><p class="text-gray">Campaign</p><p id="donationCampaign" style="font-weight: 700;">Loading...</p></div></div><div class="p-1" style="background: var(--gray-lightest); border-radius: var(--radius-md); margin-top: 1rem;"><p class="text-gray">Date</p><p id="donationDate">-</p></div><div style="margin-top: 1rem;"><span class="status-badge success" id="donationStatus"><i class="fas fa-check-circle"></i> Success</span></div></div><div style="background: var(--primary-container); padding: 2rem; border-radius: var(--radius-md);"><h3 style="margin-top: 0;">Impact update</h3><p id="donationImpactText">Your donation helps the campaign continue making progress.</p></div><div class="grid-2-col"><a href="my-donations.html" class="btn btn-primary"><i class="fas fa-heart"></i> View donations</a><a href="campaigns.html" class="btn btn-outline"><i class="fas fa-search"></i> Browse campaigns</a></div></div></main>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/donation-success.js"></script>
+  <script src="../assets/js/footer.js"></script>
 </body>
 </html>
-

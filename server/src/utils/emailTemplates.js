@@ -87,3 +87,15 @@ export const getResetSuccessTemplate = (name) => {
   </div>
 `);
 };
+
+export const getContactTemplate = ({ name, email, subject, message }) => {
+  return baseTemplate(`
+  <h2 style="color: ${PRIMARY_COLOR};">New contact request</h2>
+  <p><strong>From:</strong> ${name} &lt;${email}&gt;</p>
+  <p><strong>Subject:</strong> ${subject}</p>
+  <div style="background: #f8fafc; padding: 1rem; border-radius: 12px; margin: 1.25rem 0;">
+    <p style="white-space: pre-wrap;">${message}</p>
+  </div>
+  <p style="font-size: 14px; color: #6b7280;">Please reply to the sender to follow up.</p>
+  `);
+};

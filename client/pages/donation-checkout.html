@@ -1,187 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donation Checkout - KindHeart</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/donation-checkout.css">
-    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donation Checkout - KindHeart</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/donation-checkout.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
 </head>
 <body>
-
-    <!-- NAVIGATION -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <div class="logo">
-                    <a href="../index.html" class="logo-header-link">
-                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img">
-                        <span>KindHeart</span>
-                    </a>
-                </div>
-                
-                <ul class="nav-links" id="navLinks">
-                    <li><a href="campaigns.html">Campaigns</a></li>
-                    <li><a href="how-it-works.html">How It Works</a></li>
-                    <li><a href="about.html">About</a></li>
-                </ul>
-
-                <div class="nav-actions" id="navActions">
-                    <!-- Will be populated by JavaScript -->
-                </div>
-
-                <button class="mobile-toggle" id="mobileToggle" title="Toggle navigation menu" aria-label="Toggle navigation menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- MAIN CONTENT -->
-    <section class="checkout-section">
-        <div class="container">
-            <div class="checkout-grid">
-                
-                <!-- CHECKOUT FORM -->
-                <div class="checkout-form-container">
-                    <h2>Finalize Your Support</h2>
-                    <p class="checkout-description">Your contribution directly fuels the stories that matter. Review your donation details and complete the secure payment process below.</p>
-
-                    <!-- CAMPAIGN SUMMARY -->
-                    <div class="campaign-summary">
-                        <img src="../assets/image/Relief for Flood Victims.jfif" alt="Campaign" class="campaign-summary-image">
-                        <div class="campaign-summary-content">
-                            <span class="campaign-summary-label">Supporting</span>
-                            <h3 class="campaign-summary-title">Help Sarah Fight Leukemia</h3>
-                            <p class="campaign-summary-org">Organized by The Sarah Hope Foundation</p>
-                        </div>
-                    </div>
-
-                    <!-- PAYMENT METHOD SELECTION -->
-                    <h3 class="heading-md">Payment Method</h3>
-                    <div class="grid-3-col mb-2">
-                        <button class="payment-method-btn active">
-                            <i class="fas fa-credit-card" style="display: block; font-size: 1.5rem; margin-bottom: 0.5rem;"></i>Card
-                        </button>
-                        <button class="payment-method-btn">
-                            <i class="fas fa-landmark" style="display: block; font-size: 1.5rem; margin-bottom: 0.5rem;"></i>Bank
-                        </button>
-                        <button class="payment-method-btn">
-                            <i class="fas fa-mobile-alt" style="display: block; font-size: 1.5rem; margin-bottom: 0.5rem;"></i>USSD
-                        </button>
-                    </div>
-
-                    <!-- CHECKOUT FORM -->
-                    <form id="checkoutForm">
-                        <div class="mb-1-5">
-                            <label class="form-label-modern">Cardholder Name</label>
-                            <input type="text" placeholder="Sarah Jenkins" required class="form-input-modern">
-                        </div>
-
-                        <div class="mb-1-5">
-                            <label class="form-label-modern">Card Number</label>
-                            <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" required class="form-input-modern">
-                        </div>
-
-                        <div class="grid-2-col mb-1-5">
-                            <div>
-                                <label class="form-label-modern">Expiry Date</label>
-                                <input type="text" placeholder="MM / YY" required class="form-input-modern">
-                            </div>
-                            <div>
-                                <label class="form-label-modern">CVV</label>
-                                <input type="text" placeholder="•••" maxlength="4" required class="form-input-modern">
-                            </div>
-                        </div>
-
-                        <div class="flex-gap-sm mb-1-5">
-                            <input type="checkbox" id="anonymousDonation" class="checkbox-custom">
-                            <label for="anonymousDonation" class="checkbox-custom" style="color: var(--gray); font-size: 0.95rem;">Remain anonymous to the public (Organizer still sees your name)</label>
-                        </div>
-
-                        <div class="flex-gap-sm mb-2">
-                            <input type="checkbox" id="emailUpdates" checked class="checkbox-custom">
-                            <label for="emailUpdates" class="checkbox-custom" style="color: var(--gray); font-size: 0.95rem;">Get email updates about Sarah's progress and this campaign</label>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="fas fa-lock icon-spacing"></i>Complete Donation
-                        </button>
-                    </form>
-
-                    <p class="text-center text-gray text-sm" style="margin-top: 1rem;">Your transaction is encrypted and secured. SSL kindHeart uses industry-leading protection to ensure your data stays private.</p>
-                </div>
-
-                <!-- ORDER SUMMARY -->
-                <div>
-                    <div class="card-modern-sticky">
-                        <h3 class="heading-md">Review Donation</h3>
-                        
-                        <div class="mb-1-5" style="padding-bottom: 1.5rem; border-bottom: 1px solid var(--gray-lighter);">
-                            <p class="text-gray" style="font-size: 0.9rem; margin-bottom: 0.5rem;">Selected Amount</p>
-                            <h2 style="font-size: 2rem; font-weight: 800; color: var(--primary); margin: 0;">₦10,000</h2>
-                            <p class="text-gray text-sm" style="margin-top: 0.5rem;">~$6.67 USD</p>
-                        </div>
-
-                        <div style="background: var(--primary); color: var(--white); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
-                            <span>100% of your donation goes directly to the campaign. Zero processing fees withheld by us.</span>
-                        </div>
-
-                        <p class="text-gray text-sm">Your contribution helps Sarah fight her battle. Every donation moves her closer to her goal. Thank you for making a difference.</p>
-
-                        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-lighter);">
-                            <p class="text-gray text-sm">
-                                <i class="fas fa-shield-alt icon-tertiary"></i>Your transaction is encrypted and secured. SSL KindHeart uses industry-leading protection.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <div class="footer-logo">
-                        <i class="fas fa-heart"></i>
-                        <span>KindHeart</span>
-                    </div>
-                    <p>Making fundraising simple and accessible for everyone.</p>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Support</h4>
-                    <ul>
-                        <li><a href="contact-us.html">Contact Us</a></li>
-                        <li><a href="#">Trust & Safety</a></li>
-                        <li><a href="terms-of-service.html">Terms of Service</a></li>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                        <li><a href="terms-of-service.html">Terms of Service</a></li>
-                        <li><a href="#">Cookie Settings</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2024 KindHeart Crowdfunding. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="../assets/js/config.js"></script>
+  <nav class="navbar">
+    <div class="container"><div class="nav-wrapper"><div class="logo"><a href="../index.html" class="logo-header-link"><img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img"><span>KindHeart</span></a></div><ul class="nav-links"><li><a href="campaigns.html">Campaigns</a></li><li><a href="how-it-works.html">How It Works</a></li><li><a href="about.html">About</a></li></ul><div class="nav-actions"><a href="login.html" class="btn-link">Login</a><a href="register.html" class="btn btn-primary">Register</a></div></div></div>
+  </nav>
+  <main class="checkout-section">
+    <div class="container checkout-grid">
+      <div class="checkout-form-container">
+        <div class="checkout-header"><span class="subtitle">Secure giving</span><h2>Complete your donation</h2><p>Your gift is protected with secure payment processing and instant confirmation.</p></div>
+        <div class="campaign-summary"><img id="campaignImage" src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1000&q=80" alt="Campaign" class="campaign-summary-image"><div class="campaign-summary-content"><span class="tag" id="campaignCategory">Campaign</span><h3 id="campaignSummaryTitle">Loading campaign...</h3><p id="campaignEnds">Preparing secure payment</p></div></div>
+        <form id="checkoutForm" class="checkout-form"><div class="form-group"><label>Donation amount</label><input type="number" id="donationAmount" placeholder="10000" min="1000" required class="form-input-modern"></div><div class="grid-2-col"><div class="form-group"><label>Amount Raised</label><input type="text" id="campaignRaised" readonly class="form-input-modern" value="₦0"></div><div class="form-group"><label>Campaign Goal</label><input type="text" id="campaignGoal" readonly class="form-input-modern" value="₦0"></div></div><div class="payment-methods"><button type="button" class="payment-method-btn active"><i class="fas fa-credit-card"></i> Card</button><button type="button" class="payment-method-btn"><i class="fas fa-university"></i> Bank</button><button type="button" class="payment-method-btn"><i class="fas fa-mobile-alt"></i> USSD</button></div><div class="checkbox-group"><input type="checkbox" id="anonymousDonation"><label for="anonymousDonation">Remain anonymous</label></div><div class="checkbox-group"><input type="checkbox" id="emailUpdates" checked><label for="emailUpdates">Receive updates</label></div><button type="submit" class="btn btn-primary">Continue to Payment</button></form><p class="security-note">Your payment details stay private and encrypted throughout the process.</p>
+      </div>
+      <aside class="order-summary-container"><h3>Donation summary</h3><div class="amount-box"><p class="text-gray">Selected amount</p><p class="amount-value" id="amountPreview">₦0</p><p class="text-muted">You will be redirected to our payment gateway.</p></div><div class="info-banner"><p><strong>Impact</strong> 100% of your donation is delivered to the campaign.</p></div><p class="summary-note">Donate with confidence. KindHeart uses trusted payment services to keep your gifts secure.</p></aside>
+    </div>
+  </main>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/donation-checkout.js"></script>
+  <script src="../assets/js/footer.js"></script>
 </body>
 </html>
-

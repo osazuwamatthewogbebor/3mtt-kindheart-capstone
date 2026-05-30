@@ -1,107 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Donations - KindHeart</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/profile.css">
-<link rel="stylesheet" href="../assets/css/donations.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Donations - KindHeart</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/profile.css">
+  <link rel="stylesheet" href="../assets/css/donations.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
 </head>
 <body>
-
-    <!-- NAVIGATION -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <div class="logo">
-                    <a href="../index.html">
-                        <i class="fas fa-heart"></i>
-                        <span>KindHeart</span>
-                    </a>
-                </div>
-                
-                <ul class="nav-links">
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="campaigns.html">Campaigns</a></li>
-                    <li><a href="my-campaigns.html">My Campaigns</a></li>
-                </ul>
-
-                <div class="nav-actions">
-                    <div class="user-menu">
-                        <button class="user-btn" onclick="toggleUserMenu()">
-                            <i class="fas fa-user-circle"></i> <span id="userName">User</span>
-                        </button>
-                        <div class="user-dropdown" id="userDropdown">
-                            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
-                            <a href="my-donations.html"><i class="fas fa-heart"></i> My Donations</a>
-                            <a href="admin-dashboard.html" id="adminLink" class="hidden"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- PAGE HEADER -->
-    <section class="page-header">
-        <div class="container">
-            <h1>My Donations</h1>
-            <p>Track your contributions and make a difference</p>
-        </div>
-    </section>
-
-    <!-- MAIN CONTENT -->
-    <section class="p-3 bg-gray-lightest min-height-section">
-        <div class="container">
-            
-            <!-- STATS -->
-            <div class="stats-row">
-                <div class="stat-box">
-                    <h3 id="totalDonations">0</h3>
-                    <p>Total Donations</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="totalAmount">₦0</h3>
-                    <p>Total Amount</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="campaignsSupported">0</h3>
-                    <p>Campaigns Supported</p>
-                </div>
-            </div>
-
-            <!-- DONATIONS TABLE -->
-            <div class="donations-table">
-                <div class="table-header">
-                    <h2>Donation History</h2>
-                </div>
-
-                <div id="donationsList">
-                    <div class="loading-state padding-custom">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Loading your donations...</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-bottom">
-                <p>&copy; 2024 KindHeart. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="../assets/js/config.js"></script>
-    <script src="../assets/js/my-donations.js"></script>
-
+  <nav class="navbar"><div class="container"><div class="nav-wrapper"><div class="logo"><a href="../index.html"><i class="fas fa-heart"></i><span>KindHeart</span></a></div><ul class="nav-links"><li><a href="../index.html">Home</a></li><li><a href="campaigns.html">Campaigns</a></li><li><a href="my-campaigns.html">My Campaigns</a></li></ul><div class="nav-actions"><a href="create-campaign.html" class="btn btn-primary"><i class="fas fa-plus"></i> Create Campaign</a></div></div></div></nav>
+  <section class="page-header" style="background-image: linear-gradient(180deg, rgba(245,245,245,0.95), rgba(245,245,245,0.95)), url('https://images.unsplash.com/photo-1489417129474-55f4ec7d6d50?auto=format&fit=crop&w=1200&q=80');">
+    <div class="container"><h1>My Donations</h1><p>Review your giving history and follow the causes you’ve supported.</p></div>
+  </section>
+  <main class="container p-3 bg-gray-lightest"><div class="stats-row"><div class="stat-box"><h3 id="totalDonations">0</h3><p>Total Donations</p></div><div class="stat-box"><h3 id="totalAmount">₦0</h3><p>Total Amount</p></div><div class="stat-box"><h3 id="campaignsSupported">0</h3><p>Campaigns Supported</p></div></div><div class="donations-table"><div class="table-header"><h2>Donation records</h2></div><div id="donationsList"><div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading your donations...</p></div></div></div></main>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/my-donations.js"></script>
+  <script src="../assets/js/footer.js"></script>
 </body>
 </html>

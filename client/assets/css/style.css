@@ -154,6 +154,125 @@ ul {
     line-height: 1.8;
 }
 
+.content-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.metrics-grid > div {
+    padding: 1.75rem;
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.metrics-grid strong {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+.hero-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+    justify-content: center;
+}
+
+.hero-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(100px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.hero-stat-grid div {
+    padding: 1rem;
+    background: var(--gray-lightest);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.hero-stat-grid strong {
+    display: block;
+    font-size: 1.5rem;
+    color: var(--dark);
+}
+
+.hero-stat-grid span {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--gray);
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-box {
+    background: var(--white);
+    padding: 1.75rem;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+}
+
+.stat-box h3 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+}
+
+.stat-box p {
+    color: var(--gray);
+}
+
+.campaigns-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.campaigns-header h2 {
+    font-size: 1.75rem;
+    margin: 0;
+}
+
 /* Steps (Used in How It Works) */
 .steps {
     max-width: 1000px;

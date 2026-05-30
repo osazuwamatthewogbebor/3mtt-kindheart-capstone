@@ -46,4 +46,13 @@ export default class EmailService {
       html: templates.getResetSuccessTemplate(name),
     });
   }
+
+  async sendContactEmail({ to, fromName, fromEmail, subject, message }) {
+    return this.provider.sendEmail({
+      to,
+      recipientName: 'KindHeart Support',
+      subject,
+      html: templates.getContactTemplate({ name: fromName, email: fromEmail, subject, message }),
+    });
+  }
 }

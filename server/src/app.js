@@ -17,6 +17,7 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import notFoundMiddleware from './middlewares/notFoundMiddleware.js';
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import donationRoutes from './routes/donationRoutes.js'
+import contactRoutes from './routes/contactRoutes.js';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
 import { gatekeeper } from './middlewares/gatekeeperMiddleware.js';
@@ -116,6 +117,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/donations', donationRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Error Handlers
 app.use(notFoundMiddleware);

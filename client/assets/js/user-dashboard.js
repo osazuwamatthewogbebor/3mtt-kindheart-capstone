@@ -81,7 +81,7 @@ function updateProfileDisplay(user) {
 
     const displayName = user.name || user.username || 'User';
     const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase();
-    const joinDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : '2024';
+    const joinDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : new Date().getFullYear();
 
     // Update sidebar profile
     const sidebarAvatar = document.getElementById('sidebarAvatar');
