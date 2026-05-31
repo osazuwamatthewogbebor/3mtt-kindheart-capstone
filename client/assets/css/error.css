@@ -1,0 +1,181 @@
+/* ============================================
+   ERROR PAGE STYLES - error.css
+   Styles for 404 error page
+   ============================================ */
+
+/* Error Container */
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 4rem 1rem;
+    text-align: center;
+}
+
+.error-content {
+    width: 100%;
+}
+
+/* Error Code */
+.error-code {
+    font-size: 8rem;
+    font-weight: 800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+/* Error Icon */
+.error-icon {
+    font-size: 5rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+/* Error Title */
+.error-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 1rem;
+}
+
+/* Error Description */
+.error-description {
+    font-size: 1.125rem;
+    color: var(--gray);
+    margin-bottom: 2rem;
+    max-width: 500px;
+    line-height: 1.8;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Error Suggestions Box */
+.error-suggestions {
+    background: var(--gray-lightest);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    max-width: 600px;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.error-suggestions h3 {
+    font-size: 1rem;
+    color: var(--dark);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.error-suggestions ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.error-suggestions li {
+    color: var(--gray);
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.error-suggestions li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* Error Action Buttons */
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .error-code {
+        font-size: 6rem;
+    }
+
+    .error-icon {
+        font-size: 4rem;
+    }
+
+    .error-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .error-code {
+        font-size: 4rem;
+    }
+
+    .error-icon {
+        font-size: 3rem;
+    }
+
+    .error-title {
+        font-size: 1.75rem;
+    }
+
+    .error-description {
+        font-size: 1rem;
+    }
+
+    .error-actions {
+        flex-direction: column;
+    }
+
+    .error-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .error-suggestions {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .error-container {
+        min-height: 50vh;
+        padding: 2rem 0.5rem;
+    }
+
+    .error-code {
+        font-size: 3.5rem;
+    }
+
+    .error-icon {
+        font-size: 2.5rem;
+    }
+
+    .error-title {
+        font-size: 1.5rem;
+    }
+
+    .error-description {
+        font-size: 0.95rem;
+        max-width: 100%;
+    }
+
+    .error-suggestions {
+        max-width: 100%;
+    }
+}

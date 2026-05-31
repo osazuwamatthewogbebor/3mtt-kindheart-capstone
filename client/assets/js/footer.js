@@ -2,13 +2,12 @@ const FooterComponent = {
   getYear() {
     return new Date().getFullYear();
   },
-  getFooterHtml() {
+  getFooterInnerHtml() {
     const isPage = window.location.pathname.includes('/pages/');
     const assetsPrefix = isPage ? '../' : '';
     const pagePrefix = isPage ? '' : 'pages/';
     const homeHref = isPage ? '../index.html' : 'index.html';
     return `
-<footer class="footer">
   <div class="container footer-grid">
     <div class="footer-col">
       <div class="footer-logo">
@@ -46,8 +45,10 @@ const FooterComponent = {
   <div class="footer-bottom">
     <p>&copy; <span class="footer-year">${this.getYear()}</span> KindHeart. All rights reserved.</p>
   </div>
-</footer>
     `;
+  },
+  getFooterHtml() {
+    return `<footer class="footer">${this.getFooterInnerHtml()}</footer>`;
   },
   updateFooterYear() {
     const year = this.getYear();
@@ -58,6 +59,7 @@ const FooterComponent = {
   render() {
     const existingFooter = document.querySelector('footer');
     if (existingFooter) {
+      existingFooter.innerHTML = this.getFooterInnerHtml();
       this.updateFooterYear();
       return;
     }

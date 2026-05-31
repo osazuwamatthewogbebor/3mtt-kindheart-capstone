@@ -138,7 +138,7 @@ async function loadStats() {
         }
 
         // Sync dynamic "Verification Queue" stat badge count
-        const verificationRes = await fetch(API.ADMIN_CAMPAIGNS, {
+        const verificationRes = await fetch(`${API.ADMIN_CAMPAIGNS}?page=1&limit=100`, {
             headers: getAuthHeaders()
         });
         const verificationResult = await verificationRes.json();
@@ -169,7 +169,7 @@ async function loadStats() {
 // ================= LOAD CAMPAIGNS (OVERVIEW RE-QUEUE LIST) =================
 async function loadCampaignsOverview() {
     try {
-        const res = await fetch(API.ADMIN_CAMPAIGNS, {
+        const res = await fetch(`${API.ADMIN_CAMPAIGNS}?page=1&limit=100`, {
             headers: getAuthHeaders()
         });
         const result = await res.json();
@@ -632,7 +632,7 @@ async function loadVerificationQueue() {
             </div>
         `;
 
-        const res = await fetch(API.ADMIN_CAMPAIGNS, {
+        const res = await fetch(`${API.ADMIN_CAMPAIGNS}?page=1&limit=100`, {
             headers: getAuthHeaders()
         });
         const result = await res.json();

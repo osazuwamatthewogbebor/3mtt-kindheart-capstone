@@ -108,7 +108,7 @@ export const getStats = async (req, res, next) => {
 export const getUsers = async (req, res, next) => {
 	try {
 		const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
-		const limit = Math.min(100, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
+		const limit = Math.min(1000, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
 		const skip = (page - 1) * limit;
 
 		const [users, total] = await Promise.all([

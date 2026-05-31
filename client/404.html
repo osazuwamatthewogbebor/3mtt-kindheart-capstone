@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - KindHeart</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="./assets/image/favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/error.css">
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <a href="./index.html" class="logo-header-link" aria-label="KindHeart Home">
+                        <img src="./assets/image/favicon.svg" alt="KindHeart Logo" width="32" height="32" class="logo-header-img">
+                        <span>KindHeart</span>
+                    </a>
+                </div>
+                
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="./index.html">Home</a></li>
+                    <li><a href="./pages/campaigns.html">Campaigns</a></li>
+                    <li><a href="./pages/how-it-works.html">How It Works</a></li>
+                    <li><a href="./pages/about.html">About</a></li>
+                </ul>
+
+                <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ERROR CONTAINER -->
+    <main class="error-container" id="main-content" aria-labelledby="error-title">
+        <div class="container">
+            <div class="error-content">
+                <i class="fas fa-map-location-dot error-icon" aria-hidden="true"></i>
+                
+                <div class="error-code">404</div>
+                
+                <h1 class="error-title" id="error-title">Page Not Found</h1>
+                
+                <p class="error-description">
+                    Sorry, we couldn't find the page you're looking for. The resource may have been moved, deleted, or never existed.
+                </p>
+
+                <div class="error-suggestions">
+                    <h3>What you can do:</h3>
+                    <ul>
+                        <li>Check if the URL is spelled correctly</li>
+                        <li>Go back to the previous page</li>
+                        <li>Visit our homepage to start fresh</li>
+                        <li>Check our campaigns to see active projects</li>
+                    </ul>
+                </div>
+
+                <div class="error-actions">
+                    <a href="./index.html" class="btn btn-primary">
+                        <i class="fas fa-home" aria-hidden="true"></i>
+                        Go to Homepage
+                    </a>
+                    <a href="./pages/campaigns.html" class="btn btn-outline">
+                        <i class="fas fa-list" aria-hidden="true"></i>
+                        Browse Campaigns
+                    </a>
+                    <button type="button" onclick="goBackOrHome()" class="btn btn-outline" aria-label="Go back to previous page">
+                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer"></footer>
+
+    <script>
+        function goBackOrHome() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = './index.html';
+            }
+        }
+    </script>
+
+    <script src="./assets/js/config.js"></script>
+    <script src="./assets/js/footer.js"></script>
+    <script src="./assets/js/main.js"></script>
+</body>
+</html>
