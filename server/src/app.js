@@ -44,7 +44,7 @@ app.use(helmet({
 // CORS configuration - allow production origins via env var
 const allowedOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
-  : ['http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:3000'];
+  : ['http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:3000', 'https://3mtt-kindheart-capstone.vercel.app'];
 
 app.use(cors({
   origin: allowedOrigins,
