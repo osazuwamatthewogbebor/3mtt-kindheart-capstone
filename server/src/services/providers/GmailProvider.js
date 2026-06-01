@@ -20,9 +20,33 @@ export default class GmailProvider extends EmailProvider {
         this.clientSecret,
         'https://developers.google.com/oauthplayground' // Default redirect URL
       );
+      
       this.oauth2Client.setCredentials({
         refresh_token: this.refreshToken
       });
+
+      // --- AUTOMATED TOKEN ROTATION LISTENER ---
+      this.oauth2Client.on('tokens', async (tokens) => {
+        if (tokens.refresh_token) {
+          logger.info('🔄 Google issued a brand new refresh token. Updating reference.');
+          
+          // 1. Keep it updated in the current running class instances
+          this.refreshToken = tokens.refresh_token;
+          
+          // 2. Fallback: Update process.env for runtime continuity
+          process.env.GMAIL_REFRESH_TOKEN = tokens.refresh_token;
+
+          // 3. Recommended Production Step:
+          // Persist tokens.refresh_token to your database here so it survives app crashes/restarts!
+          // e.g., await prisma.settings.update({ where: { key: 'GMAIL_REFRESH_TOKEN' }, data: { value: tokens.refresh_token } });
+        }
+        
+        if (tokens.access_token) {
+          logger.info('🎫 Internal Google Access Token refreshed successfully.');
+        }
+      });
+      // ----------------------------------------
+
       this.gmail = google.gmail({ version: 'v1', auth: this.oauth2Client });
     }
   }
@@ -37,8 +61,6 @@ export default class GmailProvider extends EmailProvider {
         fromEmail = match[2].trim();
       }
     }
-    // Return formatted string for raw email header
-    // Gmail API usually enforces the sender email to match the authenticated user
     return `${fromName} <${this.gmailUser}>`;
   }
 
@@ -66,6 +88,7 @@ export default class GmailProvider extends EmailProvider {
         .replace(/\//g, '_')
         .replace(/=+$/, '');
 
+      // The official SDK internally calls tokens refresh check right before executing this request
       const response = await this.gmail.users.messages.send({
         userId: 'me',
         requestBody: {
