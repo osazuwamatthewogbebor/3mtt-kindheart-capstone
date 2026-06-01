@@ -6,13 +6,7 @@ if (!isLoggedIn()) {
     window.location.href = 'login.html';
 }
 
-const urlParams = new URLSearchParams(window.location.search);
-const campaignId = urlParams.get('id');
-
-if (!campaignId) {
-    showToast('Campaign not found', 'error');
-            window.location.href = 'user-dashboard.html#campaigns';
-}
+let campaignId = null;
 
 // Global state for categories
 let categories = [];
@@ -20,9 +14,27 @@ let categories = [];
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
     loadUserName();
-    await initializePage();
     initializeDragAndDrop();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const idFromUrl = urlParams.get('id');
+    if (idFromUrl) {
+        campaignId = idFromUrl;
+        await initializePage();
+    }
 });
+
+window.openEditCampaign = async function(id) {
+    if (!id) return;
+    campaignId = id;
+
+    const editForm = document.getElementById('editCampaignForm');
+    const noSelection = document.getElementById('editCampaignNoSelection');
+    if (editForm) editForm.classList.remove('hidden');
+    if (noSelection) noSelection.classList.add('hidden');
+
+    await initializePage();
+};
 
 async function initializePage() {
     const updateBtn = document.getElementById('updateBtn');
@@ -38,8 +50,10 @@ async function initializePage() {
         console.error('Initialization error:', error);
         showToast('Error initializing page. Some data may be missing.', 'error');
     } finally {
-        updateBtn.disabled = false;
-        updateBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+        if (updateBtn) {
+            updateBtn.disabled = false;
+            updateBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+        }
     }
 }
 
@@ -170,7 +184,9 @@ function handleImagePreview(file) {
 }
 
 // Handle form submission
-document.getElementById('editCampaignForm').addEventListener('submit', async (e) => {
+const editFormElement = document.getElementById('editCampaignForm');
+if (editFormElement) {
+    editFormElement.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const title = document.getElementById('title').value.trim();
@@ -229,7 +245,7 @@ document.getElementById('editCampaignForm').addEventListener('submit', async (e)
 
         showToast('🎉 Campaign updated successfully!', 'success');
         setTimeout(() => {
-            window.location.href = 'my-campaigns.html';
+            window.location.href = 'user-dashboard.html#campaigns';
         }, 1500);
 
     } catch (error) {
@@ -239,4 +255,4 @@ document.getElementById('editCampaignForm').addEventListener('submit', async (e)
         btn.innerHTML = originalText;
         btn.disabled = false;
     }
-});
+})};

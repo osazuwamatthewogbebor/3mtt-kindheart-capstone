@@ -8,15 +8,15 @@ function loadUserName() {
     if (isLoggedIn()) {
         try {
             const user = JSON.parse(localStorage.getItem('user'));
-            if (user && user.name) {
-                const navUserName = document.getElementById('navUserName');
-                if (navUserName) {
-                    navUserName.textContent = user.name.split(' ')[0]; // First name
-                }
-                const userName = document.getElementById('userName');
-                if (userName) {
-                    userName.textContent = user.name.split(' ')[0]; // First name
-                }
+            const displayName = (typeof getDisplayName === 'function' ? getDisplayName(user) : (user && (user.name || user.username) ? (user.name || user.username) : 'User')) || 'User';
+            const firstName = displayName.split(' ')[0];
+            const navUserName = document.getElementById('navUserName');
+            if (navUserName) {
+                navUserName.textContent = firstName;
+            }
+            const userName = document.getElementById('userName');
+            if (userName) {
+                userName.textContent = firstName;
             }
         } catch (error) {
             console.error('Error loading user name:', error);

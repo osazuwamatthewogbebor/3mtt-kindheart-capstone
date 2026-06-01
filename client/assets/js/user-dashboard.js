@@ -32,7 +32,7 @@ async function initDashboard() {
 
         // Check if there's a tab in the URL (e.g., #campaigns)
         const hash = window.location.hash.substring(1);
-        if (hash && ['overview', 'campaigns', 'donations', 'profile'].includes(hash)) {
+        if (hash && ['overview', 'campaigns', 'create', 'edit', 'donations', 'profile'].includes(hash)) {
             switchTab(hash);
         }
 
@@ -80,51 +80,11 @@ function switchTab(tabName) {
     } else if (tabName === 'donations') {
         loadFullDonations();
     } else if (tabName === 'profile') {
-        // Lazy-load profile.html content into the profile tab and execute profile.js
-        const profileTab = document.getElementById('tab-profile');
-        // Use a data-loaded flag so the initial "loading" placeholder doesn't block fetching
-        if (profileTab && !profileTab.dataset.loaded) {
-            fetch('profile.html')
-                .then(resp => resp.text())
-                .then(html => {
-                    // extract main.profile-main content
-                    const tmp = document.createElement('div');
-                    tmp.innerHTML = html;
-                    const main = tmp.querySelector('main.container.profile-main');
-                    if (main) {
-                        profileTab.innerHTML = main.innerHTML;
-                    } else {
-                        // fallback: insert whole body
-                        const body = tmp.querySelector('body');
-                        profileTab.innerHTML = body ? body.innerHTML : html;
-                    }
-
-                    // load profile data into the injected DOM
-                    loadUserProfile();
-                    loadDashboardStats();
-
-                    // expose a lightweight toggleEdit so inline onclicks work immediately
-                    window.toggleEdit = function(section) {
-                        try {
-                            const view = profileTab.querySelector('#' + section + 'View');
-                            const edit = profileTab.querySelector('#' + section + 'Edit');
-                            if (!view || !edit) return;
-                            view.classList.toggle('hidden');
-                            edit.classList.toggle('hidden');
-                        } catch (e) { console.error('toggleEdit error', e); }
-                    };
-
-                    // dynamically load profile.js to wire up enhanced handlers
-                    const script = document.createElement('script');
-                    script.src = '../assets/js/profile.js';
-                    script.onload = () => { profileTab.dataset.loaded = 'true'; };
-                    document.body.appendChild(script);
-                })
-                .catch(err => {
-                    console.error('Failed to load profile tab:', err);
-                    if (profileTab) profileTab.innerHTML = '<p class="error-msg">Unable to load profile. Please try again.</p>';
-                });
-        }
+        loadUserProfile();
+    } else if (tabName === 'create') {
+        // Create campaign form is embedded directly in the dashboard tab
+    } else if (tabName === 'edit') {
+        loadEditCampaigns();
     } else if (tabName === 'overview') {
         loadDashboardStats();
         loadActiveCampaigns();
@@ -199,7 +159,7 @@ async function loadUserProfile() {
 function updateProfileDisplay(user) {
     if (!user) return;
 
-    const displayName = user.name || user.username || 'User';
+    const displayName = getDisplayName(user);
     const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase();
     const joinDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : new Date().getFullYear();
 
@@ -394,7 +354,7 @@ function renderActiveCampaigns(campaigns) {
 
                     <div class="campaign-card-actions">
                         <a href="campaign-details.html?id=${campaignId}" class="btn btn-sm btn-outline">View</a>
-                        <a href="edit-campaign.html?id=${campaignId}" class="btn btn-sm btn-primary">Edit</a>
+                        <button type="button" class="btn btn-sm btn-primary" onclick="openEditCampaign('${campaignId}')">Edit</button>
                     </div>
                 </div>
             </div>
@@ -414,7 +374,7 @@ function renderEmptyActiveCampaigns() {
             <i class="fas fa-bullhorn"></i>
             <h4>No active campaigns found</h4>
             <p>Get started by creating a fundraising campaign for a worthy cause.</p>
-            <a href="create-campaign.html" class="btn btn-primary btn-sm">Create Campaign</a>
+            <a href="#create" class="btn btn-primary btn-sm" onclick="switchTab('create')">Create Campaign</a>
         </div>
     `;
 }
@@ -444,6 +404,62 @@ async function loadFullCampaigns() {
     }
 }
 
+async function loadEditCampaigns() {
+    const container = document.getElementById('editCampaignsGrid');
+    if (container) container.innerHTML = '<div class="loading-state" style="padding: 3rem; text-align: center;"><i class="fas fa-spinner fa-spin"></i><p>Loading campaigns for editing...</p></div>';
+
+    try {
+        const response = await fetch(API.MY_CAMPAIGNS, {
+            headers: getAuthHeaders()
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch campaigns');
+
+        const data = await response.json();
+        const campaigns = Array.isArray(data.data) ? data.data : (data.data?.campaigns || []);
+        renderEditCampaigns(campaigns);
+    } catch (error) {
+        console.error('Error loading edit campaigns:', error);
+        if (container) container.innerHTML = '<p class="error-msg">Failed to load your campaigns. Please refresh the page.</p>';
+    }
+}
+
+function renderEditCampaigns(campaigns) {
+    const container = document.getElementById('editCampaignsGrid');
+    if (!container) return;
+
+    if (campaigns.length === 0) {
+        container.innerHTML = `
+            <div class="empty-dashboard-state">
+                <i class="fas fa-bullhorn"></i>
+                <h4>No campaigns to edit</h4>
+                <p>Once you've created a campaign, it will appear here for editing.</p>
+                <a href="#create" class="btn btn-primary" onclick="switchTab('create')">Create Campaign</a>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = campaigns.map(campaign => {
+        const campaignId = getCampaignId(campaign);
+        const campaignTitle = getCampaignTitle(campaign);
+        const campaignStatus = campaign.campaignStatus || campaign.status || 'PENDING';
+        return `
+            <div class="campaign-card-mini">
+                <div class="campaign-card-content">
+                    <span class="campaign-status-badge ${campaignStatus.toLowerCase()}">${campaignStatus}</span>
+                    <h3 class="campaign-card-title">${escapeHtml(campaignTitle)}</h3>
+                    <p class="campaign-card-description">${escapeHtml(campaign.description || '').substring(0, 100)}...</p>
+                    <div class="campaign-card-actions">
+                        <button type="button" class="btn btn-sm btn-primary" style="flex: 1;" onclick="openEditCampaign('${campaignId}')"><i class="fas fa-edit"></i> Edit</button>
+                        <a href="campaign-details.html?id=${campaignId}" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i> View</a>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
 /**
  * Render Full Campaigns List
  */
@@ -457,7 +473,7 @@ function renderFullCampaigns(campaigns) {
                 <i class="fas fa-bullhorn"></i>
                 <h4>No campaigns yet</h4>
                 <p>You haven't created any campaigns. Start one today!</p>
-                <a href="create-campaign.html" class="btn btn-primary">Create Campaign</a>
+                <a href="#create" class="btn btn-primary" onclick="switchTab('create')">Create Campaign</a>
             </div>
         `;
         return;
@@ -498,7 +514,7 @@ function renderFullCampaigns(campaigns) {
 
                 <div class="campaign-card-actions">
                     <a href="campaign-details.html?id=${campaignId}" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i></a>
-                    <a href="edit-campaign.html?id=${campaignId}" class="btn btn-sm btn-primary" style="flex: 1;"><i class="fas fa-edit"></i> Edit</a>
+                    <button type="button" class="btn btn-sm btn-primary" style="flex: 1;" onclick="openEditCampaign('${campaignId}')"><i class="fas fa-edit"></i> Edit</button>
                     <button type="button" onclick="openDeleteModal('${campaignId}')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                 </div>
             </div>

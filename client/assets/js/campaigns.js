@@ -7,7 +7,7 @@ function updateNavActions() {
         const user = JSON.parse(localStorage.getItem('user'));
         navActions.innerHTML = `
             <a href="user-dashboard.html#campaigns" class="btn-link">My Campaigns</a>
-            <a href="create-campaign.html" class="btn btn-primary">Create Campaign</a>
+            <a href="pages/user-dashboard.html#create" class="btn btn-primary">Create Campaign</a>
             <div class="user-menu">
                 <button class="user-btn" onclick="toggleUserMenu()">
                     <i class="fas fa-user-circle"></i> ${user.name}

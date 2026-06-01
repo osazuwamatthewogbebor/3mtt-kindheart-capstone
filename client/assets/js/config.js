@@ -245,6 +245,33 @@ function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('en-US', options);
 }
 
+// Helper function to derive a friendly user display name
+function getDisplayName(user) {
+    if (!user || typeof user !== 'object') return 'User';
+    const rawName = String(user.name || user.fullName || user.full_name || user.username || user.email || '').trim();
+    const lowerName = rawName.toLowerCase();
+    const isRoleOnly = /^(admin|user|member|donor|supporter|campaigner|superadmin|moderator|guest)$/i.test(lowerName);
+    if (rawName && !isRoleOnly) {
+        return rawName;
+    }
+
+    if (user.email) {
+        const email = String(user.email).trim();
+        const localPart = email.split('@')[0].trim();
+        if (localPart) return localPart;
+    }
+
+    if (user.username && String(user.username).trim()) {
+        return String(user.username).trim();
+    }
+
+    if (user.role && String(user.role).trim()) {
+        return String(user.role).trim();
+    }
+
+    return 'User';
+}
+
 // Helper function to calculate progress percentage
 function calculateProgress(raised, goal) {
     const r = Number(raised) || 0;

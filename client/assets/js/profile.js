@@ -39,14 +39,15 @@ if (typeof isLoggedIn === 'undefined' || typeof authFetch === 'undefined' || typ
             user = u;
 
             // Defensive DOM updates
-            const initials = (user.name || 'User').split(' ').map(n => n[0] || '').join('').toUpperCase();
+            const displayName = getDisplayName(user);
+            const initials = displayName.split(' ').map(n => n[0] || '').join('').toUpperCase();
             const profileAvatar = document.getElementById('profileAvatar'); if (profileAvatar) profileAvatar.textContent = initials;
-            const profileName = document.getElementById('profileName'); if (profileName) profileName.textContent = user.name || '';
+            const profileName = document.getElementById('profileName'); if (profileName) profileName.textContent = displayName;
             const profileEmail = document.getElementById('profileEmail'); if (profileEmail) profileEmail.textContent = user.email || '';
-            const navUserName = document.getElementById('navUserName'); if (navUserName) navUserName.textContent = user.name || '';
+            const navUserName = document.getElementById('navUserName'); if (navUserName) navUserName.textContent = displayName;
             const memberSince = document.getElementById('memberSince'); if (memberSince) memberSince.textContent = formatDate(user.createdAt || user.created_at || new Date());
 
-            const displayName = document.getElementById('displayName'); if (displayName) displayName.textContent = user.name || '';
+            const displayNameEl = document.getElementById('displayName'); if (displayNameEl) displayNameEl.textContent = displayName;
             const displayEmail = document.getElementById('displayEmail'); if (displayEmail) displayEmail.textContent = user.email || '';
             const displayRole = document.getElementById('displayRole'); if (displayRole) displayRole.textContent = user.role || '';
             const displayJoined = document.getElementById('displayJoined'); if (displayJoined) displayJoined.textContent = formatDate(user.createdAt || user.created_at || new Date());
@@ -139,90 +140,24 @@ if (typeof isLoggedIn === 'undefined' || typeof authFetch === 'undefined' || typ
         setTimeout(() => observer.disconnect(), 5000);
     }
 
+    async function loadStats() {
+        try {
+            const userId = user.id;
+            const response = await fetch(`${API.USERS}/${userId}`, {
+                headers: getAuthHeaders()
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                const tC = document.getElementById('totalCampaigns'); if (tC) tC.textContent = data.data.total_campaigns || 0;
+                const tD = document.getElementById('totalDonations'); if (tD) tD.textContent = data.data.total_donations || 0;
+                const tR = document.getElementById('totalRaised'); if (tR) tR.textContent = formatCurrency(data.data.total_raised || 0);
+                const tDon = document.getElementById('totalDonated'); if (tDon) tDon.textContent = formatCurrency(data.data.total_donated || 0);
+            }
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
+    }
+
     initProfileBindings();
 }
-
-                await resp.json().catch(() => ({}));
-                showToast('Password updated', 'success');
-                form.reset();
-                toggleEdit('password');
-            } catch (err) {
-                console.error('Error changing password:', err);
-                showToast(err.message || 'Failed to change password', 'error');
-            }
-        });
-        return true;
-    }
-
-    // Attach handlers when DOM elements are available. If not present, observe mutations for a short time.
-    function initProfileBindings() {
-        const attached1 = attachProfileFormHandler();
-        const attached2 = attachChangePasswordHandler();
-        // If both attached, load profile immediately
-        if (attached1 && attached2) {
-            loadProfile();
-            loadStats();
-            return;
-        }
-
-        // Observe for node additions (profile tab injection) for up to 5s
-        const observer = new MutationObserver((mutations, obs) => {
-            const a1 = attachProfileFormHandler();
-            const a2 = attachChangePasswordHandler();
-            if (a1 && a2) {
-                obs.disconnect();
-                loadProfile();
-                loadStats();
-            }
-        });
-        observer.observe(document.body, { childList: true, subtree: true });
-        // Stop observing after 5s
-        setTimeout(() => observer.disconnect(), 5000);
-    }
-    if (newPassword !== confirmPassword) return showToast('Passwords do not match', 'error');
-    if (!isPasswordValid(newPassword)) return showToast('Password must be 8+ chars, include upper/lower/number/special', 'error');
-    initProfileBindings();
-        const resp = await authFetch(API.CHANGE_PASSWORD, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ currentPassword, newPassword })
-        });
-
-        if (!resp.ok) {
-            const txt = await resp.text().catch(() => '');
-            throw new Error(`Change password failed (${resp.status}): ${txt}`);
-        }
-
-        const data = await resp.json().catch(() => ({}));
-        showToast('Password updated', 'success');
-        document.getElementById('changePasswordForm').reset();
-        toggleEdit('password');
-    } catch (err) {
-        console.error('Error changing password:', err);
-        showToast(err.message || 'Failed to change password', 'error');
-    }
-});
-
-// Load stats
-async function loadStats() {
-    try {
-        const userId = user.id;
-        const response = await fetch(`${API.USERS}/${userId}`, {
-            headers: getAuthHeaders()
-        });
-        const data = await response.json();
-
-        if (data.success) {
-            const tC = document.getElementById('totalCampaigns'); if (tC) tC.textContent = data.data.total_campaigns || 0;
-            const tD = document.getElementById('totalDonations'); if (tD) tD.textContent = data.data.total_donations || 0;
-            const tR = document.getElementById('totalRaised'); if (tR) tR.textContent = formatCurrency(data.data.total_raised || 0);
-            const tDon = document.getElementById('totalDonated'); if (tDon) tDon.textContent = formatCurrency(data.data.total_donated || 0);
-        }
-    } catch (error) {
-        console.error('Error loading stats:', error);
-    }
-}
-
-// Initialize
-loadProfile();
-loadStats();

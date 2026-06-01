@@ -709,6 +709,21 @@ ul {
     transition: var(--transition);
     border: none;
     white-space: nowrap;
+    color: inherit;
+    text-decoration: none;
+}
+
+.btn .btn-label,
+.btn span,
+.btn > span,
+.btn strong,
+.btn em,
+.btn i {
+    display: inline-block;
+    color: inherit !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    font-size: inherit !important;
 }
 
 .btn-primary {
