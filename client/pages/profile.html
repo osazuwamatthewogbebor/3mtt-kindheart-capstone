@@ -21,25 +21,19 @@
     </div>
   </nav>
 
-  <section class="profile-hero" style="background-image: linear-gradient(135deg, rgba(16,185,129,0.87), rgba(52,211,153,0.38)), url('https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80');">
-    <div class="container profile-hero-inner">
+  <!-- Compact profile header -->
+  <header class="profile-header">
+    <div class="container profile-header-inner">
       <div class="profile-avatar" id="profileAvatar">K</div>
-      <div>
-        <span class="subtitle">Your profile</span>
+      <div class="profile-header-text">
         <h1 id="profileName">Loading...</h1>
         <p id="profileEmail">user@example.com</p>
       </div>
       <div class="hero-actions"><a href="user-dashboard.html#campaigns" class="btn btn-outline">My Campaigns</a><a href="user-dashboard.html#donations" class="btn btn-primary">My Donations</a></div>
     </div>
-  </section>
+  </header>
 
   <main class="container profile-main">
-    <div class="stats-grid">
-      <div class="stat-card"><h3 id="totalCampaigns">0</h3><p>Campaigns</p></div>
-      <div class="stat-card"><h3 id="totalDonations">0</h3><p>Donations</p></div>
-      <div class="stat-card"><h3 id="totalRaised">₦0</h3><p>Raised</p></div>
-      <div class="stat-card"><h3 id="totalDonated">₦0</h3><p>Donated</p></div>
-    </div>
 
     <section class="profile-card">
       <div class="profile-card-header"><h2>Account details</h2><button class="btn btn-outline" onclick="toggleEdit('info')"><i class="fas fa-edit"></i> Edit</button></div>
@@ -50,10 +44,19 @@
         <div class="info-row"><span>Joined</span><strong id="displayJoined">-</strong></div>
       </div>
       <div id="infoEdit" class="hidden">
-        <form id="updateProfileForm">
-          <div class="form-group"><label for="editName">Full Name</label><input type="text" id="editName" required></div>
-          <div class="form-group"><label for="editEmail">Email Address</label><input type="email" id="editEmail" required></div>
-          <div class="profile-form-actions"><button type="button" class="btn btn-outline" onclick="toggleEdit('info')">Cancel</button><button type="submit" class="btn btn-primary">Save</button></div>
+        <form id="updateProfileForm" class="profile-form">
+          <div class="form-field">
+            <input type="text" id="editName" required autocomplete="name">
+            <label for="editName">Full Name</label>
+          </div>
+          <div class="form-field">
+            <input type="email" id="editEmail" required autocomplete="email">
+            <label for="editEmail">Email Address</label>
+          </div>
+          <div class="profile-form-actions">
+            <button type="button" class="btn btn-outline" onclick="toggleEdit('info')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
         </form>
       </div>
     </section>
@@ -62,11 +65,23 @@
       <div class="profile-card-header"><h2>Change password</h2><button class="btn btn-outline" onclick="toggleEdit('password')"><i class="fas fa-key"></i> Update</button></div>
       <div id="passwordView" class="profile-info-view"><p>************</p></div>
       <div id="passwordEdit" class="hidden">
-        <form id="changePasswordForm">
-          <div class="form-group"><label for="currentPassword">Current password</label><input type="password" id="currentPassword" minlength="8" required></div>
-          <div class="form-group"><label for="newPassword">New password</label><input type="password" id="newPassword" minlength="8" required></div>
-          <div class="form-group"><label for="confirmPassword">Confirm new password</label><input type="password" id="confirmPassword" minlength="8" required></div>
-          <div class="profile-form-actions"><button type="button" class="btn btn-outline" onclick="toggleEdit('password')">Cancel</button><button type="submit" class="btn btn-primary">Update password</button></div>
+        <form id="changePasswordForm" class="profile-form">
+          <div class="form-field">
+            <input type="password" id="currentPassword" minlength="8" required autocomplete="current-password">
+            <label for="currentPassword">Current password</label>
+          </div>
+          <div class="form-field">
+            <input type="password" id="newPassword" minlength="8" required autocomplete="new-password">
+            <label for="newPassword">New password</label>
+          </div>
+          <div class="form-field">
+            <input type="password" id="confirmPassword" minlength="8" required autocomplete="new-password">
+            <label for="confirmPassword">Confirm new password</label>
+          </div>
+          <div class="profile-form-actions">
+            <button type="button" class="btn btn-outline" onclick="toggleEdit('password')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Update password</button>
+          </div>
         </form>
       </div>
     </section>

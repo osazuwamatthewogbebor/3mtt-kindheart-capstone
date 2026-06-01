@@ -38,7 +38,7 @@ const FooterComponent = {
       <ul>
         <li><a href="${pagePrefix}login.html">Login</a></li>
         <li><a href="${pagePrefix}register.html">Register</a></li>
-        <li><a href="${pagePrefix}profile.html">Profile</a></li>
+        <li><a href="${pagePrefix}user-dashboard.html#profile">Profile</a></li>
       </ul>
     </div>
   </div>

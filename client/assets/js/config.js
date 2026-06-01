@@ -40,6 +40,30 @@ function getAPIUrl() {
     return 'https://kindheart-api.onrender.com/api';
 }
 
+// Helper to perform authenticated requests with automatic refresh-on-401 and retry
+async function authFetch(url, options = {}) {
+    options = options || {};
+    options.headers = Object.assign({}, options.headers || {}, getAuthHeaders());
+
+    // If sending FormData, remove Content-Type so the browser sets the correct multipart boundary
+    if (options.body instanceof FormData) {
+        if (options.headers && options.headers['Content-Type']) delete options.headers['Content-Type'];
+        if (options.headers && options.headers['content-type']) delete options.headers['content-type'];
+    }
+
+    let resp = await fetch(url, options);
+
+    if (resp.status !== 401) return resp;
+
+    // Try to refresh token once
+    const newToken = await refreshAccessToken();
+    if (!newToken) return resp; // return original 401 response
+
+    // Retry original request with fresh token
+    options.headers = Object.assign({}, options.headers || {}, getAuthHeaders());
+    return await fetch(url, options);
+}
+
 const API_URL = getAPIUrl();
 
 console.log(`✅ API Configuration loaded. Endpoint: ${API_URL}`);
@@ -73,6 +97,8 @@ const API = {
 
     // Public Stats (no auth required)
     PUBLIC_STATS: `${API_URL}/stats`,
+	// Refresh token endpoint
+	REFRESH_TOKEN: `${API_URL}/auth/refresh-token`,
 
     // Admin
     ADMIN_STATS: `${API_URL}/admin/stats`,
@@ -128,6 +154,55 @@ function isLoggedIn() {
     return !!localStorage.getItem('token');
 }
 
+// Parse JWT expiry and return TTL in seconds (rounded)
+function parseJwtExpirySeconds(token) {
+    try {
+        const parts = token.split('.');
+        if (parts.length < 2) return null;
+        const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+        if (!payload.exp) return null;
+        const ttl = Math.max(0, Math.floor(payload.exp - (Date.now() / 1000)));
+        return ttl;
+    } catch (e) {
+        return null;
+    }
+}
+
+// Attempt to refresh access token using refresh-token endpoint (server should set refresh cookie)
+async function refreshAccessToken() {
+    try {
+        const resp = await fetch(API.REFRESH_TOKEN, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!resp.ok) {
+            console.warn('refreshAccessToken: refresh failed', resp.status);
+            return null;
+        }
+
+        const body = await resp.json();
+        const newToken = body.accessToken || body.token || null;
+        if (!newToken) return null;
+
+        const ttl = parseJwtExpirySeconds(newToken) || SessionManager.DEFAULT_TTL;
+        if (typeof SessionManager !== 'undefined') {
+            SessionManager.setToken(newToken, ttl);
+        } else {
+            localStorage.setItem('token', newToken);
+            const expiry = Date.now() + (ttl * 1000);
+            localStorage.setItem('tokenExpiry', expiry.toString());
+        }
+
+        console.log('refreshAccessToken: obtained new access token');
+        return newToken;
+    } catch (err) {
+        console.error('refreshAccessToken error', err);
+        return null;
+    }
+}
+
 /**
  * SECURITY FIX #7: Secure Logout - Clears ALL sensitive data
  */
@@ -172,8 +247,11 @@ function formatDate(dateString) {
 
 // Helper function to calculate progress percentage
 function calculateProgress(raised, goal) {
-    if (goal === 0) return 0;
-    return Math.min(Math.round((raised / goal) * 100), 100);
+    const r = Number(raised) || 0;
+    const g = Number(goal) || 0;
+    if (!Number.isFinite(g) || g <= 0) return 0;
+    const percentage = (r / g) * 100;
+    return Math.min(Math.round(percentage), 100);
 }
 
 // ===== INPUT VALIDATION UTILITIES =====

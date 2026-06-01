@@ -32,7 +32,7 @@ async function initDashboard() {
 
         // Check if there's a tab in the URL (e.g., #campaigns)
         const hash = window.location.hash.substring(1);
-        if (hash && ['overview', 'campaigns', 'donations'].includes(hash)) {
+        if (hash && ['overview', 'campaigns', 'donations', 'profile'].includes(hash)) {
             switchTab(hash);
         }
 
@@ -41,6 +41,12 @@ async function initDashboard() {
         showErrorNotification('Failed to load dashboard. Please refresh the page.');
     }
 }
+
+// React to hash changes so links like user-dashboard.html#profile work without full reload
+window.addEventListener('hashchange', () => {
+    const h = window.location.hash.substring(1);
+    if (h) switchTab(h);
+});
 
 /**
  * Switch Dashboard Tabs
@@ -73,6 +79,52 @@ function switchTab(tabName) {
         loadFullCampaigns();
     } else if (tabName === 'donations') {
         loadFullDonations();
+    } else if (tabName === 'profile') {
+        // Lazy-load profile.html content into the profile tab and execute profile.js
+        const profileTab = document.getElementById('tab-profile');
+        // Use a data-loaded flag so the initial "loading" placeholder doesn't block fetching
+        if (profileTab && !profileTab.dataset.loaded) {
+            fetch('profile.html')
+                .then(resp => resp.text())
+                .then(html => {
+                    // extract main.profile-main content
+                    const tmp = document.createElement('div');
+                    tmp.innerHTML = html;
+                    const main = tmp.querySelector('main.container.profile-main');
+                    if (main) {
+                        profileTab.innerHTML = main.innerHTML;
+                    } else {
+                        // fallback: insert whole body
+                        const body = tmp.querySelector('body');
+                        profileTab.innerHTML = body ? body.innerHTML : html;
+                    }
+
+                    // load profile data into the injected DOM
+                    loadUserProfile();
+                    loadDashboardStats();
+
+                    // expose a lightweight toggleEdit so inline onclicks work immediately
+                    window.toggleEdit = function(section) {
+                        try {
+                            const view = profileTab.querySelector('#' + section + 'View');
+                            const edit = profileTab.querySelector('#' + section + 'Edit');
+                            if (!view || !edit) return;
+                            view.classList.toggle('hidden');
+                            edit.classList.toggle('hidden');
+                        } catch (e) { console.error('toggleEdit error', e); }
+                    };
+
+                    // dynamically load profile.js to wire up enhanced handlers
+                    const script = document.createElement('script');
+                    script.src = '../assets/js/profile.js';
+                    script.onload = () => { profileTab.dataset.loaded = 'true'; };
+                    document.body.appendChild(script);
+                })
+                .catch(err => {
+                    console.error('Failed to load profile tab:', err);
+                    if (profileTab) profileTab.innerHTML = '<p class="error-msg">Unable to load profile. Please try again.</p>';
+                });
+        }
     } else if (tabName === 'overview') {
         loadDashboardStats();
         loadActiveCampaigns();
@@ -85,13 +137,30 @@ function switchTab(tabName) {
  */
 async function loadUserProfile() {
     try {
-        const response = await fetch(API.ME, {
-            headers: getAuthHeaders()
+        const response = await authFetch(API.ME, {
+            method: 'GET'
         });
+
 
         if (!response.ok) {
             if (response.status === 401) {
-                redirectToLogin();
+                // Try to refresh token using refresh cookie, then retry once
+                const refreshed = await refreshAccessToken();
+                if (refreshed) {
+                    // retry
+                    const retry = await fetch(API.ME, { headers: getAuthHeaders() });
+                    if (retry.ok) {
+                        const data2 = await retry.json();
+                        currentUser = data2.data || data2;
+                        updateProfileDisplay(currentUser);
+                        updateAdminLink();
+                        return;
+                    }
+                }
+
+                // If refresh failed or retry failed - force logout
+                if (typeof SessionManager !== 'undefined') SessionManager.logout();
+                else logout();
                 return;
             }
             throw new Error('Failed to fetch user profile');
@@ -108,7 +177,13 @@ async function loadUserProfile() {
 
     } catch (error) {
         console.error('Error loading user profile:', error);
-        // Try to use local user data as fallback
+        // If user is not logged in or auth failed, redirect to login
+        if (!isLoggedIn()) {
+            redirectToLogin();
+            return;
+        }
+
+        // Fallback: use local user data if present and token appears valid
         const localUser = JSON.parse(localStorage.getItem('user'));
         if (localUser) {
             currentUser = localUser;
@@ -131,7 +206,14 @@ function updateProfileDisplay(user) {
     // Update sidebar profile
     const sidebarAvatar = document.getElementById('sidebarAvatar');
     if (sidebarAvatar) {
-        sidebarAvatar.textContent = initials;
+        if (user.profileImage || user.avatarUrl || user.imageUrl) {
+            const imgUrl = user.profileImage || user.avatarUrl || user.imageUrl;
+            sidebarAvatar.innerHTML = `<img src="${imgUrl}" alt="${escapeHtml(displayName)}" class="profile-avatar-img" onerror="this.onerror=null;this.src='../assets/images/default-avatar.png'">`;
+            sidebarAvatar.classList.remove('profile-avatar-placeholder');
+        } else {
+            sidebarAvatar.textContent = initials;
+            sidebarAvatar.classList.add('profile-avatar-placeholder');
+        }
     }
 
     const sidebarName = document.getElementById('sidebarName');
@@ -149,6 +231,12 @@ function updateProfileDisplay(user) {
     if (navUserName) {
         navUserName.textContent = displayName;
     }
+
+    // Update dashboard welcome
+    const dashboardUserName = document.getElementById('dashboardUserName');
+    const dashboardWelcome = document.getElementById('dashboardWelcome');
+    if (dashboardUserName) dashboardUserName.textContent = displayName;
+    if (dashboardWelcome) dashboardWelcome.style.display = 'block';
 
     // Update verified badge visibility
     if (user.emailVerified) {
@@ -180,10 +268,10 @@ function updateAdminLink() {
  */
 async function loadDashboardStats() {
     try {
-        // Fetch user's campaigns and donations to calculate stats
+        // Fetch user's campaigns and donations to calculate stats (use authFetch to auto-refresh)
         const [campaignsRes, donationsRes] = await Promise.all([
-            fetch(API.MY_CAMPAIGNS, { headers: getAuthHeaders() }),
-            fetch(API.MY_DONATIONS, { headers: getAuthHeaders() })
+            authFetch(API.MY_CAMPAIGNS, { method: 'GET' }),
+            authFetch(API.MY_DONATIONS, { method: 'GET' })
         ]);
 
         let campaigns = [];

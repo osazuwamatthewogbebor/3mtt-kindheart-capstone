@@ -1,195 +1,205 @@
 // Profile Page - Main Script
 // Handles user profile management, editing, and password changes
 
-// Check authentication
-if (!isLoggedIn()) {
-    window.location.href = 'login.html';
-}
+// Defensive: only run if helpers exist
+if (typeof isLoggedIn === 'undefined' || typeof authFetch === 'undefined' || typeof API === 'undefined') {
+    console.warn('Profile script: required helpers not available yet. Initialization deferred.');
+} else {
+    let user = null;
+    try { user = JSON.parse(localStorage.getItem('user')) || null; } catch (e) { user = null; }
 
-const user = JSON.parse(localStorage.getItem('user'));
-
-function toggleUserMenu() {
-    const dropdown = document.getElementById('userDropdown');
-    dropdown.classList.toggle('show');
-}
-
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.user-menu')) {
+    function toggleUserMenu() {
         const dropdown = document.getElementById('userDropdown');
-        if (dropdown) dropdown.classList.remove('show');
+        if (dropdown) dropdown.classList.toggle('show');
     }
-});
 
-function toggleEdit(section) {
-    const view = document.getElementById(section + 'View');
-    const edit = document.getElementById(section + 'Edit');
-    
-    view.classList.toggle('hidden');
-    edit.classList.toggle('hidden');
-}
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest || !e.target.closest('.user-menu')) {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) dropdown.classList.remove('show');
+        }
+    });
 
-// Load profile
-async function loadProfile() {
-    try {
-        const response = await fetch(API.ME, {
-            headers: getAuthHeaders()
-        });
-        const result = await response.json();
+    function toggleEdit(section) {
+        const view = document.getElementById(section + 'View');
+        const edit = document.getElementById(section + 'Edit');
+        if (!view || !edit) return;
+        view.classList.toggle('hidden');
+        edit.classList.toggle('hidden');
+    }
 
-        if (result.success) {
-            const user = result.data;
-            
-            // Update display
-            const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
-            document.getElementById('profileAvatar').textContent = initials;
-            document.getElementById('profileName').textContent = user.name;
-            document.getElementById('profileEmail').textContent = user.email;
-            document.getElementById('navUserName').textContent = user.name;
-            document.getElementById('memberSince').textContent = formatDate(user.createdAt || user.created_at);
+    async function loadProfile() {
+        try {
+            const response = await authFetch(API.ME, { method: 'GET' });
+            let result = {};
+            try { result = await response.json(); } catch (e) { result = {}; }
 
-            document.getElementById('displayName').textContent = user.name;
-            document.getElementById('displayEmail').textContent = user.email;
-            document.getElementById('displayRole').textContent = user.role;
-            document.getElementById('displayJoined').textContent = formatDate(user.createdAt || user.created_at);
+            const u = result.data || result.user || result;
+            if (!u) throw new Error('No user data');
+            user = u;
 
-            document.getElementById('editName').value = user.name;
-            document.getElementById('editEmail').value = user.email;
+            // Defensive DOM updates
+            const initials = (user.name || 'User').split(' ').map(n => n[0] || '').join('').toUpperCase();
+            const profileAvatar = document.getElementById('profileAvatar'); if (profileAvatar) profileAvatar.textContent = initials;
+            const profileName = document.getElementById('profileName'); if (profileName) profileName.textContent = user.name || '';
+            const profileEmail = document.getElementById('profileEmail'); if (profileEmail) profileEmail.textContent = user.email || '';
+            const navUserName = document.getElementById('navUserName'); if (navUserName) navUserName.textContent = user.name || '';
+            const memberSince = document.getElementById('memberSince'); if (memberSince) memberSince.textContent = formatDate(user.createdAt || user.created_at || new Date());
+
+            const displayName = document.getElementById('displayName'); if (displayName) displayName.textContent = user.name || '';
+            const displayEmail = document.getElementById('displayEmail'); if (displayEmail) displayEmail.textContent = user.email || '';
+            const displayRole = document.getElementById('displayRole'); if (displayRole) displayRole.textContent = user.role || '';
+            const displayJoined = document.getElementById('displayJoined'); if (displayJoined) displayJoined.textContent = formatDate(user.createdAt || user.created_at || new Date());
+
+            const editName = document.getElementById('editName'); if (editName) editName.value = user.name || '';
+            const editEmail = document.getElementById('editEmail'); if (editEmail) editEmail.value = user.email || '';
 
             if (user.role === 'ADMIN') {
-                document.getElementById('adminLink').style.display = 'flex';
+                const adminLink = document.getElementById('adminLink'); if (adminLink) adminLink.style.display = 'flex';
             }
+        } catch (error) {
+            console.error('Error loading profile:', error);
         }
-    } catch (error) {
-        console.error('Error loading profile:', error);
     }
+
+    function attachProfileFormHandler() {
+        const form = document.getElementById('updateProfileForm');
+        if (!form) return false;
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nameEl = document.getElementById('editName');
+            const emailEl = document.getElementById('editEmail');
+            const name = nameEl ? nameEl.value.trim() : '';
+            const email = emailEl ? emailEl.value.trim() : '';
+            if (!isValidName(name)) return showToast('Please enter a valid name (2-100 chars)', 'error');
+            if (!isValidEmail(email)) return showToast('Please enter a valid email address', 'error');
+            try {
+                const resp = await authFetch(API.UPDATE_PROFILE, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email }) });
+                if (!resp.ok) {
+                    const txt = await resp.text().catch(() => '');
+                    throw new Error(`Update failed (${resp.status}): ${txt}`);
+                }
+                const data = await resp.json().catch(() => ({}));
+                const updated = data.data || data.user || {};
+                showToast('Profile updated', 'success');
+                const updatedLocal = Object.assign({}, user || {}, updated);
+                localStorage.setItem('user', JSON.stringify(updatedLocal));
+                await loadProfile();
+                toggleEdit('info');
+            } catch (err) {
+                console.error('Error updating profile:', err);
+                showToast(err.message || 'Failed to update profile', 'error');
+            }
+        });
+        return true;
+    }
+
+    function attachChangePasswordHandler() {
+        const form = document.getElementById('changePasswordForm');
+        if (!form) return false;
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const currentPasswordEl = document.getElementById('currentPassword');
+            const newPasswordEl = document.getElementById('newPassword');
+            const confirmEl = document.getElementById('confirmPassword');
+            const currentPassword = currentPasswordEl ? currentPasswordEl.value : '';
+            const newPassword = newPasswordEl ? newPasswordEl.value : '';
+            const confirmPassword = confirmEl ? confirmEl.value : '';
+            if (!currentPassword) return showToast('Enter current password', 'error');
+            if (newPassword !== confirmPassword) return showToast('Passwords do not match', 'error');
+            if (!isPasswordValid(newPassword)) return showToast('Password must be 8+ chars, include upper/lower/number/special', 'error');
+            try {
+                const resp = await authFetch(API.CHANGE_PASSWORD, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword, newPassword }) });
+                if (!resp.ok) {
+                    const txt = await resp.text().catch(() => '');
+                    throw new Error(`Change password failed (${resp.status}): ${txt}`);
+                }
+                await resp.json().catch(() => ({}));
+                showToast('Password updated', 'success');
+                form.reset();
+                toggleEdit('password');
+            } catch (err) {
+                console.error('Error changing password:', err);
+                showToast(err.message || 'Failed to change password', 'error');
+            }
+        });
+        return true;
+    }
+
+    function initProfileBindings() {
+        const a1 = attachProfileFormHandler();
+        const a2 = attachChangePasswordHandler();
+        if (a1 && a2) { loadProfile(); loadStats(); return; }
+        const observer = new MutationObserver((mutations, obs) => {
+            const r1 = attachProfileFormHandler();
+            const r2 = attachChangePasswordHandler();
+            if (r1 && r2) { obs.disconnect(); loadProfile(); loadStats(); }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        setTimeout(() => observer.disconnect(), 5000);
+    }
+
+    initProfileBindings();
 }
 
-// Update profile
-document.getElementById('updateProfileForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById('editName').value.trim();
-    const email = document.getElementById('editEmail').value.trim();
-    
-    // Validate name
-    if (!isValidName(name)) {
-        showToast('Please enter a valid name (2-100 characters, letters and spaces only)', 'error');
-        return;
-    }
-    
-    // Validate email format
-    if (!isValidEmail(email)) {
-        showToast('Please enter a valid email address', 'error');
-        return;
-    }
-
-    try {
-        const response = await fetch(API.UPDATE_PROFILE, {
-            method: 'PUT',
-            headers: {
-                ...getAuthHeaders(),
-                'X-CSRF-Token': getCSRFToken() || ''
-            },
-            body: JSON.stringify({ name, email })
+                await resp.json().catch(() => ({}));
+                showToast('Password updated', 'success');
+                form.reset();
+                toggleEdit('password');
+            } catch (err) {
+                console.error('Error changing password:', err);
+                showToast(err.message || 'Failed to change password', 'error');
+            }
         });
+        return true;
+    }
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-            showToast('Profile updated successfully!', 'success');
-            
-            // Update local storage
-            const updatedUser = { ...user, ...data.data };
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            
+    // Attach handlers when DOM elements are available. If not present, observe mutations for a short time.
+    function initProfileBindings() {
+        const attached1 = attachProfileFormHandler();
+        const attached2 = attachChangePasswordHandler();
+        // If both attached, load profile immediately
+        if (attached1 && attached2) {
             loadProfile();
-            toggleEdit('info');
-        } else {
-            showToast(data.message || 'Failed to update profile', 'error');
+            loadStats();
+            return;
         }
-    } catch (error) {
-        console.error('Error updating profile:', error);
-        if (error.message.includes('HTTP error')) {
-            showToast('Server error. Please try again later.', 'error');
-        } else if (error instanceof TypeError) {
-            showToast('Network error. Please check your connection.', 'error');
-        } else {
-            showToast('Error updating profile. Please try again.', 'error');
-        }
-    }
-});
 
-// Change password
-document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const currentPassword = document.getElementById('currentPassword').value;
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    
-    // Validate current password is not empty
-    if (!currentPassword || currentPassword.length === 0) {
-        showToast('Please enter your current password', 'error');
-        return;
+        // Observe for node additions (profile tab injection) for up to 5s
+        const observer = new MutationObserver((mutations, obs) => {
+            const a1 = attachProfileFormHandler();
+            const a2 = attachChangePasswordHandler();
+            if (a1 && a2) {
+                obs.disconnect();
+                loadProfile();
+                loadStats();
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        // Stop observing after 5s
+        setTimeout(() => observer.disconnect(), 5000);
     }
-    
-    if (currentPassword.length > 500) {
-        showToast('Current password is too long', 'error');
-        return;
-    }
-
-    if (newPassword !== confirmPassword) {
-        showToast('Passwords do not match!', 'error');
-        return;
-    }
-    
-    if (newPassword.length < 8) {
-        showToast('Password must be at least 8 characters long!', 'error');
-        return;
-    }
-
-    // Validate password strength
-    if (!isPasswordValid(newPassword)) {
-        showToast('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.', 'error');
-        return;
-    }
-
-    try {
-        const response = await fetch(API.CHANGE_PASSWORD, {
+    if (newPassword !== confirmPassword) return showToast('Passwords do not match', 'error');
+    if (!isPasswordValid(newPassword)) return showToast('Password must be 8+ chars, include upper/lower/number/special', 'error');
+    initProfileBindings();
+        const resp = await authFetch(API.CHANGE_PASSWORD, {
             method: 'PUT',
-            headers: {
-                ...getAuthHeaders(),
-                'X-CSRF-Token': getCSRFToken() || ''
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ currentPassword, newPassword })
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        if (!resp.ok) {
+            const txt = await resp.text().catch(() => '');
+            throw new Error(`Change password failed (${resp.status}): ${txt}`);
         }
 
-        const data = await response.json();
-
-        if (data.success) {
-            showToast('Password changed successfully!', 'success');
-            document.getElementById('changePasswordForm').reset();
-            toggleEdit('password');
-        } else {
-            showToast(data.message || 'Failed to change password', 'error');
-        }
-    } catch (error) {
-        console.error('Error changing password:', error);
-        if (error.message.includes('HTTP error')) {
-            showToast('Server error. Please try again later.', 'error');
-        } else if (error instanceof TypeError) {
-            showToast('Network error. Please check your connection.', 'error');
-        } else {
-            showToast('Error changing password. Please try again.', 'error');
-        }
+        const data = await resp.json().catch(() => ({}));
+        showToast('Password updated', 'success');
+        document.getElementById('changePasswordForm').reset();
+        toggleEdit('password');
+    } catch (err) {
+        console.error('Error changing password:', err);
+        showToast(err.message || 'Failed to change password', 'error');
     }
 });
 
@@ -203,10 +213,10 @@ async function loadStats() {
         const data = await response.json();
 
         if (data.success) {
-            document.getElementById('totalCampaigns').textContent = data.data.total_campaigns || 0;
-            document.getElementById('totalDonations').textContent = data.data.total_donations || 0;
-            document.getElementById('totalRaised').textContent = formatCurrency(data.data.total_raised || 0);
-            document.getElementById('totalDonated').textContent = formatCurrency(data.data.total_donated || 0);
+            const tC = document.getElementById('totalCampaigns'); if (tC) tC.textContent = data.data.total_campaigns || 0;
+            const tD = document.getElementById('totalDonations'); if (tD) tD.textContent = data.data.total_donations || 0;
+            const tR = document.getElementById('totalRaised'); if (tR) tR.textContent = formatCurrency(data.data.total_raised || 0);
+            const tDon = document.getElementById('totalDonated'); if (tDon) tDon.textContent = formatCurrency(data.data.total_donated || 0);
         }
     } catch (error) {
         console.error('Error loading stats:', error);

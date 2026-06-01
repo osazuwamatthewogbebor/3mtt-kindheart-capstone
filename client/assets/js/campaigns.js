@@ -13,7 +13,7 @@ function updateNavActions() {
                     <i class="fas fa-user-circle"></i> ${user.name}
                 </button>
                 <div class="user-dropdown" id="userDropdown">
-                    <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                    <a href="user-dashboard.html#profile"><i class="fas fa-user"></i> Profile</a>
                     <a href="my-donations.html"><i class="fas fa-heart"></i> My Donations</a>
                     ${user.role === 'ADMIN' ? '<a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>' : ''}
                     <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -45,7 +45,7 @@ document.addEventListener('click', (e) => {
 let filters = {
     search: '',
     categories: [],
-    goalRange: 50000,
+    goalRange: 1000000000,
     status: [],
     sortBy: 'recent',
     page: 1
@@ -164,8 +164,17 @@ async function loadCampaigns() {
         }
 
         const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed to fetch campaigns');
-        
+        if (!response.ok) {
+            let errMsg = `Failed to fetch campaigns (status ${response.status})`;
+            try {
+                const errBody = await response.json();
+                if (errBody && errBody.message) errMsg += `: ${errBody.message}`;
+            } catch (e) {
+                // ignore json parse error
+            }
+            throw new Error(errMsg);
+        }
+
         const result = await response.json();
         
         // Parse campaigns from response
@@ -392,7 +401,7 @@ function setupEventListeners() {
             filters = {
                 search: '',
                 categories: [],
-                goalRange: 50000,
+                goalRange: 1000000000,
                 status: [],
                 sortBy: 'recent',
                 page: 1
@@ -402,7 +411,7 @@ function setupEventListeners() {
             categoryChecks.forEach(cb => cb.checked = false);
             statusChecks.forEach(cb => cb.checked = false);
             if (goalRange) {
-                goalRange.value = 50000;
+                goalRange.value = 1000000000;
                 updateGoalRangeDisplay();
             }
             if (searchInput) searchInput.value = '';

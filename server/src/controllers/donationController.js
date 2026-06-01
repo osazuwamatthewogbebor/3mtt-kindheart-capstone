@@ -61,3 +61,20 @@ export const getCampaignDonations = async (req, res) => {
         res.status(500).json({ status: "error", message: error.message });
     }
 }
+
+export const handleVerifyDonation = async (req, res) => {
+    try {
+        const { reference } = req.body;
+        if (!reference) return res.status(400).json({ status: 'error', message: 'Reference is required' });
+
+        const donation = await donationService.finalizeDonation(reference);
+
+        if (!donation) {
+            return res.status(400).json({ status: 'error', message: 'Unable to verify donation' });
+        }
+
+        return res.status(200).json({ status: 'success', message: 'Donation verified', data: donation });
+    } catch (error) {
+        return res.status(500).json({ status: 'error', message: error.message });
+    }
+}

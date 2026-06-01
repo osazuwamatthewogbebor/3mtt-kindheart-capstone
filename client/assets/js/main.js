@@ -15,10 +15,12 @@ async function loadStats() {
         const result = await response.json();
         const data = result.data || result;
         
-        if (result.success || data.donations !== undefined) {
-            document.getElementById('totalDonations').textContent = formatCurrency(data.donations || data.totalDonations || 0);
-            document.getElementById('totalCampaigns').textContent = data.campaigns || data.totalCampaigns || 0;
-            document.getElementById('totalUsers').textContent = data.users || data.totalUsers || 0;
+        if (result.success) {
+            // API returns aggregated sums as `totalAmountRaised` and `totalAmountDonated`.
+            const totalRaised = data.totalAmountRaised || data.totalAmountDonated || 0;
+            const td = document.getElementById('totalDonations'); if (td) td.textContent = formatCurrency(totalRaised);
+            const tc = document.getElementById('totalCampaigns'); if (tc) tc.textContent = data.totalCampaigns || 0;
+            const tu = document.getElementById('totalUsers'); if (tu) tu.textContent = data.totalUsers || 0;
         }
     } catch (error) {
         console.error('Error loading stats:', error);
@@ -33,6 +35,7 @@ async function loadFeaturedCampaigns() {
         const data = result.data || result.campaigns || result;
         
         const container = document.getElementById('featuredCampaigns');
+        if (!container) return;
         
         const campaigns = Array.isArray(data) ? data : (data.campaigns || []);
         
@@ -87,7 +90,7 @@ async function loadFeaturedCampaigns() {
         
     } catch (error) {
         console.error('Error loading campaigns:', error);
-        document.getElementById('featuredCampaigns').innerHTML = `
+        const fallback = document.getElementById('featuredCampaigns'); if (fallback) fallback.innerHTML = `
             <div class="loading-state">
                 <i class="fas fa-exclamation-triangle"></i>
                 <p>Error loading campaigns. Please try again later.</p>

@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeFormListeners();
     loadUserName();
     // Initialize hero parallax or subtle effects if any
-    document.querySelector('.page-hero').style.opacity = '1';
+    const hero = document.querySelector('.page-hero');
+    if (hero) hero.style.opacity = '1';
 });
 
 // Load categories from API
@@ -55,50 +56,51 @@ async function loadCategories() {
 function initializeFormListeners() {
     // Character counter for title
     const titleInput = document.getElementById('title');
-    titleInput.addEventListener('input', () => {
-        document.getElementById('titleCount').textContent = titleInput.value.length;
-    });
-
+    if (titleInput) {
+        titleInput.addEventListener('input', () => {
+            const tc = document.getElementById('titleCount'); if (tc) tc.textContent = titleInput.value.length;
+        });
+    }
     // Character counter for description
     const descInput = document.getElementById('description');
-    descInput.addEventListener('input', () => {
-        document.getElementById('descCount').textContent = descInput.value.length;
-    });
+    if (descInput) {
+        descInput.addEventListener('input', () => { const dc = document.getElementById('descCount'); if (dc) dc.textContent = descInput.value.length; });
+    }
 
     // Image upload handling
     const imageUploadArea = document.getElementById('imageUploadArea');
     const fileInput = document.getElementById('image');
+    if (imageUploadArea && fileInput) {
+        // Drag and drop
+        imageUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            imageUploadArea.classList.add('drag-over');
+        });
 
-    // Drag and drop
-    imageUploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        imageUploadArea.classList.add('drag-over');
-    });
+        imageUploadArea.addEventListener('dragleave', () => {
+            imageUploadArea.classList.remove('drag-over');
+        });
 
-    imageUploadArea.addEventListener('dragleave', () => {
-        imageUploadArea.classList.remove('drag-over');
-    });
+        imageUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            imageUploadArea.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                previewImage();
+            }
+        });
 
-    imageUploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        imageUploadArea.classList.remove('drag-over');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            previewImage();
-        }
-    });
+        // File input change
+        fileInput.addEventListener('change', previewImage);
 
-    // File input change
-    fileInput.addEventListener('change', previewImage);
-
-    // Click to upload
-    imageUploadArea.addEventListener('click', () => {
-        fileInput.click();
-    });
+        // Click to upload
+        imageUploadArea.addEventListener('click', () => { fileInput.click(); });
+    }
 
     // Form submission
-    document.getElementById('createCampaignForm').addEventListener('submit', submitForm);
+    const createForm = document.getElementById('createCampaignForm');
+    if (createForm) createForm.addEventListener('submit', submitForm);
 }
 
 // Preview image
@@ -287,9 +289,11 @@ async function submitForm(e) {
     }
     
     const submitBtn = document.getElementById('submitBtn');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Campaign...';
-    submitBtn.disabled = true;
+    const originalText = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) {
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Campaign...';
+        submitBtn.disabled = true;
+    }
     let submissionSuccess = false;
 
     try {
@@ -303,13 +307,11 @@ async function submitForm(e) {
             formData.append('image', imageFile);
         }
 
-        const response = await fetch(API.CAMPAIGNS, {
+        const response = await authFetch(API.CAMPAIGNS, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${getToken()}`,
-                'X-CSRF-Token': getCSRFToken() || ''
-            },
-            body: formData
+            // let authFetch merge auth headers; ensure FormData is preserved
+            body: formData,
+            credentials: 'include'
         });
 
         if (!response.ok) {
@@ -323,8 +325,10 @@ async function submitForm(e) {
             showToast('🎉 Campaign created successfully!', 'success');
             showFormFeedback('Your campaign was created successfully. Redirecting to My Campaigns...', 'success');
             // Add visual feedback: disable button and show checkmark
-            submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Redirecting...';
-            submitBtn.disabled = true;
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Redirecting...';
+                submitBtn.disabled = true;
+            }
             // Wait a bit longer to ensure toast and inline feedback are visible
             setTimeout(() => {
                 window.location.href = 'user-dashboard.html#campaigns';
@@ -343,7 +347,7 @@ async function submitForm(e) {
             showToast('Error creating campaign. Please try again.', 'error');
         }
     } finally {
-        if (!submissionSuccess) {
+        if (!submissionSuccess && submitBtn) {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }

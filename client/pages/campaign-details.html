@@ -78,7 +78,7 @@
                     </button>
 
                     <div class="donors-count">
-                        <strong id="donorsCount">0</strong>
+                        <strong id="donorsCountHero">0</strong>
                         <span class="color-gray">donors</span>
                     </div>
 
@@ -109,32 +109,55 @@
         <div class="container">
             <div class="campaign-content">
                 <div class="campaign-tabs">
-                    <button class="tab active" id="storyTab-btn" data-tab="story">Story</button>
-                    <button class="tab" id="donationsTab-btn" data-tab="donations">Donations (<span id="donationsCount">0</span>)</button>
-                    <button class="tab" id="updatesTab-btn" data-tab="updates">Updates</button>
+                    <button class="tab pill active" id="storyTab-btn" data-tab="story">Story</button>
+                    <button class="tab pill" id="donationsTab-btn" data-tab="donations">Donations (<span id="donationsCount">0</span>)</button>
+                    <button class="tab pill" id="updatesTab-btn" data-tab="updates">Updates</button>
                 </div>
 
                 <!-- STORY TAB -->
                 <div class="tab-content active" id="storyTab">
-                    <div class="creator-info">
-                        <div class="creator-avatar" id="creatorAvatar">A</div>
-                        <div class="creator-details">
-                            <h4 id="creatorNameFull">Campaign Creator</h4>
-                            <p>Campaign Organizer</p>
+                    <div class="creator-panel">
+                        <div class="creator-left">
+                            <div class="creator-avatar" id="creatorAvatar">EA</div>
+                        </div>
+                        <div class="creator-right">
+                            <div class="creator-header">
+                                <h4 id="creatorNameFull">Editorial Admin <span id="verifiedBadge" class="verified-badge" style="display:none;"><i class="fas fa-check-circle"></i> Verified</span></h4>
+                                <p class="muted">Campaign Organizer</p>
+                            </div>
+                            <div class="creator-stats">
+                                <div class="stat">
+                                    <strong id="donorsCountSmall">3</strong>
+                                    <span class="muted">donors</span>
+                                </div>
+                                <div class="stat">
+                                    <strong id="amountRaisedSmall">₦42,321</strong>
+                                    <span class="muted">raised</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="campaignDescription" class="campaign-description-text">
-                        Loading campaign details...
-                    </div>
+                    <div id="campaignDescription" class="campaign-description-text" style="white-space: pre-wrap;">Providing clean drinking water to remote communities.</div>
                 </div>
 
                 <!-- DONATIONS TAB -->
                 <div class="tab-content" id="donationsTab">
-                    <div id="donationsList">
-                        <div class="loading-state">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <p>Loading donations...</p>
+                    <div id="donationsList" class="donation-list">
+                        <div class="donation-item">
+                            <div class="donation-left"><div class="donor-avatar">A</div></div>
+                            <div class="donation-body"><div class="donor-name">Anonymous</div><div class="donation-meta">Jun 1, 2026</div></div>
+                            <div class="donation-amount">₦12,321</div>
+                        </div>
+                        <div class="donation-item">
+                            <div class="donation-left"><div class="donor-avatar">A</div></div>
+                            <div class="donation-body"><div class="donor-name">Anonymous</div><div class="donation-meta">Jun 1, 2026</div></div>
+                            <div class="donation-amount">₦10,000</div>
+                        </div>
+                        <div class="donation-item">
+                            <div class="donation-left"><div class="donor-avatar">A</div></div>
+                            <div class="donation-body"><div class="donor-name">Anonymous</div><div class="donation-meta">Jun 1, 2026</div></div>
+                            <div class="donation-amount">₦20,000</div>
                         </div>
                     </div>
                 </div>
@@ -149,6 +172,54 @@
             </div>
         </div>
     </section>
+    <!-- SUPPORT CTA (modernized section before footer) -->
+    <section class="support-cta p-3 bg-white">
+        <div class="container flex-gap-lg align-center" style="justify-content:space-between;">
+            <div>
+                <h3 style="margin:0;">Support this campaign</h3>
+                <p style="margin:0.25rem 0 0; color:var(--gray);">Every gift helps. Secure payments and transparent impact reporting.</p>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="ctaDonateBtn"><i class="fas fa-heart"></i> Donate Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donation Modal (modern, accessible) -->
+    <div id="donateModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="donateModalTitle">
+        <div class="modal-backdrop" id="donateBackdrop"></div>
+        <div class="modal-panel" role="document">
+            <header class="modal-header">
+                <h2 id="donateModalTitle">Donate to this campaign</h2>
+                <button class="modal-close" id="donateCloseBtn" aria-label="Close donation dialog">&times;</button>
+            </header>
+            <div class="modal-body">
+                <form id="donateForm">
+                    <div class="form-group">
+                        <label for="donateAmount">Amount (₦)</label>
+                        <input type="number" id="donateAmount" name="amount" min="100" placeholder="1000" required class="form-input-modern">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="donateAnonymous"> Remain anonymous
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Payment method</label>
+                        <div class="grid-3-col">
+                            <button type="button" class="payment-method-btn active" data-method="card">Card</button>
+                            <button type="button" class="payment-method-btn" data-method="bank">Bank</button>
+                            <button type="button" class="payment-method-btn" data-method="ussd">USSD</button>
+                        </div>
+                    </div>
+                    <div class="form-actions" style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:1rem;">
+                        <button type="button" class="btn btn-outline" id="donateCancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="donateSubmit">Donate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/campaign-details.js"></script>
