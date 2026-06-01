@@ -119,12 +119,6 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/contact', contactRoutes);
 
-
-app.use(express.static(clientPath, {
-  maxAge: '1h',
-  etag: false
-}));
-
 // Error Handlers
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
