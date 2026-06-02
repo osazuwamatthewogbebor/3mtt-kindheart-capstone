@@ -34,7 +34,7 @@ async function loadFailureInfo() {
     }
 
     failureCampaignTitle.textContent = donation.campaign?.title || 'your campaign';
-    failureHeadline.textContent = `Your donation to ${donation.campaign?.title || 'this campaign'} could not be completed.`;
+    failureHeadline.textContent = `Your donation to could not be completed.`;
     failureAdvice.textContent = 'Payment was declined or interrupted. Please retry with the same campaign to complete your support.';
 
     const campaignId = donation.campaignId || donation.campaign?.id;
