@@ -239,6 +239,21 @@
                                 <div class="container">
                                     <div class="form-wrapper">
                                         <div id="formFeedback" class="form-feedback hidden" role="status" aria-live="polite"></div>
+                                        <!-- Success Modal -->
+                                        <div class="modal hidden" id="successModal" aria-hidden="true" role="dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h3 class="modal-title">Success</h3>
+                                                    <button class="modal-close" onclick="closeSuccessModal()" aria-label="Close">&times;</button>
+                                                </div>
+                                                <div class="modal-body" id="successModalBody">
+                                                    <!-- Message injected via JS -->
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-primary" onclick="closeSuccessModal()">OK</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="progress-indicator">
                                             <div class="progress-step active" data-step="1">
                                                 <span class="step-number">1</span>

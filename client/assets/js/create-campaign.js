@@ -319,20 +319,12 @@ async function submitForm(e) {
         }
 
         const data = await response.json();
-
+        
         if (data.success) {
             submissionSuccess = true;
-            showToast('🎉 Campaign created successfully!', 'success');
-            showFormFeedback('Your campaign was created successfully. Redirecting to My Campaigns...', 'success');
-            // Add visual feedback: disable button and show checkmark
-            if (submitBtn) {
-                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Redirecting...';
-                submitBtn.disabled = true;
-            }
-            // Wait a bit longer to ensure toast and inline feedback are visible
-            setTimeout(() => {
-                window.location.href = 'user-dashboard.html#campaigns';
-            }, 2200);
+            // Show success modal with feedback
+            const successMessage = data.message || 'Campaign created successfully!';
+            showSuccessModal(successMessage);
         } else {
             showToast(data.message || 'Failed to create campaign', 'error');
             showFormFeedback(data.message || 'Failed to create campaign', 'error');
@@ -370,5 +362,26 @@ function showFormFeedback(message, type = 'info') {
             el.classList.add('hidden');
         }, 4500);
     }
+}
+
+// Show success modal with custom message
+function showSuccessModal(message) {
+    const modal = document.getElementById('successModal');
+    const body = document.getElementById('successModalBody');
+    if (!modal || !body) return;
+    body.textContent = message;
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+}
+
+// Close success modal and redirect to My Campaigns
+function closeSuccessModal() {
+    const modal = document.getElementById('successModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden', 'true');
+    }
+    // Redirect after closing modal
+    window.location.href = 'user-dashboard.html#campaigns';
 }
 

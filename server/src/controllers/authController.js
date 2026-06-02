@@ -96,8 +96,8 @@ export const registerUser = async (req, res, next) => {
 		});
 
 		const token = createAccessToken(user);
-		const clientUrl = process.env.CLIENT_URL || process.env.APP_URL || 'http://localhost:5500/client';
-		const verificationLink = `${clientUrl}/pages/verify.html?token=${rawVerificationToken}`;
+		const clientUrl = process.env.CLIENT_URL || process.env.APP_URL || 'http://localhost:5500';
+		const verificationLink = `${clientUrl}/client/pages/verify.html?token=${rawVerificationToken}`;
 		let emailSent = true;
 
 		try {
@@ -355,8 +355,8 @@ export const forgotPassword = async (req, res, next) => {
 			},
 		});
 
-		const clientUrl = process.env.CLIENT_URL || process.env.APP_URL || 'http://localhost:5500/client';
-		const resetLink = `${clientUrl}/pages/reset-password.html?token=${rawToken}`;
+		const clientUrl = process.env.CLIENT_URL || process.env.APP_URL || 'http://localhost:5500';
+		const resetLink = `${clientUrl}/client/pages/reset-password.html?token=${rawToken}`;
 
 		let emailSent = true;
 		try {
@@ -537,8 +537,8 @@ export const resendVerificationEmailLink = async (req, res, next) => {
 			},
 		});
 
-		const clientUrl = process.env.CLIENT_URL || process.env.APP_URL || 'http://localhost:5500/client';
-		const verificationLink = `${clientUrl}/pages/verify.html?token=${rawVerificationToken}`;
+		const clientUrl = process.env.CLIENT_URL || process.env.APP_URL || 'http://localhost:5500';
+		const verificationLink = `${clientUrl}/client/pages/verify.html?token=${rawVerificationToken}`;
 
 		let emailSent = true;
 		try {
