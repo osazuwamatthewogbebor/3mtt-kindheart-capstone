@@ -47,4 +47,7 @@ async function loadFailureInfo() {
   }
 }
 
-loadFailureInfo();
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM fully loaded. Calling loadFailureInfo now...");
+    loadFailureInfo();
+});

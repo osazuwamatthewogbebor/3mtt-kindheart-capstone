@@ -53,7 +53,6 @@ async function loadDonationDetails() {
   }
 }
 
-// 4. FORCE JavaScript to wait until the DOM is completely built before triggering
 document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded. Calling loadDonationDetails now...");
     loadDonationDetails();
