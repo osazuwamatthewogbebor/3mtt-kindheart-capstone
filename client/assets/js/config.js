@@ -89,7 +89,6 @@ const API = {
     // Donations
     DONATIONS: `${API_URL}/donations`,
     MY_DONATIONS: `${API_URL}/donations/me`,
-    VERIFY_DONATION: `${API_URL}/donations/verify`,
     CONTACT: `${API_URL}/contact`,
 
     // Categories

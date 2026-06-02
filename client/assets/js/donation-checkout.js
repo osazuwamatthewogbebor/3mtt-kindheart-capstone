@@ -3,8 +3,8 @@ if (!isLoggedIn()) {
 }
 
 const params = new URLSearchParams(window.location.search);
-const campaignId = params.get('campaignId');
-const campaignTitle = document.getElementById('campaignTitle');
+// Support both `id` (standard) and legacy `campaignId` query parameters
+const campaignId = params.get('id') || params.get('campaignId');
 const campaignCategory = document.getElementById('campaignCategory');
 const campaignImage = document.getElementById('campaignImage');
 const campaignEnds = document.getElementById('campaignEnds');
@@ -13,7 +13,6 @@ const campaignGoal = document.getElementById('campaignGoal');
 const campaignSummaryTitle = document.getElementById('campaignSummaryTitle');
 const checkoutForm = document.getElementById('checkoutForm');
 const amountInput = document.getElementById('donationAmount');
-const paymentButtons = document.querySelectorAll('.payment-method-btn');
 
 function updateAmountPreview() {
   const amount = Number(amountInput.value || 0);
@@ -21,10 +20,6 @@ function updateAmountPreview() {
   if (preview) preview.textContent = amount ? formatCurrency(amount) : '₦0';
 }
 
-paymentButtons.forEach(button => button.addEventListener('click', () => {
-  paymentButtons.forEach(btn => btn.classList.remove('active'));
-  button.classList.add('active');
-}));
 
 amountInput.addEventListener('input', updateAmountPreview);
 
@@ -45,7 +40,7 @@ async function loadCampaign() {
     }
 
     const campaign = data.campaign;
-    campaignTitle.textContent = campaign.title;
+    // Update the campaign summary title element
     campaignSummaryTitle.textContent = campaign.title;
     campaignCategory.textContent = campaign.category?.name || 'General';
     campaignEnds.textContent = campaign.endDate ? `${new Date(campaign.endDate).toLocaleDateString()} • Open` : 'Open';
@@ -80,7 +75,16 @@ checkoutForm.addEventListener('submit', async event => {
     if (!response.ok || !data.authorization_url) {
       throw new Error(data.message || 'Unable to initialize payment session.');
     }
-    window.location.href = data.authorization_url;
+    // Show redirect modal before navigating to payment gateway
+    const redirectModal = document.getElementById('redirectModal');
+    if (redirectModal) {
+      redirectModal.style.display = 'flex';
+      redirectModal.setAttribute('aria-hidden', 'false');
+    }
+    // Delay to allow user to see modal, then redirect
+    setTimeout(() => {
+      window.location.href = data.authorization_url;
+    }, 1500);
   } catch (error) {
     console.error(error);
     showToast(error.message || 'Unable to process payment. Please try again later.', 'error');

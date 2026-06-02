@@ -18,16 +18,21 @@
 }
 
 .success-icon-circle {
-    width: 100px;
-    height: 100px;
-    background: var(--secondary-container);
-    color: var(--secondary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    font-size: 3rem;
+  width: 100px;
+  height: 100px;
+  background: var(--secondary-container);
+  color: var(--secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 3rem;
+}
+/* Red styling for failure page */
+.donations-failure .success-icon-circle {
+  background: #ffdddd;
+  color: #ff4d4f;
 }
 
 /* Success Message */
@@ -133,7 +138,12 @@
 }
 
 .status-badge.success {
-    background: var(--primary);
+  background: var(--primary);
+}
+/* Red icon styling for failure page */
+.failure-icon {
+  background: #ffdddd;
+  color: #ff4d4f;
 }
 
 .campaign-info .title {

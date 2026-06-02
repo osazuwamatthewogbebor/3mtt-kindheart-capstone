@@ -15,7 +15,9 @@ function renderFallback() {
   donationImpactText.textContent = 'Thank you for supporting a campaign through KindHeart.';
 }
 
+
 async function loadDonationDetails() {
+  
   if (!successRef || !isLoggedIn()) {
     renderFallback();
     return;
@@ -27,21 +29,22 @@ async function loadDonationDetails() {
     });
 
     const data = await response.json();
-    if (!response.ok || !data.success || !Array.isArray(data.data)) {
+    if (!response.ok || !data.status || !Array.isArray(data.data)) {
       renderFallback();
       return;
     }
 
-    const donation = data.data.find((item) => (item.reference || item.payment_reference) === successRef);
+    const donation = data.data.find((item) => (item.reference) === successRef);
     if (!donation) {
       renderFallback();
       return;
     }
 
+
     donationAmountEl.textContent = formatCurrency(donation.amount || 0);
     donationCampaignEl.textContent = donation.campaign?.title || 'Campaign supported';
     donationDateEl.textContent = new Date(donation.createdAt || donation.created_at || Date.now()).toLocaleDateString();
-    donationStatusEl.textContent = donation.paymentStatus || donation.payment_status || 'Success';
+    donationStatusEl.textContent = donation.status || 'Success';
     donationImpactText.textContent = `Your gift helps ${donation.campaign?.title || 'this campaign'} move closer to its goal.`;
     statusMessage.textContent = `Thank you! Your donation to ${donation.campaign?.title || 'this campaign'} has been received.`;
   } catch (error) {
@@ -50,4 +53,8 @@ async function loadDonationDetails() {
   }
 }
 
-loadDonationDetails();
+// 4. FORCE JavaScript to wait until the DOM is completely built before triggering
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM fully loaded. Calling loadDonationDetails now...");
+    loadDonationDetails();
+});

@@ -32,10 +32,15 @@ async function loadCampaign() {
     try {
         const response = await fetch(`${API.CAMPAIGNS}/${campaignId}`);
         const result = await response.json();
-
+ 
         const campaign = result.data?.campaign || result.campaign;
-
-        if (!result.success || !campaign) {
+ 
+        if (!response.ok || !result.success || !campaign) {
+            console.error('Failed to load campaign', {
+                status: response.status,
+                url: `${API.CAMPAIGNS}/${campaignId}`,
+                responseBody: result
+            });
             showToast('Campaign not found', 'error');
             window.location.href = 'campaigns.html';
             return;
@@ -66,36 +71,14 @@ async function loadCampaign() {
         // Load donations
         loadDonations();
 
-            // Render updates if present on campaign object, else try to fetch updates
+            // Render updates if present on campaign object. If not, skip fetching from a non‑existent endpoint.
             if (Array.isArray(campaign.updates) && campaign.updates.length > 0) {
                 window.__campaignHasUpdates = true;
                 renderUpdates(campaign.updates);
             } else {
                 window.__campaignHasUpdates = false;
-                // Try to fetch updates from dedicated endpoint (public)
-                try {
-                    const updatesResp = await fetch(`${API.CAMPAIGNS}/${campaignId}/updates`);
-                    let updates = [];
-                    if (updatesResp.ok) {
-                        const ct = updatesResp.headers.get('content-type') || '';
-                        if (ct.includes('application/json')) {
-                            try {
-                                const updatesBody = await updatesResp.json();
-                                updates = updatesBody.data || updatesBody.updates || [];
-                            } catch (e) {
-                                console.warn('Failed to parse updates JSON', e);
-                                updates = [];
-                            }
-                        } else {
-                            const txt = await updatesResp.text();
-                            console.warn('Non-JSON updates response:', txt);
-                            updates = [];
-                        }
-                    }
-                    renderUpdates(Array.isArray(updates) ? updates : []);
-                } catch (e) {
-                    renderUpdates([]);
-                }
+                // No dedicated updates endpoint; render empty updates section.
+                renderUpdates([]);
             }
 
     } catch (error) {
@@ -314,64 +297,74 @@ function switchTab(tabName) {
 
 // Setup event listeners (replaces inline onclick handlers)
 function setupEventListeners() {
-    // Donate button (opens modal)
-    const donateBtn = document.getElementById('donateButton');
-    if (donateBtn) {
-        donateBtn.addEventListener('click', openDonateModal);
-    }
-
-    // CTA donate button
-    const ctaDonate = document.getElementById('ctaDonateBtn');
-    if (ctaDonate) ctaDonate.addEventListener('click', openDonateModal);
-
-    // Modal controls
-    const donateClose = document.getElementById('donateCloseBtn');
-    const donateCancel = document.getElementById('donateCancel');
-    const donateBackdrop = document.getElementById('donateBackdrop');
-    const donateForm = document.getElementById('donateForm');
-
-    if (donateClose) donateClose.addEventListener('click', closeDonateModal);
-    if (donateCancel) donateCancel.addEventListener('click', closeDonateModal);
-    if (donateBackdrop) donateBackdrop.addEventListener('click', closeDonateModal);
-    if (donateForm) donateForm.addEventListener('submit', handleDonateFormSubmit);
-
-    // Payment method buttons
-    document.querySelectorAll('.payment-method-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.payment-method-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        });
+  // Donate button (redirect to checkout page)
+  const donateBtn = document.getElementById('donateButton');
+  if (donateBtn) {
+    donateBtn.addEventListener('click', () => {
+      if (!isLoggedIn()) {
+        showToast('Please login to donate', 'warning');
+        window.location.href = 'login.html';
+        return;
+      }
+      window.location.href = `donation-checkout.html?id=${campaignId}`;
     });
+  }
 
-    // Share buttons
-    const shareFacebook = document.getElementById('shareFacebook');
-    if (shareFacebook) {
-        shareFacebook.addEventListener('click', shareOnFacebook);
-    }
-
-    const shareTwitter = document.getElementById('shareTwitter');
-    if (shareTwitter) {
-        shareTwitter.addEventListener('click', shareOnTwitter);
-    }
-
-    const shareWhatsapp = document.getElementById('shareWhatsapp');
-    if (shareWhatsapp) {
-        shareWhatsapp.addEventListener('click', shareOnWhatsApp);
-    }
-
-    const shareCopyBtn = document.getElementById('shareCopy');
-    if (shareCopyBtn) {
-        shareCopyBtn.addEventListener('click', copyLink);
-    }
-
-    // Tab buttons
-    const tabButtons = document.querySelectorAll('.tab[data-tab]');
-    tabButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tabName = btn.getAttribute('data-tab');
-            switchTab(tabName);
-        });
+  // CTA donate button (redirect to checkout page)
+  const ctaDonate = document.getElementById('ctaDonateBtn');
+  if (ctaDonate) {
+    ctaDonate.addEventListener('click', () => {
+      if (!isLoggedIn()) {
+        showToast('Please login to donate', 'warning');
+        window.location.href = 'login.html';
+        return;
+      }
+      window.location.href = `donation-checkout.html?id=${campaignId}`;
     });
+  }
+
+  // Modal controls (no longer used, but keep for safety)
+  const donateClose = document.getElementById('donateCloseBtn');
+  const donateCancel = document.getElementById('donateCancel');
+  const donateBackdrop = document.getElementById('donateBackdrop');
+  const donateForm = document.getElementById('donateForm');
+
+  if (donateClose) donateClose.addEventListener('click', closeDonateModal);
+  if (donateCancel) donateCancel.addEventListener('click', closeDonateModal);
+  if (donateBackdrop) donateBackdrop.addEventListener('click', closeDonateModal);
+  if (donateForm) donateForm.addEventListener('submit', handleDonateFormSubmit);
+
+  // Payment method buttons (removed – handled by Paystack)
+
+  // Share buttons
+  const shareFacebook = document.getElementById('shareFacebook');
+  if (shareFacebook) {
+    shareFacebook.addEventListener('click', shareOnFacebook);
+  }
+
+  const shareTwitter = document.getElementById('shareTwitter');
+  if (shareTwitter) {
+    shareTwitter.addEventListener('click', shareOnTwitter);
+  }
+
+  const shareWhatsapp = document.getElementById('shareWhatsapp');
+  if (shareWhatsapp) {
+    shareWhatsapp.addEventListener('click', shareOnWhatsApp);
+  }
+
+  const shareCopyBtn = document.getElementById('shareCopy');
+  if (shareCopyBtn) {
+    shareCopyBtn.addEventListener('click', copyLink);
+  }
+
+  // Tab buttons
+  const tabButtons = document.querySelectorAll('.tab[data-tab]');
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabName = btn.getAttribute('data-tab');
+      switchTab(tabName);
+    });
+  });
 }
 
 // Open donation modal

@@ -22,7 +22,7 @@ async function loadFailureInfo() {
     });
     const data = await response.json();
 
-    if (!response.ok || !data.success || !Array.isArray(data.data)) {
+    if (!response.ok || !data.status || !Array.isArray(data.data)) {
       renderGeneric();
       return;
     }

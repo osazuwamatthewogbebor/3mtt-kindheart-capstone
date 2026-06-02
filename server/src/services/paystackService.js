@@ -6,6 +6,7 @@ export class PaystackService extends PaymentGateway {
     
     // Initiate transaction method
     async initializePayment(email, amount,metadata) {
+        const appUrl = process.env.APP_URL || "http://localhost:3000"
         const response = await fetch(PAYSTACK_URLS.INITIALIZE, {
             method: "POST",
             headers: paystackHeaders,
@@ -13,7 +14,7 @@ export class PaystackService extends PaymentGateway {
                 email,
                 amount: amount * 100,
                 metadata,
-                callback_url: "http://localhost:3000/api/donations/verify-payment",
+                callback_url: `${appUrl}/api/donations/verify-payment`,
             })
         });
 

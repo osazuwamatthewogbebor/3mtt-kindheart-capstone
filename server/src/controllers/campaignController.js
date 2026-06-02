@@ -103,28 +103,7 @@ export const createCampaign = async (req, res, next) => {
 		const parsedGoalAmount = Number(goalAmount);
 		const parsedEndDate = new Date(endDate);
 
-		// if (
-		// 	title === undefined ||
-		// 	title === null ||
-		// 	title === '' ||
-		// 	description === undefined ||
-		// 	description === null ||
-		// 	description === '' ||
-		// 	categoryId === undefined ||
-		// 	categoryId === null ||
-		// 	categoryId === '' ||
-		// 	goalAmount === undefined ||
-		// 	goalAmount === null ||
-		// 	goalAmount === '' ||
-		// 	endDate === undefined ||
-		// 	endDate === null ||
-		// 	endDate === ''
-		// ) {
-		// 	const error = new Error('title, description, categoryId, goalAmount, and endDate are required');
-		// 	error.statusCode = 400;
-		// 	throw error;
-		// }
-
+		
 		const requiredFields = { title, description, categoryId, goalAmount, endDate };
 		for (const [key, value] of Object.entries(requiredFields)) {
 			if (!value || value.toString().trim() === '') {
@@ -286,7 +265,15 @@ export const listCampaigns = getCampaigns;
 
 export const getCampaignById = async (req, res, next) => {
 	try {
-		const id = req.params.id.trim();
+		const rawId = req.params.id;
+		if (!rawId) {
+		  console.warn('getCampaignById: missing id parameter');
+		  const error = new Error('Campaign id is required');
+		  error.statusCode = 400;
+		  throw error;
+		}
+		const id = rawId.trim();
+		console.debug('Fetching campaign with id:', id);
 
 		const campaign = await prisma.campaign.findUnique({
 			where: { id },

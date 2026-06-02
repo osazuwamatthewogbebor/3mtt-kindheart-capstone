@@ -7,15 +7,15 @@ function updateNavActions() {
         const user = JSON.parse(localStorage.getItem('user'));
         navActions.innerHTML = `
             <a href="user-dashboard.html#campaigns" class="btn-link">My Campaigns</a>
-            <a href="pages/user-dashboard.html#create" class="btn btn-primary">Create Campaign</a>
+            <a href="user-dashboard.html#create" class="btn btn-primary">Create Campaign</a>
             <div class="user-menu">
                 <button class="user-btn" onclick="toggleUserMenu()">
                     <i class="fas fa-user-circle"></i> ${user.name}
                 </button>
                 <div class="user-dropdown" id="userDropdown">
+                ${user.role === 'ADMIN' ? '<a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i>Admin Dashboard</a>' : '<a href="user-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a>'}
+                <a href="user-dashboard.html#donations"><i class="fas fa-heart"></i> My Donations</a>
                     <a href="user-dashboard.html#profile"><i class="fas fa-user"></i> Profile</a>
-                    <a href="my-donations.html"><i class="fas fa-heart"></i> My Donations</a>
-                    ${user.role === 'ADMIN' ? '<a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>' : ''}
                     <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
