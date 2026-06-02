@@ -212,6 +212,7 @@ function validateSection(section) {
             const title = document.getElementById('title').value.trim();
             const category = document.getElementById('category').value;
             const goal = document.getElementById('goal').value;
+            const endDate = document.getElementById('endDate').value;
 
             if (!title) {
                 showToast('Please enter a campaign title', 'error');
@@ -231,6 +232,15 @@ function validateSection(section) {
             }
             if (!isValidGoalAmount(goal)) {
                 showToast('Goal amount must be between 1,000 and 1,000,000,000', 'error');
+                return false;
+            }
+            if (!endDate) {
+                showToast('Please select an end date', 'error');
+                return false;
+            }
+            const end = new Date(endDate);
+            if (isNaN(end.getTime()) || end <= new Date()) {
+                showToast('End date must be a future date', 'error');
                 return false;
             }
             return true;

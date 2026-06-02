@@ -240,23 +240,27 @@ async function loadDashboardStats() {
         if (campaignsRes.ok) {
             const campaignsData = await campaignsRes.json();
             campaigns = Array.isArray(campaignsData.data) ? campaignsData.data : (campaignsData.data?.campaigns || []);
+            console.log('Loaded campaigns for stats:', campaigns);
         }
 
         if (donationsRes.ok) {
             const donationsData = await donationsRes.json();
             donations = Array.isArray(donationsData.data) ? donationsData.data : (donationsData.data?.donations || []);
+            console.log('Loaded donations for stats:', donations);
         }
 
         // Calculate statistics
-        const totalRaised = campaigns.reduce((sum, campaign) => sum + (campaign.amountRaised || 0), 0);
+        const totalRaised = campaigns.reduce((sum, campaign) => sum + Number(campaign.amountRaised || 0), 0);
+        console.log('Total raised calculated:', totalRaised);
         const totalCampaigns = campaigns.length;
         const totalDonated = donations.reduce((sum, donation) => {
             const status = donation.donationStatus || donation.status || '';
-            if (status === 'SUCCESS' || status === 'COMPLETED' || status === '') {
-                return sum + (donation.amount || 0);
+            if (status === 'SUCCESS') {
+                return sum + Number(donation.amount || 0);
             }
             return sum;
         }, 0);
+        console.log('Total donated calculated:', totalDonated);
 
         // Update UI
         updateStatistic('statsTotalRaised', formatCurrency(totalRaised));
