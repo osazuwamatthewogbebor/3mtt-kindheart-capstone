@@ -30,8 +30,17 @@ window.openEditCampaign = async function(id) {
 
     const editForm = document.getElementById('editCampaignForm');
     const noSelection = document.getElementById('editCampaignNoSelection');
+    const formContainer = document.getElementById('editCampaignFormContainer');
+    const listContainer = document.getElementById('editCampaignsGrid');
     if (editForm) editForm.classList.remove('hidden');
     if (noSelection) noSelection.classList.add('hidden');
+    if (formContainer) formContainer.classList.remove('hidden');
+    if (listContainer) listContainer.classList.add('hidden');
+
+    // Switch to the edit tab to display the form
+    if (typeof switchTab === 'function') {
+        switchTab('edit');
+    }
 
     await initializePage();
 };

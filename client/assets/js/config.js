@@ -246,29 +246,27 @@ function formatDate(dateString) {
 
 // Helper function to derive a friendly user display name
 function getDisplayName(user) {
-    if (!user || typeof user !== 'object') return 'User';
-    const rawName = String(user.name || user.fullName || user.full_name || user.username || user.email || '').trim();
-    const lowerName = rawName.toLowerCase();
-    const isRoleOnly = /^(admin|user|member|donor|supporter|campaigner|superadmin|moderator|guest)$/i.test(lowerName);
-    if (rawName && !isRoleOnly) {
-        return rawName;
-    }
+  if (!user || typeof user !== 'object') return 'User';
+  const rawName = String(user.name || user.fullName || user.full_name || user.username || user.email || '').trim();
+  const lowerName = rawName.toLowerCase();
+  const isRoleOnly = /^(admin|user|member|donor|supporter|campaigner|superadmin|moderator|guest)$/i.test(lowerName);
+    if (rawName && !isRoleOnly) return rawName.split(/\s+/)[0];
 
-    if (user.email) {
-        const email = String(user.email).trim();
-        const localPart = email.split('@')[0].trim();
-        if (localPart) return localPart;
-    }
+  if (user.email) {
+      const email = String(user.email).trim();
+      const localPart = email.split('@')[0].trim();
+      if (localPart) return localPart;
+  }
 
-    if (user.username && String(user.username).trim()) {
-        return String(user.username).trim();
-    }
+  if (user.username && String(user.username).trim()) {
+      return String(user.username).trim();
+  }
 
-    if (user.role && String(user.role).trim()) {
-        return String(user.role).trim();
-    }
+  if (user.role && String(user.role).trim()) {
+      return String(user.role).trim();
+  }
 
-    return 'User';
+  return 'User';
 }
 
 // Helper function to calculate progress percentage

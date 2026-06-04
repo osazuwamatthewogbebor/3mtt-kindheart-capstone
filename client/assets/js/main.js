@@ -99,8 +99,52 @@ async function loadFeaturedCampaigns() {
     }
 }
 
+// Update nav actions based on login status for index page
+function updateNavActions() {
+    const navActions = document.getElementById('navActions');
+    if (!navActions) return;
+    
+    if (isLoggedIn()) {
+        const user = JSON.parse(localStorage.getItem('user'));
+        navActions.innerHTML = `
+            <a href="pages/user-dashboard.html#campaigns" class="btn-link">My Campaigns</a>
+            <a href="pages/user-dashboard.html#create" class="btn btn-primary">Create Campaign</a>
+            <div class="user-menu">
+                <button class="user-btn" onclick="toggleUserMenu()">
+                    <i class="fas fa-user-circle"></i> ${user.name}
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                ${user.role === 'ADMIN' ? '<a href="pages/admin-dashboard.html"><i class="fas fa-tachometer-alt"></i>Admin Dashboard</a>' : '<a href="pages/user-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a>'}
+                <a href="pages/user-dashboard.html#donations"><i class="fas fa-heart"></i> My Donations</a>
+                    <a href="pages/user-dashboard.html#profile"><i class="fas fa-user"></i> Profile</a>
+                    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        `;
+    } else {
+        navActions.innerHTML = `
+            <a href="pages/login.html" class="btn-link">Login</a>
+            <a href="pages/register.html" class="btn btn-primary">Get Started</a>
+        `;
+    }
+}
+
+function toggleUserMenu() {
+    const dropdown = document.getElementById('userDropdown');
+    if (dropdown) dropdown.classList.toggle('show');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.user-menu')) {
+        const dropdown = document.getElementById('userDropdown');
+        if (dropdown) dropdown.classList.remove('show');
+    }
+});
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
+    updateNavActions();
     loadStats();
     loadFeaturedCampaigns();
 });

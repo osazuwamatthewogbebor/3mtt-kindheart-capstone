@@ -270,6 +270,7 @@ async function submitForm(e) {
     const categoryId = document.getElementById('category').value;
     const goalAmount = document.getElementById('goal').value;
     const description = document.getElementById('description').value.trim();
+    const endDate = document.getElementById('endDate').value;
     const imageFile = document.getElementById('image').files[0];
     
     // Validate all fields
@@ -293,6 +294,16 @@ async function submitForm(e) {
         return;
     }
     
+    if (!endDate) {
+        showToast('Please select an end date', 'error');
+        return;
+    }
+    const end = new Date(endDate);
+    if (isNaN(end.getTime()) || end <= new Date()) {
+        showToast('End date must be a future date', 'error');
+        return;
+    }
+    
     if (imageFile && !isValidImageFile(imageFile)) {
         showToast('Image must be JPG, PNG, GIF, or WebP format (max 5MB)', 'error');
         return;
@@ -312,6 +323,7 @@ async function submitForm(e) {
         formData.append('categoryId', categoryId);
         formData.append('goalAmount', Number(goalAmount));
         formData.append('description', description);
+        formData.append('endDate', endDate);
         
         if (imageFile) {
             formData.append('image', imageFile);
@@ -335,6 +347,13 @@ async function submitForm(e) {
             // Show success modal with feedback
             const successMessage = data.message || 'Campaign created successfully!';
             showSuccessModal(successMessage);
+            // Refresh the campaigns list and dashboard stats
+            if (typeof loadFullCampaigns === 'function') {
+                loadFullCampaigns();
+            }
+            if (typeof loadDashboardStats === 'function') {
+                loadDashboardStats();
+            }
         } else {
             showToast(data.message || 'Failed to create campaign', 'error');
             showFormFeedback(data.message || 'Failed to create campaign', 'error');

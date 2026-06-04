@@ -240,18 +240,18 @@ async function loadDashboardStats() {
         if (campaignsRes.ok) {
             const campaignsData = await campaignsRes.json();
             campaigns = Array.isArray(campaignsData.data) ? campaignsData.data : (campaignsData.data?.campaigns || []);
-            console.log('Loaded campaigns for stats:', campaigns);
+            console.log("Loaded campaigns for stats");
         }
 
         if (donationsRes.ok) {
             const donationsData = await donationsRes.json();
             donations = Array.isArray(donationsData.data) ? donationsData.data : (donationsData.data?.donations || []);
-            console.log('Loaded donations for stats:', donations);
+            console.log("Loaded donations for stats:");
         }
 
         // Calculate statistics
         const totalRaised = campaigns.reduce((sum, campaign) => sum + Number(campaign.amountRaised || 0), 0);
-        console.log('Total raised calculated:', totalRaised);
+        console.log("Total raised calculated:", totalRaised);
         const totalCampaigns = campaigns.length;
         const totalDonated = donations.reduce((sum, donation) => {
             const status = donation.donationStatus || donation.status || '';
@@ -260,7 +260,7 @@ async function loadDashboardStats() {
             }
             return sum;
         }, 0);
-        console.log('Total donated calculated:', totalDonated);
+        console.log("Total donated calculated:", totalDonated);
 
         // Update UI
         updateStatistic('statsTotalRaised', formatCurrency(totalRaised));
@@ -268,7 +268,7 @@ async function loadDashboardStats() {
         updateStatistic('statsTotalDonated', formatCurrency(totalDonated));
 
     } catch (error) {
-        console.error('Error loading dashboard statistics:', error);
+        console.error("Error loading dashboard statistics:", error);
         // Set default values
         updateStatistic('statsTotalRaised', formatCurrency(0));
         updateStatistic('statsTotalCampaigns', 0);
@@ -298,7 +298,7 @@ async function loadActiveCampaigns() {
         renderActiveCampaigns(active);
 
     } catch (error) {
-        console.error('Error loading active campaigns:', error);
+        console.error("Error loading active campaigns:", error);
         renderEmptyActiveCampaigns();
     }
 }
