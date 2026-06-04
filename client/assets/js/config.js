@@ -15,19 +15,19 @@
 // Do NOT hardcode URLs - use environment-based configuration
 function getAPIUrl() {
     // Check localhost first
-    // if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') {
-    //     return 'http://localhost:3000/api';
-    // }
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') {
+        return 'http://localhost:3000/api';
+    }
 
 
     
     // // Check window config object (set in index.html)
-    // if (window.APP_CONFIG && window.APP_CONFIG.API_URL) {
-    //     console.log('Using API_URL from window.APP_CONFIG');
-    //     return window.APP_CONFIG.API_URL;
-    // }
+    if (window.APP_CONFIG && window.APP_CONFIG.API_URL) {
+        console.log('Using API_URL from window.APP_CONFIG');
+        return window.APP_CONFIG.API_URL;
+    }
     
-    // // Check localStorage for custom URL (admin configuration)
+    // Check localStorage for custom URL (admin configuration)
     const customUrl = localStorage.getItem('customApiUrl');
     if (customUrl) {
         console.log('Using custom API URL from localStorage');
@@ -217,7 +217,7 @@ function logout() {
     sessionStorage.clear();
     localStorage.removeItem('password');
     localStorage.removeItem('creditCard');
-    window.location.href = 'login.html';
+    window.location.href = '/pages/login.html';
 }
 
 /**
