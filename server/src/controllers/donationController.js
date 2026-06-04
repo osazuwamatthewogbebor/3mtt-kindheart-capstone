@@ -46,12 +46,12 @@ export const handlePaymentRedirect = async (req, res) => {
 
         if (!donation) {
             const frontendUrl = process.env.CLIENT_URL || "http://localhost:5173";
-            return res.redirect(`${frontendUrl}/client/pages/donations-failure.html?ref=${reference}`);
+            return res.redirect(`${frontendUrl}/pages/donations-failure.html?ref=${reference}`);
         }
 
         if (donation) {
             // Redirect back to success screen
-            res.redirect(`${frontendUrl}/client/pages/donation-success.html?status=success&ref=${reference}`);
+            res.redirect(`${frontendUrl}/pages/donation-success.html?status=success&ref=${reference}`);
         }
         
     } catch (error) {
