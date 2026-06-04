@@ -709,6 +709,45 @@
     max-width: 500px;
 }
 
+/* ============================================
+   RESPONSIVE DESIGN - CAMPAIGN LISTING
+   ============================================ */
+@media (max-width: 768px) {
+    /* Campaign Listing Grid Stacking */
+    .campaigns-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .campaign-card {
+        display: grid;
+        grid-template-columns: 1fr; /* Stack image and content vertically */
+        grid-template-rows: auto 1fr;
+    }
+
+    .campaign-image {
+        height: 220px;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0; /* Rounded top corners */
+    }
+    
+    .campaign-content {
+        padding: 1.5rem;
+    }
+
+    .campaign-stats {
+        grid-template-columns: 1fr 1fr; /* Keep stats side-by-side if possible */
+    }
+
+    .campaign-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .campaign-actions .btn {
+        width: 100%;
+    }
+}
+
 .header-icon {
     font-size: 4.5rem;
     color: var(--primary);

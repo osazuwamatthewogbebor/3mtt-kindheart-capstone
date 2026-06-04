@@ -1596,14 +1596,11 @@ section {
     .nav-actions .user-dropdown {
         position: static;
         width: 100%;
-        opacity: 1;
-        visibility: visible;
         transform: none;
         box-shadow: none;
         border: none;
         background: var(--gray-lightest);
         margin-top: 0.5rem;
-        display: none;
     }
     
     .nav-actions .user-dropdown.show {

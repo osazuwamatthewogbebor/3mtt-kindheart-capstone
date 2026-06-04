@@ -9,6 +9,40 @@
   <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @media (max-width: 768px) {
+      /* Hero Section Adjustments */
+      .hero-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .hero-copy {
+        text-align: center !important;
+      }
+      .hero-copy .subtitle,
+      .hero-copy p {
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      .hero-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      /* Content Grids Stacking */
+      .tos-metrics {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .tos-grid-2 {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .tos-cta-buttons {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -26,7 +60,7 @@
           <li><a href="how-it-works.html">How It Works</a></li>
           <li><a href="about.html">About</a></li>
         </ul>
-        <div class="nav-actions"><a href="pages/user-dashboard.html#create" class="btn btn-primary">Start a Campaign</a></div>
+        <div class="nav-actions"><a href="user-dashboard.html#create" class="btn btn-primary">Start a Campaign</a></div>
       </div>
     </div>
   </nav>
@@ -38,7 +72,7 @@
         <h1>Terms of Service</h1>
         <p>Guiding every user action on KindHeart with fairness, security, and accountability.</p>
         <div class="hero-actions">
-          <a href="pages/user-dashboard.html#create" class="btn btn-primary">Launch a Campaign</a>
+          <a href="user-dashboard.html#create" class="btn btn-primary">Launch a Campaign</a>
           <a href="contact.html" class="btn btn-outline">Contact Support</a>
         </div>
       </div>
@@ -91,7 +125,7 @@
       <div class="tos-cta-panel">
         <h2>Ready to fund your mission?</h2>
         <p>Start a campaign with confidence and the support of a secure, purpose-built crowdfunding platform.</p>
-        <div class="cta-buttons"><a href="pages/user-dashboard.html#create" class="btn btn-primary">Create a Campaign</a><a href="contact.html" class="btn btn-outline">Ask our team</a></div>
+        <div class="cta-buttons"><a href="user-dashboard.html#create" class="btn btn-primary">Create a Campaign</a><a href="contact.html" class="btn btn-outline">Ask our team</a></div>
       </div>
     </div>
   </section>

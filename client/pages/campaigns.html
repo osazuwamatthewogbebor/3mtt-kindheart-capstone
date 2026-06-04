@@ -9,6 +9,73 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/campaign.css">
+    <style>
+        @media (max-width: 768px) {
+            /* Page Header Adjustments */
+            .page-header h1 {
+                font-size: 2.25rem !important;
+            }
+            
+            /* Main Content Layout Stacking */
+            .container > div { /* Targets the div on line 55 */
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem !important;
+            }
+            
+            /* Sidebar Adjustments */
+            .filters-sidebar {
+                position: static !important;
+            }
+            
+            .filter-group {
+                border: 1px solid var(--gray-lighter);
+                padding: 1rem;
+                border-radius: var(--radius-md);
+                margin-bottom: 1rem;
+            }
+            
+            .filter-title {
+                margin-bottom: 1rem !important;
+            }
+            
+            .filter-options {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .filter-checkbox {
+                flex: 1 1 calc(50% - 0.5rem); /* Two checkboxes per row */
+                min-width: 150px;
+                text-align: center;
+            }
+            
+            .filter-checkbox label {
+                display: block;
+                padding: 0.5rem;
+                border: 1px solid var(--gray-lightest);
+                border-radius: var(--radius-sm);
+            }
+            
+            .filter-checkbox label:hover {
+                background: var(--gray-lightest);
+            }
+            
+            .btn-reset-filters {
+                width: 100%;
+            }
+            
+            /* Search/Sort Bar */
+            .flex-gap-lg {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+            
+            #sortFilter {
+                min-width: auto !important;
+            }
+        }
+    </style>
 </head>
 <body>
 
