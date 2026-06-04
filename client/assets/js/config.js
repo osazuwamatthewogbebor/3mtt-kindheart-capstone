@@ -217,7 +217,7 @@ function logout() {
     sessionStorage.clear();
     localStorage.removeItem('password');
     localStorage.removeItem('creditCard');
-    window.location.href = '/pages/login.html';
+    window.location.href = '#';
 }
 
 /**
