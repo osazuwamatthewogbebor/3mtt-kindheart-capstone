@@ -128,7 +128,6 @@ async function loadUserProfile() {
 
         const data = await response.json();
         currentUser = data.data || data;
-        console.log("Loaded user profile:", currentUser);
 
         // Update profile display
         updateProfileDisplay(currentUser.user);
@@ -247,7 +246,7 @@ async function loadDashboardStats() {
         if (donationsRes.ok) {
             const donationsData = await donationsRes.json();
             donations = Array.isArray(donationsData.data) ? donationsData.data : (donationsData.data?.donations || []);
-            console.log("Loaded donations for stats:");
+            console.log("Loaded donations for stats");
         }
 
         // Calculate statistics
@@ -261,7 +260,6 @@ async function loadDashboardStats() {
             }
             return sum;
         }, 0);
-        console.log("Total donated calculated:", totalDonated);
 
         // Update UI
         updateStatistic('statsTotalRaised', formatCurrency(totalRaised));

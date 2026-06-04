@@ -272,10 +272,8 @@
                                         </div>
 
                                         <form id="createCampaignForm" class="create-campaign-form">
-                                            <fieldset class="form-section active" data-section="1">
-                                                <legend class="section-title">
-                                                    <i class="fas fa-info-circle"></i> Campaign Information
-                                                </legend>
+                                            <div class="form-section active" data-section="1" >
+                                                
                                                 <div class="form-group">
                                                     <label for="title" class="form-label">
                                                         Campaign Title
@@ -325,12 +323,9 @@
                                                     </div>
                                                     <p class="form-helper">Select a future date for the campaign to end.</p>
                                                 </div>
-                                            </fieldset>
+                                            </div>
 
-                                            <fieldset class="form-section" data-section="2">
-                                                <legend class="section-title">
-                                                    <i class="fas fa-align-left"></i> Campaign Details
-                                                </legend>
+                                            <div class="form-section" data-section="2" >
 
                                                 <div class="form-group">
                                                     <label for="description" class="form-label">
@@ -340,13 +335,10 @@
                                                     <textarea id="description" name="description" class="form-textarea" placeholder="Tell your story... Explain why you need help, what the funds will be used for, and how it will make a difference." maxlength="5000" required></textarea>
                                                     <p class="form-helper"><span id="descCount">0</span>/5000 characters</p>
                                                 </div>
-                                            </fieldset>
+                                            </div>
 
-                                            <fieldset class="form-section" data-section="3">
-                                                <legend class="section-title">
-                                                    <i class="fas fa-image"></i> Campaign Image
-                                                </legend>
-
+                                            <div class="form-section" data-section="3">
+                                                
                                                 <div class="form-group">
                                                     <label for="image" class="form-label">
                                                         Campaign Image
@@ -372,7 +364,7 @@
                                                     </div>
                                                     <p class="form-helper">JPG, PNG, GIF, or WebP (max 5MB). Recommended: 800x600px</p>
                                                 </div>
-                                            </fieldset>
+                                            </div>
 
                                             <div class="form-actions">
                                                 <button type="button" class="btn btn-outline" id="prevBtn" onclick="previousSection()" style="display: none;">
@@ -413,10 +405,8 @@
                                         <p>Choose a campaign from the list above to update its details.</p>
                                     </div>
                                     <form id="editCampaignForm" class="create-campaign-form hidden">
-                                        <fieldset class="form-section active">
-                                            <legend class="section-title">
-                                                <i class="fas fa-edit"></i> Edit Campaign Details
-                                            </legend>
+                                        <div class="form-section active">
+                                           
                                             <div class="form-group">
                                                 <label for="title" class="form-label">
                                                     Campaign Title
@@ -484,7 +474,7 @@
                                                 </div>
                                                 <div id="currentImageDisplay" class="mt-1 text-center"></div>
                                             </div>
-                                        </fieldset>
+                                        </div>
                                         <div class="form-actions">
                                             <button type="button" class="btn btn-outline" onclick="switchTab('campaigns')">
                                                 <i class="fas fa-times"></i> Cancel
@@ -615,3 +605,4 @@
   <script src="../assets/js/footer.js"></script>
 </body>
 </html>
+
