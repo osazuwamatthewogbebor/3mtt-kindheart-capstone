@@ -740,6 +740,8 @@ async function moderateCampaign(id, action) {
     }
 }
 
+
+
 function closeRejectionModal() {
     document.getElementById("rejectionModal").classList.remove("open");
     campaignToModerateId = null;
@@ -869,22 +871,27 @@ async function loadRecentActivity() {
                 id: `donation-${d.id}`,
                 type: 'secondary', // Matches your CSS 'activity-secondary'
                 avatar: d.User?.avatarUrl || d.userAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100',
-                title: `${getDisplayName(d.User || d)} <span class="activity-normal">donated</span> ${formatCurrency(d.amount)}`,
-                subtitle: d.Campaign?.title || 'Crowdfunding Campaign',
+                title: `${getDisplayName(d.donor || d)} <span class="activity-normal">donated</span> ${formatCurrency(d.amount)}`,
+                subtitle: d.campaign?.title || 'Crowdfunding Campaign',
                 timestamp: new Date(d.createdAt),
                 timeFriendly: timeAgo(d.createdAt)
             });
         });
-        console.log(donations)
 
         // 3. Transform Pending/New Campaigns into Activity Objects
+
         campaigns.forEach(c => {
+            const campaignStatusText = c.status === 'PENDING' 
+                    ? 'pending approval' : c.status === 'FAILED' 
+                    ? 'rejected' : c.status === 'ABANDONED' 
+                    ? 'abandoned' :  'approved';
+
             synthesizedActivities.push({
                 id: `campaign-${c.id}`,
                 type: 'tertiary', // Matches 'activity-tertiary'
                 icon: 'verified', // Uses Material Symbol icon
-                title: `New Campaign <span class="activity-normal">Awaiting Review</span>`,
-                subtitle: `${c.title} by ${c.creator} is ${c.status === 'PENDING' ? 'pending' : 'awaiting'} approval.`,
+                title: `New Campaign <span class="activity-normal">${campaignStatusText.toUpperCase()}</span>`,
+                subtitle: `${c.title} by ${c.creator} ${campaignStatusText}.`,
                 timestamp: new Date(c.createdAt),
                 timeFriendly: timeAgo(c.createdAt)
             });
