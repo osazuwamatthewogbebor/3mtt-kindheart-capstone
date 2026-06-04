@@ -128,9 +128,10 @@ async function loadUserProfile() {
 
         const data = await response.json();
         currentUser = data.data || data;
+        console.log("Loaded user profile:", currentUser);
 
         // Update profile display
-        updateProfileDisplay(currentUser);
+        updateProfileDisplay(currentUser.user);
 
         // Check admin status
         updateAdminLink();
@@ -166,8 +167,8 @@ function updateProfileDisplay(user) {
     // Update sidebar profile
     const sidebarAvatar = document.getElementById('sidebarAvatar');
     if (sidebarAvatar) {
-        if (user.profileImage || user.avatarUrl || user.imageUrl) {
-            const imgUrl = user.profileImage || user.avatarUrl || user.imageUrl;
+        if (user.profileImageUrl || user.avatarUrl || user.imageUrl) {
+            const imgUrl = user.profileImageUrl || user.avatarUrl || user.imageUrl;
             sidebarAvatar.innerHTML = `<img src="${imgUrl}" alt="${escapeHtml(displayName)}" class="profile-avatar-img" onerror="this.onerror=null;this.src='../assets/images/default-avatar.png'">`;
             sidebarAvatar.classList.remove('profile-avatar-placeholder');
         } else {
