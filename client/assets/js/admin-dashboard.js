@@ -841,17 +841,23 @@ window.alert = function(msg) {
     showToast(msg, 'info');
 };
 
+// Global tracking variable for pagination limit
+let visibleActivityLimit = 4; 
+// Cache to prevent redundant API calls on expansion
+let allSynthesizedActivitiesCache = []; 
+
 // Fetches data from existing collections and synthesizes an activity timeline
-async function loadRecentActivity() {
+async function loadRecentActivity(isExpanding = false) {
+
     const activityFeedContainer = document.querySelector('.activity-feed');
     if (!activityFeedContainer) return;
 
     // Save the "Show More History" button reference if it exists
     const showMoreBtn = activityFeedContainer.querySelector('.btn-history');
 
+    if (!isExpanding || allSynthesizedActivitiesCache.length === 0) {
     try {
         // 1. Fetch from available endpoints concurrently
-        // Note: authFetch is your helper from config.js
         const [donationsRes, campaignsRes, usersRes] = await Promise.all([
             authFetch(`${API.DONATIONS}?limit=5&sort=createdAt:desc`),
             authFetch(`${API.ADMIN_CAMPAIGNS}?status=PENDING&limit=5`),
@@ -912,12 +918,18 @@ async function loadRecentActivity() {
 
         // 5. Sort everything by absolute time (Newest first)
         synthesizedActivities.sort((a, b) => b.timestamp - a.timestamp);
+        allSynthesizedActivitiesCache = synthesizedActivities;
 
-        // Take the top 4 most recent events
-        const displayActivities = synthesizedActivities.slice(0, 4);
+    } catch (err) {
+        console.error('Failed to compile synthesized dashboard activity feed:', err);
+        activityFeedContainer.innerHTML = '<p class="table-loading">Could not connect to live action parameters feed logs.</p>';
+        
+        return;
+    }
+        // Slice dynamically based on current tracking index bounds
+        const displayActivities = allSynthesizedActivitiesCache.slice(0, visibleActivityLimit);
 
         // 6. Render elements to DOM
-        // Clear old hardcoded feed items but preserve the container layout
         activityFeedContainer.innerHTML = '';
 
         if (displayActivities.length === 0) {
@@ -948,11 +960,31 @@ async function loadRecentActivity() {
         });
 
         // Re-append the layout button back if it existed originally
-        if (showMoreBtn) activityFeedContainer.appendChild(showMoreBtn);
-
-    } catch (err) {
-        console.error('Failed to compile synthesized dashboard activity feed:', err);
+        // Dynamically reconstruct or hide the History Button element depending on records boundary ceilings
+    if (allSynthesizedActivitiesCache.length > visibleActivityLimit) {
+        if (!showMoreBtn) {
+            // Build it fallback inline if the template layout dropped it completely
+            showMoreBtn = document.createElement('button');
+            showMoreBtn.className = 'btn-history';
+            showMoreBtn.innerText = 'Show More History';
+        }
+        
+        // Remove previous listener variants and attach fresh runtime logic handlers
+        showMoreBtn.onclick = (e) => {
+            e.preventDefault();
+            visibleActivityLimit += 4; // Increment step size count smoothly
+            loadRecentActivity(true); // Flag context switch to pull array structures from operational cache
+        };
+        
+        activityFeedContainer.appendChild(showMoreBtn);
+    } else {
+        // ELSE: We have displayed all items in our cache, so ensure the button doesn't stick around
+        if (showMoreBtn) {
+            showMoreBtn.remove();
+        }
     }
+}
+
 }
 
 // Utility helper to output relative time differences (e.g. "3 Minutes Ago")
