@@ -100,6 +100,57 @@ class DonationService {
         })
     }
 
+    // Get all donations
+    async getAllDonations({ limit = 10, page = 1, sort = 'desc', status }) {
+        const take = parseInt(limit) || 10;
+        const skip = (parseInt(page) - 1) * take;
+        const orderDirection = sort.toLowerCase() === 'asc' ? 'asc' : 'desc';
+
+        // Build filter object
+        const where = {};
+        if (status) {
+            where.status = status.toUpperCase();
+        }
+
+        // Fetch records and total count concurrently for accurate pagination metadata
+        const [donations, total] = await prisma.$transaction([
+            prisma.donation.findMany({
+                where,
+                skip,
+                take,
+                include: {
+                    donor: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                        }
+                    },
+                    campaign: {
+                        select: {
+                            id: true,
+                            title: true
+                        }
+                    }
+                },
+                orderBy: {
+                    createdAt: orderDirection
+                }
+            }),
+            prisma.donation.count({ where })
+        ]);
+
+        return {
+            donations,
+            meta: {
+                total,
+                page: parseInt(page),
+                limit: take,
+                totalPages: Math.ceil(total / take)
+            }
+        };
+    }
+
     async getDonationsByUser(userId) {
         return await prisma.donation.findMany({
             where: { donorId: userId},

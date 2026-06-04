@@ -59,6 +59,30 @@ export const handlePaymentRedirect = async (req, res) => {
     }
 }
 
+export const getAllDonations = async (req, res) => {
+    try {
+        const { limit, page, sort, status } = req.query;
+
+        const result = await donationService.getAllDonations({
+            limit,
+            page,
+            sort,
+            status
+        });
+
+        res.status(200).json({
+            status: "success",
+            meta: result.meta,
+            data: result.donations
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            status: "error", 
+            message: error.message 
+        });
+    }
+};
+
 export const getMyDonations = async (req, res) => {
     try {
         const donations = await donationService.getDonationsByUser(req.user.id);

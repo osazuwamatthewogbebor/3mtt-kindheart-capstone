@@ -149,8 +149,8 @@ async function loadDonations() {
         }
 
         const donationsCount = data.count || 0;
-        const donorsHeroEl = document.getElementById('donorsCountHero');
-        const donorsSmallEl = document.getElementById('donorsCountSmall');
+        const donorsHeroEl = document.getElementById('donationsCountHero');
+        const donorsSmallEl = document.getElementById('donationsCountSmall');
         const donationsCountEl = document.getElementById('donationsCount');
         if (donorsHeroEl) donorsHeroEl.textContent = donationsCount;
         if (donorsSmallEl) donorsSmallEl.textContent = donationsCount;

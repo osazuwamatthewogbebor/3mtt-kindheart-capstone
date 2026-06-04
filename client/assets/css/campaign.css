@@ -1400,6 +1400,79 @@
     display: none !important;
 }
 
+/* ============================================
+   TAB CONTENT DISPLAY ENGINE
+   ============================================ */
+
+/* Hide all tab contents by default */
+.tab-content {
+    display: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Show the active tab content block */
+.tab-content.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Container framework for your tab system */
+.campaign-tabs.tabs-container {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem;
+    background: var(--gray-lightest);
+    border-radius: 50px;
+    width: fit-content;
+    margin-bottom: 2.5rem;
+    border: 1px solid var(--gray-lighter);
+}
+
+.tab.pill {
+    background: transparent;
+    border: none;
+    padding: 0.6rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gray);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tab.pill:hover:not(.active) {
+    color: var(--dark);
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.tab.pill.active {
+    background: var(--white);
+    color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.tab.pill #donationsCount {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--primary);
+    padding: 0.1rem 0.45rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.tab.pill.active #donationsCount {
+    background: var(--primary);
+    color: var(--white);
+}
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .form-wrapper {
@@ -1453,3 +1526,4 @@
         max-width: 100%;
     }
 }
+

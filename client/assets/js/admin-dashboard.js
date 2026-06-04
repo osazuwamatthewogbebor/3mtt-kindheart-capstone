@@ -839,9 +839,134 @@ window.alert = function(msg) {
     showToast(msg, 'info');
 };
 
+// Fetches data from existing collections and synthesizes an activity timeline
+async function loadRecentActivity() {
+    const activityFeedContainer = document.querySelector('.activity-feed');
+    if (!activityFeedContainer) return;
+
+    // Save the "Show More History" button reference if it exists
+    const showMoreBtn = activityFeedContainer.querySelector('.btn-history');
+
+    try {
+        // 1. Fetch from available endpoints concurrently
+        // Note: authFetch is your helper from config.js
+        const [donationsRes, campaignsRes, usersRes] = await Promise.all([
+            authFetch(`${API.DONATIONS}?limit=5&sort=createdAt:desc`),
+            authFetch(`${API.ADMIN_CAMPAIGNS}?status=PENDING&limit=5`),
+            authFetch(`${API.ADMIN_USERS}?limit=5&sort=createdAt:desc`)
+        ]);
+
+        // Safely parse JSON or default to empty arrays if an endpoint fails
+        const donations = donationsRes.ok ? (await donationsRes.json()).data || [] : [];
+        const campaigns = campaignsRes.ok ? (await campaignsRes.json()).data || [] : [];
+        const users = usersRes.ok ? (await usersRes.json()).data || [] : [];
+
+        let synthesizedActivities = [];
+
+        // 2. Transform Donations into Activity Objects
+        donations.forEach(d => {
+            synthesizedActivities.push({
+                id: `donation-${d.id}`,
+                type: 'secondary', // Matches your CSS 'activity-secondary'
+                avatar: d.User?.avatarUrl || d.userAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100',
+                title: `${getDisplayName(d.User || d)} <span class="activity-normal">donated</span> ${formatCurrency(d.amount)}`,
+                subtitle: d.Campaign?.title || 'Crowdfunding Campaign',
+                timestamp: new Date(d.createdAt),
+                timeFriendly: timeAgo(d.createdAt)
+            });
+        });
+        console.log(donations)
+
+        // 3. Transform Pending/New Campaigns into Activity Objects
+        campaigns.forEach(c => {
+            synthesizedActivities.push({
+                id: `campaign-${c.id}`,
+                type: 'tertiary', // Matches 'activity-tertiary'
+                icon: 'verified', // Uses Material Symbol icon
+                title: `New Campaign <span class="activity-normal">Awaiting Review</span>`,
+                subtitle: `${c.title} by ${c.creator} is ${c.status === 'PENDING' ? 'pending' : 'awaiting'} approval.`,
+                timestamp: new Date(c.createdAt),
+                timeFriendly: timeAgo(c.createdAt)
+            });
+        });
+
+        // 4. Transform New Users into Activity Objects
+        users.forEach(u => {
+            synthesizedActivities.push({
+                id: `user-${u.id}`,
+                type: 'neutral', // Matches 'activity-neutral'
+                avatar: u.imageUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100',
+                title: `${getDisplayName(u)} <span class="activity-normal">joined</span> KindHeart`,
+                subtitle: `Registered as a platform ${String(u.role || 'user').toLowerCase()}.`,
+                timestamp: new Date(u.createdAt),
+                timeFriendly: timeAgo(u.createdAt)
+            });
+        });
+
+        // 5. Sort everything by absolute time (Newest first)
+        synthesizedActivities.sort((a, b) => b.timestamp - a.timestamp);
+
+        // Take the top 4 most recent events
+        const displayActivities = synthesizedActivities.slice(0, 4);
+
+        // 6. Render elements to DOM
+        // Clear old hardcoded feed items but preserve the container layout
+        activityFeedContainer.innerHTML = '';
+
+        if (displayActivities.length === 0) {
+            activityFeedContainer.innerHTML = '<p class="table-loading">No recent platform activity found.</p>';
+            return;
+        }
+
+        displayActivities.forEach(act => {
+            const card = document.createElement('div');
+            card.className = `activity-card activity-${act.type}`;
+
+            // Build structural components depending on whether it uses an image or an icon symbol
+            const mediaSource = act.icon 
+                ? `<div class="activity-icon-wrap"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">${act.icon}</span></div>`
+                : `<img class="activity-avatar" src="${act.avatar}" alt="Avatar">`;
+
+            card.innerHTML = `
+                <div class="activity-flex">
+                    ${mediaSource}
+                    <div class="activity-content">
+                        <p>${act.title}</p>
+                        <div class="activity-campaign-title" style="color: var(--stone-800);">${sanitizeInput(act.subtitle)}</div>
+                        <div class="activity-time-stamp">${act.timeFriendly}</div>
+                    </div>
+                </div>
+            `;
+            activityFeedContainer.appendChild(card);
+        });
+
+        // Re-append the layout button back if it existed originally
+        if (showMoreBtn) activityFeedContainer.appendChild(showMoreBtn);
+
+    } catch (err) {
+        console.error('Failed to compile synthesized dashboard activity feed:', err);
+    }
+}
+
+// Utility helper to output relative time differences (e.g. "3 Minutes Ago")
+function timeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+
+    if (seconds < 60) return 'Just Now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} Minute${minutes > 1 ? 's' : ''} Ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} Hour${hours > 1 ? 's' : ''} Ago`;
+    const days = Math.floor(hours / 24);
+    return `${days} Day${days > 1 ? 's' : ''} Ago`;
+}
+
 // ================= INIT CORE =================
 document.addEventListener('DOMContentLoaded', () => {
     loadUser();
     loadStats();
     loadCampaignsOverview();
+    loadRecentActivity();
 });
