@@ -21,8 +21,8 @@ function updateNav() {
     if (isLoggedIn()) {
         const user = JSON.parse(localStorage.getItem('user'));
         navActions.innerHTML = `
-            <a href="my-campaigns.html" class="btn-link">My Campaigns</a>
-            <a href="create-campaign.html" class="btn btn-primary">Create Campaign</a>
+            <a href="user-dashboard.html#campaigns" class="btn-link">My Campaigns</a>
+            <a href="pages/user-dashboard.html#create" class="btn btn-primary">Create Campaign</a>
         `;
     }
 }
@@ -32,10 +32,15 @@ async function loadCampaign() {
     try {
         const response = await fetch(`${API.CAMPAIGNS}/${campaignId}`);
         const result = await response.json();
-
+ 
         const campaign = result.data?.campaign || result.campaign;
-
-        if (!result.success || !campaign) {
+ 
+        if (!response.ok || !result.success || !campaign) {
+            console.error('Failed to load campaign', {
+                status: response.status,
+                url: `${API.CAMPAIGNS}/${campaignId}`,
+                responseBody: result
+            });
             showToast('Campaign not found', 'error');
             window.location.href = 'campaigns.html';
             return;
@@ -66,21 +71,90 @@ async function loadCampaign() {
         // Load donations
         loadDonations();
 
+            // Render updates if present on campaign object. If not, skip fetching from a non‑existent endpoint.
+            if (Array.isArray(campaign.updates) && campaign.updates.length > 0) {
+                window.__campaignHasUpdates = true;
+                renderUpdates(campaign.updates);
+            } else {
+                window.__campaignHasUpdates = false;
+                // No dedicated updates endpoint; render empty updates section.
+                renderUpdates([]);
+            }
+
     } catch (error) {
         console.error('Error:', error);
         showToast('Error loading campaign', 'error');
+        // Show inline error state
+        const titleEl = document.getElementById('campaignTitle');
+        if (titleEl) titleEl.textContent = 'Campaign not available';
+        const descEl = document.getElementById('campaignDescription');
+        if (descEl) descEl.textContent = 'Sorry, we could not load this campaign right now. Please try again later.';
+        const imageEl = document.getElementById('campaignImage');
+        if (imageEl) imageEl.src = 'https://via.placeholder.com/800x500?text=Unavailable';
     }
+}
+
+function renderUpdates(updates) {
+    const container = document.getElementById('updatesTab');
+    if (!container) return;
+
+    // Find inner content area (replace loading state)
+    const content = container.querySelector('.loading-state') || container;
+    if (!updates || updates.length === 0) {
+        content.innerHTML = `
+            <div class="loading-state">
+                <i class="fas fa-bell opacity-30 icon-lg"></i>
+                <p>No updates yet</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Build updates list
+    const listHtml = updates.map(u => {
+        const title = u.title || u.summary || 'Update';
+        const body = u.body || u.content || u.message || '';
+        const date = formatDate(u.createdAt || u.created_at || u.date || new Date());
+        return `
+            <div class="update-item">
+                <div class="update-header">
+                    <strong>${escapeHtml(title)}</strong>
+                    <span class="muted">${date}</span>
+                </div>
+                <div class="update-body">${escapeHtml(body)}</div>
+            </div>
+        `;
+    }).join('');
+
+    content.innerHTML = `<div class="updates-list">${listHtml}</div>`;
 }
 
 // Load donations
 async function loadDonations() {
     try {
         const response = await fetch(`${API.DONATIONS}/campaign/${campaignId}`);
-        const data = await response.json();
+        let data;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+            try {
+                data = await response.json();
+            } catch (e) {
+                console.warn('Failed to parse JSON donations response', e);
+                data = { count: 0, data: [] };
+            }
+        } else {
+            const text = await response.text();
+            console.warn('Non-JSON donations response:', text);
+            data = { count: 0, data: [] };
+        }
 
         const donationsCount = data.count || 0;
-        document.getElementById('donorsCount').textContent = donationsCount;
-        document.getElementById('donationsCount').textContent = donationsCount;
+        const donorsHeroEl = document.getElementById('donationsCountHero');
+        const donorsSmallEl = document.getElementById('donationsCountSmall');
+        const donationsCountEl = document.getElementById('donationsCount');
+        if (donorsHeroEl) donorsHeroEl.textContent = donationsCount;
+        if (donorsSmallEl) donorsSmallEl.textContent = donationsCount;
+        if (donationsCountEl) donationsCountEl.textContent = donationsCount;
 
         const container = document.getElementById('donationsList');
 
@@ -96,32 +170,59 @@ async function loadDonations() {
 
         container.innerHTML = '';
 
-        data.data.forEach(donation => {
+        (data.data || []).forEach(donation => {
+            const donorName = donation.donorName || donation.donor_name || 'Anonymous';
+            const amount = donation.amount || donation.amount_donated || 0;
+            const date = donation.createdAt || donation.created_at || donation.date;
+
             const item = document.createElement('div');
             item.className = 'donation-item';
-            
-            const header = document.createElement('div');
-            header.className = 'donation-header';
-            
-            const donorSpan = document.createElement('span');
-            donorSpan.className = 'donor-name';
-            donorSpan.textContent = donation.donorName || donation.donor_name || 'Anonymous';
-            
-            const amountSpan = document.createElement('span');
-            amountSpan.className = 'donation-amount';
-            amountSpan.textContent = formatCurrency(donation.amount);
-            
-            header.appendChild(donorSpan);
-            header.appendChild(amountSpan);
-            
-            const timeDiv = document.createElement('div');
-            timeDiv.className = 'donation-time';
-            timeDiv.textContent = formatDate(donation.createdAt || donation.created_at);
-            
-            item.appendChild(header);
-            item.appendChild(timeDiv);
+
+            const left = document.createElement('div');
+            left.className = 'donation-left';
+            const avatar = document.createElement('div');
+            avatar.className = 'donor-avatar';
+            const initials = String(donorName).split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+            avatar.textContent = initials || 'A';
+            left.appendChild(avatar);
+
+            const body = document.createElement('div');
+            body.className = 'donation-body';
+            const nameEl = document.createElement('div');
+            nameEl.className = 'donor-name';
+            nameEl.textContent = donorName;
+            const metaEl = document.createElement('div');
+            metaEl.className = 'donation-meta';
+            metaEl.textContent = formatDate(date);
+            body.appendChild(nameEl);
+            body.appendChild(metaEl);
+
+            const amountEl = document.createElement('div');
+            amountEl.className = 'donation-amount';
+            amountEl.textContent = formatCurrency(amount);
+
+            item.appendChild(left);
+            item.appendChild(body);
+            item.appendChild(amountEl);
+
             container.appendChild(item);
         });
+
+        // If there are donations but no formal campaign updates, surface donations as updates
+        try {
+            const updatesTabEl = document.getElementById('updatesTab');
+            const hasFormalUpdates = !!(window.__campaignHasUpdates);
+            if (!hasFormalUpdates) {
+                const donationUpdates = (data.data || []).slice(0, 5).map(d => ({
+                    title: (d.donorName || d.donor_name || d.donor?.name || 'Supporter') + ' donated',
+                    body: `${formatCurrency(d.amount || d.amount_donated || 0)} was contributed${d.anonymous ? ' (anonymous)' : ''}`,
+                    createdAt: d.createdAt || d.created_at || d.date
+                }));
+                if (donationUpdates.length > 0) renderUpdates(donationUpdates);
+            }
+        } catch (e) {
+            // ignore
+        }
 
     } catch (error) {
         console.error('Error loading donations:', error);
@@ -146,9 +247,9 @@ async function handleDonationReturn() {
     try {
         showToast('Verifying your donation...', 'info');
 
-        const response = await fetch(API.VERIFY_DONATION, {
+        const response = await authFetch(API.VERIFY_DONATION, {
             method: 'POST',
-            headers: getAuthHeaders(),
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 reference: paymentReference,
                 paymentReference,
@@ -157,11 +258,14 @@ async function handleDonationReturn() {
             })
         });
 
-        const result = await response.json();
+        const result = await response.json().catch(() => ({}));
 
-        if (response.ok && result.success !== false) {
+        if (response.ok && result.status === 'success') {
             showToast(result.message || 'Donation verified successfully!', 'success');
             cleanPaymentQueryParams();
+            // Refresh donations and campaign data
+            loadDonations();
+            loadCampaign();
             return true;
         }
 
@@ -193,120 +297,158 @@ function switchTab(tabName) {
 
 // Setup event listeners (replaces inline onclick handlers)
 function setupEventListeners() {
-    // Donate button
-    const donateBtn = document.getElementById('donateButton');
-    if (donateBtn) {
-        donateBtn.addEventListener('click', donate);
-    }
-
-    // Share buttons
-    const shareFacebook = document.getElementById('shareFacebook');
-    if (shareFacebook) {
-        shareFacebook.addEventListener('click', shareOnFacebook);
-    }
-
-    const shareTwitter = document.getElementById('shareTwitter');
-    if (shareTwitter) {
-        shareTwitter.addEventListener('click', shareOnTwitter);
-    }
-
-    const shareWhatsapp = document.getElementById('shareWhatsapp');
-    if (shareWhatsapp) {
-        shareWhatsapp.addEventListener('click', shareOnWhatsApp);
-    }
-
-    const shareCopyBtn = document.getElementById('shareCopy');
-    if (shareCopyBtn) {
-        shareCopyBtn.addEventListener('click', copyLink);
-    }
-
-    // Tab buttons
-    const tabButtons = document.querySelectorAll('.tab[data-tab]');
-    tabButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tabName = btn.getAttribute('data-tab');
-            switchTab(tabName);
-        });
+  // Donate button (redirect to checkout page)
+  const donateBtn = document.getElementById('donateButton');
+  if (donateBtn) {
+    donateBtn.addEventListener('click', () => {
+      if (!isLoggedIn()) {
+        showToast('Please login to donate', 'warning');
+        window.location.href = 'login.html';
+        return;
+      }
+      window.location.href = `donation-checkout.html?id=${campaignId}`;
     });
+  }
+
+  // CTA donate button (redirect to checkout page)
+  const ctaDonate = document.getElementById('ctaDonateBtn');
+  if (ctaDonate) {
+    ctaDonate.addEventListener('click', () => {
+      if (!isLoggedIn()) {
+        showToast('Please login to donate', 'warning');
+        window.location.href = 'login.html';
+        return;
+      }
+      window.location.href = `donation-checkout.html?id=${campaignId}`;
+    });
+  }
+
+  // Modal controls (no longer used, but keep for safety)
+  const donateClose = document.getElementById('donateCloseBtn');
+  const donateCancel = document.getElementById('donateCancel');
+  const donateBackdrop = document.getElementById('donateBackdrop');
+  const donateForm = document.getElementById('donateForm');
+
+  if (donateClose) donateClose.addEventListener('click', closeDonateModal);
+  if (donateCancel) donateCancel.addEventListener('click', closeDonateModal);
+  if (donateBackdrop) donateBackdrop.addEventListener('click', closeDonateModal);
+  if (donateForm) donateForm.addEventListener('submit', handleDonateFormSubmit);
+
+  // Payment method buttons (removed – handled by Paystack)
+
+  // Share buttons
+  const shareFacebook = document.getElementById('shareFacebook');
+  if (shareFacebook) {
+    shareFacebook.addEventListener('click', shareOnFacebook);
+  }
+
+  const shareTwitter = document.getElementById('shareTwitter');
+  if (shareTwitter) {
+    shareTwitter.addEventListener('click', shareOnTwitter);
+  }
+
+  const shareWhatsapp = document.getElementById('shareWhatsapp');
+  if (shareWhatsapp) {
+    shareWhatsapp.addEventListener('click', shareOnWhatsApp);
+  }
+
+  const shareCopyBtn = document.getElementById('shareCopy');
+  if (shareCopyBtn) {
+    shareCopyBtn.addEventListener('click', copyLink);
+  }
+
+  // Tab buttons
+  const tabButtons = document.querySelectorAll('.tab[data-tab]');
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabName = btn.getAttribute('data-tab');
+      switchTab(tabName);
+    });
+  });
 }
 
-// Donate function
-async function donate() {
+// Open donation modal
+function openDonateModal() {
     if (!isLoggedIn()) {
         showToast('Please login to donate', 'warning');
         window.location.href = 'login.html';
         return;
     }
-    
-    // Use safer input method instead of prompt()
-    const amount = prompt('Enter donation amount (₦): [Minimum ₦100]');
-    if (!amount || amount.trim() === '') return;
+    const modal = document.getElementById('donateModal');
+    if (!modal) return;
+    modal.setAttribute('aria-hidden', 'false');
+    const amountInput = document.getElementById('donateAmount');
+    if (amountInput) {
+        amountInput.value = '';
+        amountInput.focus();
+    }
+}
 
-    // Sanitize and validate input
-    const sanitizedAmount = amount.trim().replace(/[^0-9.]/g, '');
-    const parsedAmount = Number(sanitizedAmount);
-    
+// Close donation modal
+function closeDonateModal() {
+    const modal = document.getElementById('donateModal');
+    if (!modal) return;
+    modal.setAttribute('aria-hidden', 'true');
+}
+
+// Handle donate form submit
+async function handleDonateFormSubmit(e) {
+    e.preventDefault();
+
+    const amountEl = document.getElementById('donateAmount');
+    const anonymousEl = document.getElementById('donateAnonymous');
+    const submitBtn = document.getElementById('donateSubmit');
+
+    if (!amountEl) return;
+    const raw = amountEl.value;
+    const parsedAmount = Number(String(raw).trim().replace(/[^0-9.]/g, ''));
     if (isNaN(parsedAmount) || parsedAmount < 100) {
         showToast('Please enter a valid amount (minimum ₦100)', 'warning');
         return;
     }
-    
-    if (!Number.isFinite(parsedAmount)) {
-        showToast('Amount must be a valid number', 'warning');
-        return;
-    }
 
-    const donateBtn = document.querySelector('.donate-btn');
-    const originalBtnText = donateBtn ? donateBtn.innerHTML : '';
-
-    if (donateBtn) {
-        donateBtn.disabled = true;
-        donateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Processing...';
     }
 
     try {
-        const response = await fetch(API.DONATIONS, {
+        const response = await authFetch(API.DONATIONS, {
             method: 'POST',
-            headers: getAuthHeaders(),
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 campaignId,
                 campaign_id: campaignId,
-                amount: parsedAmount
+                amount: parsedAmount,
+                anonymous: anonymousEl ? !!anonymousEl.checked : false
             })
         });
 
-        const result = await response.json();
+        const result = await response.json().catch(() => ({}));
         const payload = result.data || result;
 
-        if (!response.ok || !result.success) {
-            showToast(result.message || 'Unable to start donation. Please try again.', 'error');
+        if (!response.ok || result.status === 'error' || result.success === false) {
+            const msg = result.message || result.error || 'Unable to start donation. Please try again.';
+            showToast(msg, 'error');
             return;
         }
 
         const checkoutUrl = payload.authorization_url || payload.authorizationUrl || payload.checkoutUrl || payload.checkout_url || payload.paymentUrl || payload.payment_url || payload.url;
 
         if (checkoutUrl) {
-            let parsedCheckoutUrl;
-            try {
-                parsedCheckoutUrl = new URL(checkoutUrl, window.location.origin);
-            } catch {
-                showToast('Invalid payment link received. Please try again.', 'error');
-                return;
-            }
-
-            if (!['https:', 'http:'].includes(parsedCheckoutUrl.protocol)) {
-                showToast('Unsafe payment link blocked.', 'error');
-                return;
-            }
-
-            showToast('Redirecting to secure payment...', 'info');
-            window.setTimeout(() => {
-                window.location.href = parsedCheckoutUrl.toString()
-            }, 250);
+            // Open payment provider in a new tab so modal remains available
+            window.open(checkoutUrl, '_blank');
+            showToast('Payment page opened in a new tab. Complete payment there to verify.', 'info');
+            // Keep modal open so user can return; refresh donations after a short delay
+            setTimeout(() => {
+                loadDonations();
+                loadCampaign();
+            }, 3000);
             return;
         }
 
         showToast('Donation initiated successfully.', 'success');
+        closeDonateModal();
         loadDonations();
         loadCampaign();
 
@@ -314,9 +456,9 @@ async function donate() {
         console.error('Donation error:', error);
         showToast('Error starting donation. Please try again.', 'error');
     } finally {
-        if (donateBtn) {
-            donateBtn.disabled = false;
-            donateBtn.innerHTML = originalBtnText;
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Donate';
         }
     }
 }

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - KindHeart</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/contact.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-wrapper">
+        <div class="logo"><a href="../index.html" class="logo-header-link"><img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img"><span>KindHeart</span></a></div>
+        <ul class="nav-links"><li><a href="../index.html">Home</a></li><li><a href="campaigns.html">Campaigns</a></li><li><a href="how-it-works.html">How It Works</a></li><li><a href="about.html">About</a></li></ul>
+        <div class="nav-actions"><a href="login.html" class="btn-link">Login</a><a href="register.html" class="btn btn-primary">Register</a></div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="page-header contact-hero" style="background-image: linear-gradient(180deg, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('../assets/image/contact-hero.jpg'); min-height: 500px; display: flex; align-items: center;">
+    <div class="container text-center">
+      <span class="subtitle" style="color: var(--primary-light); margin-bottom: 1rem; display: block;">Get in touch</span>
+      <h1 style="color: var(--white); font-size: 3.5rem; margin-bottom: 1.5rem;">We’re here to help you succeed</h1>
+      <p style="color: var(--white); opacity: 0.9; margin: 0 auto 2.5rem; max-width: 800px; font-size: 1.25rem;">Have questions about starting a campaign or making a donation? Our team is ready to assist you every step of the way.</p>
+      <div class="hero-actions" style="justify-content: center;">
+        <a href="#contactForm" class="btn btn-primary btn-lg">Send a Message</a>
+        <a href="how-it-works.html" class="btn btn-white btn-lg">How it Works</a>
+      </div>
+    </div>
+  </section>
+
+  <main class="container contact-section">
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="contact-header">
+          <span class="subtitle">Get in touch</span>
+          <h2>Ask us anything</h2>
+          <p>Whether you need help with a campaign, a donation, or your account, we’re ready to assist.</p>
+        </div>
+        <form id="contactForm" class="contact-form">
+          <div class="form-row">
+            <div class="form-group"><label for="contactName">Full Name</label><input type="text" id="contactName" placeholder="Jane Doe" required></div>
+            <div class="form-group"><label for="contactEmail">Email</label><input type="email" id="contactEmail" placeholder="jane@example.com" required></div>
+          </div>
+          <div class="form-group"><label for="contactSubject">Subject</label><select id="contactSubject" required><option value="General Inquiry">General Inquiry</option><option value="Campaign Support">Campaign Support</option><option value="Donation Issues">Donation Issues</option><option value="Partnerships">Partnerships</option></select></div>
+          <div class="form-group"><label for="contactMessage">Message</label><textarea id="contactMessage" rows="6" placeholder="How can we help you?" required></textarea></div>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send Message</button>
+        </form>
+      </div>
+
+      <aside class="contact-info-container">
+        <div class="info-card">
+          <div class="info-card-icon"><i class="fas fa-headset"></i></div>
+          <div class="info-card-content">
+            <h3>Customer care</h3>
+            <p>support@kindheart.org</p>
+            <small>24–48 hour response time</small>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon"><i class="fas fa-phone"></i></div>
+          <div class="info-card-content">
+            <h3>Phone</h3>
+            <p>+1 (800) 546-3433</p>
+            <small>Mon–Fri, 9am–6pm PST</small>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div class="info-card-content">
+            <h3>Office</h3>
+            <p>452 Kindness Blvd, Suite 100<br>San Francisco, CA 94107</p>
+          </div>
+        </div>
+        <div class="help-card">
+          <h3>Need urgent support?</h3>
+          <p>Describe your request in detail and our team will prioritize your message.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/contact.js"></script>
+  <script src="../assets/js/footer.js"></script>
+</body>
+</html>

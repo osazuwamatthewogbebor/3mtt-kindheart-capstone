@@ -6,16 +6,16 @@ function updateNavActions() {
     if (isLoggedIn()) {
         const user = JSON.parse(localStorage.getItem('user'));
         navActions.innerHTML = `
-            <a href="my-campaigns.html" class="btn-link">My Campaigns</a>
-            <a href="create-campaign.html" class="btn btn-primary">Create Campaign</a>
+            <a href="user-dashboard.html#campaigns" class="btn-link">My Campaigns</a>
+            <a href="user-dashboard.html#create" class="btn btn-primary">Create Campaign</a>
             <div class="user-menu">
                 <button class="user-btn" onclick="toggleUserMenu()">
                     <i class="fas fa-user-circle"></i> ${user.name}
                 </button>
                 <div class="user-dropdown" id="userDropdown">
-                    <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
-                    <a href="my-donations.html"><i class="fas fa-heart"></i> My Donations</a>
-                    ${user.role === 'ADMIN' ? '<a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>' : ''}
+                ${user.role === 'ADMIN' ? '<a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i>Admin Dashboard</a>' : '<a href="user-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a>'}
+                <a href="user-dashboard.html#donations"><i class="fas fa-heart"></i> My Donations</a>
+                    <a href="user-dashboard.html#profile"><i class="fas fa-user"></i> Profile</a>
                     <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </div>
@@ -41,69 +41,165 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Load campaigns
-let currentPage = 1;
-const limit = 12;
+// Filter state management
+let filters = {
+    search: '',
+    categories: [],
+    goalRange: 1000000000,
+    status: [],
+    sortBy: 'recent',
+    page: 1
+};
 
-function getCampaignDate(campaign) {
-    const ts = new Date(
-        campaign.createdAt || campaign.created_at || campaign.updatedAt || campaign.updated_at || 0
-    ).getTime();
-    return Number.isFinite(ts) ? ts : 0;
+const LIMIT = 12;
+
+// Get selected categories
+function getSelectedCategories() {
+    const checkboxes = document.querySelectorAll('.categoryCheck:checked');
+    return Array.from(checkboxes).map(cb => cb.getAttribute('data-category')).filter(Boolean);
 }
 
-function sortCampaignList(campaigns, sort) {
+// Get selected statuses
+function getSelectedStatuses() {
+    const checkboxes = document.querySelectorAll('.statusCheck:checked');
+    return Array.from(checkboxes).map(cb => cb.getAttribute('data-status')).filter(Boolean);
+}
+
+// Update goal range display
+function updateGoalRangeDisplay() {
+    const rangeInput = document.getElementById('goalRange');
+    const rangeValue = document.getElementById('goalValue');
+    if (rangeInput && rangeValue) {
+        filters.goalRange = parseInt(rangeInput.value);
+        rangeValue.textContent = filters.goalRange.toLocaleString();
+    }
+}
+
+// Sort campaigns list
+function sortCampaignList(campaigns, sortBy) {
     const sorted = [...campaigns];
 
-    if (sort === 'popular') {
+    if (sortBy === 'popular') {
         sorted.sort((a, b) => {
             const raisedA = Number(a.amountRaised || a.raised_amount || 0);
             const raisedB = Number(b.amountRaised || b.raised_amount || 0);
             return raisedB - raisedA;
         });
-        return sorted;
-    }
-
-    if (sort === 'ending') {
+    } else if (sortBy === 'ending') {
         sorted.sort((a, b) => {
-                    const rawA = new Date(a.endDate || a.end_date || Number.MAX_SAFE_INTEGER).getTime();
-                    const rawB = new Date(b.endDate || b.end_date || Number.MAX_SAFE_INTEGER).getTime();
-                    const endA = Number.isFinite(rawA) ? rawA : Number.MAX_SAFE_INTEGER;
-                    const endB = Number.isFinite(rawB) ? rawB : Number.MAX_SAFE_INTEGER;
-             return endA - endB;
+            const rawA = new Date(a.endDate || a.end_date || Number.MAX_SAFE_INTEGER).getTime();
+            const rawB = new Date(b.endDate || b.end_date || Number.MAX_SAFE_INTEGER).getTime();
+            const endA = Number.isFinite(rawA) ? rawA : Number.MAX_SAFE_INTEGER;
+            const endB = Number.isFinite(rawB) ? rawB : Number.MAX_SAFE_INTEGER;
             return endA - endB;
         });
-        return sorted;
+    } else {
+        // Default: recent
+        sorted.sort((a, b) => {
+            const dateA = new Date(a.createdAt || a.created_at || 0).getTime();
+            const dateB = new Date(b.createdAt || b.created_at || 0).getTime();
+            return dateB - dateA;
+        });
     }
 
-    // Default: recent
-    sorted.sort((a, b) => getCampaignDate(b) - getCampaignDate(a));
     return sorted;
 }
 
+// Client-side filter campaigns
+function filterCampaigns(campaigns) {
+    return campaigns.filter(campaign => {
+        const raised = Number(campaign.amountRaised || campaign.raised_amount || 0);
+        const goal = Number(campaign.goalAmount || campaign.goal_amount || 0);
+        const categoryName = campaign.categoryName || campaign.category?.name || 'General';
+
+        // Category filter
+        if (filters.categories.length > 0 && !filters.categories.includes(categoryName)) {
+            return false;
+        }
+
+        // Goal range filter
+        if (goal > filters.goalRange) {
+            return false;
+        }
+
+        // Status filter
+        if (filters.status.length > 0) {
+            const isActive = new Date(campaign.endDate || campaign.end_date) > new Date();
+            const isFunded = raised >= goal;
+            let matches = false;
+            
+            for (let status of filters.status) {
+                if (status === 'active' && isActive && !isFunded) {
+                    matches = true;
+                    break;
+                }
+                if (status === 'near_goal' && !isFunded && raised >= goal * 0.8) {
+                    matches = true;
+                    break;
+                }
+            }
+            
+            if (!matches) return false;
+        }
+
+        return true;
+    });
+}
+
+// Load and render campaigns
 async function loadCampaigns() {
     try {
-        const searchQuery = document.getElementById('searchInput')?.value || '';
-        const category = document.getElementById('categoryFilter')?.value || '';
-        const sort = document.getElementById('sortFilter')?.value || '';
-        
-        let url = `${API.CAMPAIGNS}?status=ACTIVE&limit=${limit}&page=${currentPage}`;
-        
-        if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`;
-        if (category) url += `&category=${encodeURIComponent(category)}`;
-        
+        const container = document.getElementById('campaignsGrid');
+        container.innerHTML = `
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading campaigns...</p>
+            </div>
+        `;
+
+        // Build API URL with search parameter
+        let url = `${API.CAMPAIGNS}?limit=100&page=1`;
+        if (filters.search) {
+            url += `&search=${encodeURIComponent(filters.search)}`;
+        }
+
         const response = await fetch(url);
+        if (!response.ok) {
+            let errMsg = `Failed to fetch campaigns (status ${response.status})`;
+            try {
+                const errBody = await response.json();
+                if (errBody && errBody.message) errMsg += `: ${errBody.message}`;
+            } catch (e) {
+                // ignore json parse error
+            }
+            throw new Error(errMsg);
+        }
+
         const result = await response.json();
         
-        // Defensive data parsing - handles both direct and nested data structures
-        const data = result.data || result;
-        const campaigns = Array.isArray(data.campaigns) ? data.campaigns : (Array.isArray(data) ? data : []);
-        const sortedCampaigns = sortCampaignList(campaigns, sort);
-        const totalItems = data.total || campaigns.length;
-        const totalPages = data.totalPages || Math.ceil(totalItems / limit);
-        const container = document.getElementById('campaignsGrid');
-        
-        if (!sortedCampaigns || sortedCampaigns.length === 0) {
+        // Parse campaigns from response
+        let allCampaigns = [];
+        if (Array.isArray(result.campaigns)) {
+            allCampaigns = result.campaigns;
+        } else if (Array.isArray(result.data)) {
+            allCampaigns = result.data;
+        } else if (Array.isArray(result)) {
+            allCampaigns = result;
+        } else if (result.success && result.data && Array.isArray(result.data.campaigns)) {
+            allCampaigns = result.data.campaigns;
+        }
+
+        // Apply client-side filters
+        let filtered = filterCampaigns(allCampaigns);
+        let sorted = sortCampaignList(filtered, filters.sortBy);
+
+        // Paginate
+        const totalItems = sorted.length;
+        const totalPages = Math.ceil(totalItems / LIMIT);
+        const startIdx = (filters.page - 1) * LIMIT;
+        const paginatedCampaigns = sorted.slice(startIdx, startIdx + LIMIT);
+
+        if (paginatedCampaigns.length === 0) {
             container.innerHTML = `
                 <div class="loading-state">
                     <i class="fas fa-inbox"></i>
@@ -113,25 +209,26 @@ async function loadCampaigns() {
             updatePagination(0);
             return;
         }
-        
+
         container.innerHTML = '';
-        
-        sortedCampaigns.forEach(campaign => {
-            const raised = campaign.amountRaised || campaign.raised_amount || 0;
-            const goal = campaign.goalAmount || campaign.goal_amount || 0;
-            const progress = calculateProgress(raised, goal);
-            
+
+        paginatedCampaigns.forEach(campaign => {
+            const raised = Number(campaign.amountRaised || campaign.raised_amount || 0);
+            const goal = Number(campaign.goalAmount || campaign.goal_amount || 0);
+            const progress = goal > 0 ? Math.min(100, Math.round((raised / goal) * 100)) : 0;
+            const categoryName = campaign.categoryName || campaign.category?.name || 'General';
+
             const card = document.createElement('div');
             card.className = 'campaign-card';
             card.innerHTML = `
-                <img src="${campaign.imageUrl || 'https://via.placeholder.com/400x200?text=Campaign+Image'}" 
+                <img src="${campaign.imageUrl || campaign.image || 'https://via.placeholder.com/400x200?text=Campaign+Image'}" 
                      alt="${campaign.title}" 
                      class="campaign-image"
                      onerror="this.src='https://via.placeholder.com/400x200?text=Campaign+Image'">
                 <div class="campaign-content">
-                    <span class="campaign-category">${campaign.categoryName || campaign.category?.name || 'General'}</span>
+                    <span class="campaign-category">${categoryName}</span>
                     <h3 class="campaign-title">${campaign.title}</h3>
-                    <p class="campaign-description">${campaign.description?.substring(0, 100)}...</p>
+                    <p class="campaign-description">${(campaign.description || '').substring(0, 100)}${(campaign.description || '').length > 100 ? '...' : ''}</p>
                     <div class="campaign-progress">
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${progress}%"></div>
@@ -147,17 +244,22 @@ async function loadCampaigns() {
                             </div>
                         </div>
                     </div>
-                    <a href="campaign-details.html?id=${campaign.id || campaign._id}" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
-                        <i class="fas fa-heart"></i> Support This Campaign
-                    </a>
+                    <div class="campaign-actions">
+                                    <a href="campaign-details.html?id=${campaign.id || campaign._id}" class="btn btn-outline btn-sm" style="flex: 1;">
+                                        <i class="fas fa-eye"></i> See More
+                                    </a>
+                        <a href="campaign-details.html?id=${campaign.id || campaign._id}" class="btn btn-primary btn-sm" style="flex: 1;">
+                            <i class="fas fa-heart"></i> Donate
+                        </a>
+                    </div>
                 </div>
             `;
-            
+
             container.appendChild(card);
         });
-        
+
         updatePagination(totalPages);
-        
+
     } catch (error) {
         console.error('Error loading campaigns:', error);
         document.getElementById('campaignsGrid').innerHTML = `
@@ -172,90 +274,171 @@ async function loadCampaigns() {
 function updatePagination(totalPages) {
     const pagination = document.getElementById('pagination');
     if (!pagination) return;
-    
+
     if (totalPages <= 1) {
         pagination.innerHTML = '';
         return;
     }
-    
+
     let html = '';
-    
+
     // Previous button
     html += `
-        <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+        <button class="page-btn" ${filters.page === 1 ? 'disabled' : ''} onclick="changePage(${filters.page - 1})">
             <i class="fas fa-chevron-left"></i>
         </button>
     `;
-    
+
     // Page numbers
     for (let i = 1; i <= totalPages; i++) {
-        if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+        if (i === 1 || i === totalPages || (i >= filters.page - 2 && i <= filters.page + 2)) {
             html += `
-                <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+                <button class="page-btn ${i === filters.page ? 'active' : ''}" onclick="changePage(${i})">
                     ${i}
                 </button>
             `;
-        } else if (i === currentPage - 3 || i === currentPage + 3) {
+        } else if (i === filters.page - 3 || i === filters.page + 3) {
             html += `<span class="page-dots">...</span>`;
         }
     }
-    
+
     // Next button
     html += `
-        <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+        <button class="page-btn" ${filters.page === totalPages ? 'disabled' : ''} onclick="changePage(${filters.page + 1})">
             <i class="fas fa-chevron-right"></i>
         </button>
     `;
-    
+
     pagination.innerHTML = html;
 }
 
 function changePage(page) {
-    currentPage = page;
+    filters.page = page;
     window.scrollTo({ top: 0, behavior: 'smooth' });
     loadCampaigns();
 }
 
-// Search and filter handlers
-const searchInput = document.getElementById('searchInput');
-const categoryFilter = document.getElementById('categoryFilter');
-const sortFilter = document.getElementById('sortFilter');
+// Setup event listeners
+function setupEventListeners() {
+    // Search
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            filters.search = e.target.value;
+            filters.page = 1;
+            searchTimeout = setTimeout(() => {
+                loadCampaigns();
+            }, 500);
+        });
+    }
 
-if (searchInput) {
-    let searchTimeout;
-    searchInput.addEventListener('input', () => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            currentPage = 1;
+    // Category checkboxes
+    const catAllCheckbox = document.getElementById('catAll');
+    const categoryChecks = document.querySelectorAll('.categoryCheck');
+
+    if (catAllCheckbox) {
+        catAllCheckbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                categoryChecks.forEach(cb => cb.checked = false);
+                filters.categories = [];
+            }
+            filters.page = 1;
             loadCampaigns();
-        }, 500);
+        });
+    }
+
+    categoryChecks.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            if (document.querySelector('.categoryCheck:checked')) {
+                if (catAllCheckbox) catAllCheckbox.checked = false;
+            }
+            filters.categories = getSelectedCategories();
+            if (filters.categories.length === 0 && catAllCheckbox) {
+                catAllCheckbox.checked = true;
+            }
+            filters.page = 1;
+            loadCampaigns();
+        });
     });
-}
 
-if (categoryFilter) {
-    categoryFilter.addEventListener('change', () => {
-        currentPage = 1;
-        loadCampaigns();
+    // Goal range
+    const goalRange = document.getElementById('goalRange');
+    if (goalRange) {
+        goalRange.addEventListener('input', () => {
+            updateGoalRangeDisplay();
+            filters.page = 1;
+            loadCampaigns();
+        });
+        updateGoalRangeDisplay();
+    }
+
+    // Status checkboxes
+    const statusChecks = document.querySelectorAll('.statusCheck');
+    statusChecks.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            filters.status = getSelectedStatuses();
+            filters.page = 1;
+            loadCampaigns();
+        });
     });
+
+    // Sort filter
+    const sortFilter = document.getElementById('sortFilter');
+    if (sortFilter) {
+        sortFilter.addEventListener('change', (e) => {
+            filters.sortBy = e.target.value;
+            filters.page = 1;
+            loadCampaigns();
+        });
+    }
+
+    // Reset filters button
+    const resetBtn = document.getElementById('resetFilters');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            filters = {
+                search: '',
+                categories: [],
+                goalRange: 1000000000,
+                status: [],
+                sortBy: 'recent',
+                page: 1
+            };
+
+            if (catAllCheckbox) catAllCheckbox.checked = true;
+            categoryChecks.forEach(cb => cb.checked = false);
+            statusChecks.forEach(cb => cb.checked = false);
+            if (goalRange) {
+                goalRange.value = 1000000000;
+                updateGoalRangeDisplay();
+            }
+            if (searchInput) searchInput.value = '';
+            if (sortFilter) sortFilter.value = 'recent';
+
+            loadCampaigns();
+        });
+    }
+
+    // Handle URL category parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get('category');
+    if (categoryParam) {
+        const checkbox = document.querySelector(`.categoryCheck[data-category="${categoryParam}"]`);
+        if (checkbox) {
+            if (catAllCheckbox) catAllCheckbox.checked = false;
+            checkbox.checked = true;
+            filters.categories = [categoryParam];
+            filters.page = 1;
+        }
+    }
 }
 
-if (sortFilter) {
-    sortFilter.addEventListener('change', () => {
-        currentPage = 1;
-        loadCampaigns();
-    });
-}
-
-// Get category from URL params
-const urlParams = new URLSearchParams(window.location.search);
-const categoryParam = urlParams.get('category');
-if (categoryParam && categoryFilter) {
-    categoryFilter.value = categoryParam;
-}
-
-// Initialize
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     updateNavActions();
+    setupEventListeners();
     loadCampaigns();
 });
 

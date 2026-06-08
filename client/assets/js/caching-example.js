@@ -349,7 +349,7 @@ async function handleLoginWithCache(email, password) {
         );
         
         // Redirect to dashboard
-        window.location.href = 'dashboard.html';
+        window.location.href = 'admin-dashboard.html';
         
     } catch (error) {
         showToast('Login failed', 'error');
@@ -430,7 +430,7 @@ async function cachedFetchWithRevalidate(url, options, cacheKey, ttl) {
 // [ ] Replace fetch() calls with cachedFetch() in:
 //     [ ] campaigns.js
 //     [ ] campaign-details.html
-//     [ ] dashboard.html
+//     [ ] admin-dashboard.html
 //     [ ] my-campaigns.html
 //     [ ] my-donations.html
 //     [ ] profile.html

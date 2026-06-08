@@ -45,13 +45,29 @@ if (loginForm) {
                 body: JSON.stringify({ email, password })
             });
             
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonErr) {
+                // Not valid JSON
+            }
+
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const message = data?.message || data?.error || `HTTP error! status: ${response.status}`;
+                const lowerMessage = String(message || '').toLowerCase();
+                const isVerificationError = response.status === 403 || lowerMessage.includes('verify') || lowerMessage.includes('verification');
+
+                if (isVerificationError) {
+                    showToast('Account not verified. Please verify your email before logging in.', 'warning');
+                    const resendContainer = document.getElementById('resendVerificationContainer');
+                    if (resendContainer) resendContainer.style.display = 'block';
+                } else {
+                    showToast(message, 'error');
+                }
+                return;
             }
             
-            const data = await response.json();
-            
-            if (data.success) {
+            if (data.success !== false) {
                 const requiresVerification =
                     data.requiresVerification === true ||
                     data.emailVerificationRequired === true ||
@@ -60,39 +76,28 @@ if (loginForm) {
                     data.user?.emailVerified === false;
 
                 if (requiresVerification) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    showToast('Please verify your email before logging in.', 'warning');
+                    showToast('Account not verified. Please verify your email before logging in.', 'warning');
+                    const resendContainer = document.getElementById('resendVerificationContainer');
+                    if (resendContainer) resendContainer.style.display = 'block';
                     return;
                 }
 
-                // Store token and user data
+                // Store token and user info
                 localStorage.setItem('token', data.accessToken);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 
                 showToast('Login successful!', 'success');
                 
-                // Redirect based on role
-                if (data.user.role === 'ADMIN') {
-                    window.location.href = 'dashboard.html';
-                } else {
-                    window.location.href = 'my-campaigns.html';
-                }
+                // Redirect based on role with a slight delay so toast is visible
+                setTimeout(() => {
+                    if (data.user?.role === 'ADMIN') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        window.location.href = 'user-dashboard.html';
+                    }
+                }, 1500);
             } else {
-                const verificationRequired =
-                    data.requiresVerification === true ||
-                    data.emailVerificationRequired === true ||
-                    /verify|verification|confirm your email/i.test(data.message || '');
-
-                if (verificationRequired) {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    showToast(data.message || 'Please verify your email before logging in.', 'warning');
-                    return;
-                }
-
                 showToast(data.message || 'Login failed. Please check your credentials.', 'error');
-                alert(data.message || 'Login failed. Please try again.');
                 if (data.message && (data.message.toLowerCase().includes('verify') || data.message.toLowerCase().includes('verification'))) {
                     const resendContainer = document.getElementById('resendVerificationContainer');
                     if (resendContainer) resendContainer.style.display = 'block';
@@ -100,9 +105,7 @@ if (loginForm) {
             }
         } catch (error) {
             console.error('Login error:', error);
-            if (error.message.includes('HTTP error')) {
-                showToast('Server error. Please try again later.', 'error');
-            } else if (error instanceof TypeError) {
+            if (error instanceof TypeError) {
                 showToast('Network error. Please check your connection.', 'error');
             } else {
                 showToast('An error occurred. Please try again.', 'error');
@@ -169,13 +172,20 @@ if (registerForm) {
                 body: JSON.stringify({ name, email, password })
             });
             
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonErr) {
+                // Not valid JSON
+            }
+
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const message = data?.message || data?.error || `HTTP error! status: ${response.status}`;
+                showToast(message, 'error');
+                return;
             }
             
-            const data = await response.json();
-            
-            if (data.success) {
+            if (data.success !== false) {
                 const requiresVerification =
                     data.requiresVerification === true ||
                     data.emailVerificationRequired === true ||
@@ -188,20 +198,22 @@ if (registerForm) {
 
                 if (requiresVerification) {
                     showToast('Account created. Check your email and verify your account before logging in.', 'success');
-                    window.location.href = 'login.html?verification=required';
+                    setTimeout(() => {
+                        window.location.href = `login.html?verification=required&email=${encodeURIComponent(email)}`;
+                    }, 2000);
                     return;
                 }
 
                 showToast('Account created. Please verify your email before logging in.', 'success');
-                window.location.href = 'login.html?verification=required';
+                setTimeout(() => {
+                    window.location.href = `login.html?verification=required&email=${encodeURIComponent(email)}`;
+                }, 2000);
             } else {
                 showToast(data.message || 'Registration failed. Please try again.', 'error');
             }
         } catch (error) {
             console.error('Registration error:', error);
-            if (error.message.includes('HTTP error')) {
-                showToast('Server error. Please try again later.', 'error');
-            } else if (error instanceof TypeError) {
+            if (error instanceof TypeError) {
                 showToast('Network error. Please check your connection.', 'error');
             } else {
                 showToast('An error occurred. Please try again.', 'error');
@@ -241,13 +253,20 @@ if (forgotPasswordForm) {
                 body: JSON.stringify({ email })
             });
             
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonErr) {
+                // Not valid JSON
+            }
+
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const message = data?.message || data?.error || `HTTP error! status: ${response.status}`;
+                showToast(message, 'error');
+                return;
             }
             
-            const data = await response.json();
-            
-            if (data.success) {
+            if (data.success !== false) {
                 showToast('Password reset link sent to your email!', 'success');
                 document.getElementById('email').value = '';
             } else {
@@ -255,9 +274,7 @@ if (forgotPasswordForm) {
             }
         } catch (error) {
             console.error('Forgot password error:', error);
-            if (error.message.includes('HTTP error')) {
-                showToast('Server error. Please try again later.', 'error');
-            } else if (error instanceof TypeError) {
+            if (error instanceof TypeError) {
                 showToast('Network error. Please check your connection.', 'error');
             } else {
                 showToast('An error occurred. Please try again.', 'error');
@@ -269,58 +286,14 @@ if (forgotPasswordForm) {
     });
 }
 
-// Google Login Placeholder
+// Google Login Handler
 function googleLogin() {
-    showToast('Google Login is being integrated. Please use the email login for now.', 'info');
-    // In a real implementation, you would use Firebase Auth or another Google OAuth library here
-    // Example: auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-    alert('Google Login is being integrated. Please use the email login for now.');
+    window.location.href = API.GOOGLE_AUTH;
 }
 
 // Resend Verification Email Link Handler
 async function resendVerificationEmail() {
     const emailInput = document.getElementById('email');
-    if (!emailInput || !emailInput.value.trim()) {
-        alert('Please enter your email address to resend the verification link.');
-        return;
-    }
-
-    const email = emailInput.value.trim();
-    const btn = document.getElementById('resendVerificationBtn');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resending...';
-    btn.disabled = true;
-
-    try {
-        const response = await fetch(API.RESEND_VERIFICATION, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            alert('Verification email has been resent successfully. Please check your inbox!');
-            const resendContainer = document.getElementById('resendVerificationContainer');
-            if (resendContainer) resendContainer.style.display = 'none';
-        } else {
-            alert(data.message || 'Failed to resend verification email. Please try again.');
-        }
-    } catch (error) {
-        console.error('Resend verification error:', error);
-        alert('An error occurred while resending the verification email. Please check your network connection.');
-    } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    }
-}
-
-async function resendVerificationEmail() {
-    const emailInput = document.getElementById('email');
-    const resendButton = document.getElementById('resendVerificationBtn');
     const email = emailInput ? emailInput.value.trim() : '';
 
     // Validate email format
@@ -330,11 +303,12 @@ async function resendVerificationEmail() {
         return;
     }
 
+    const resendButton = document.getElementById('resendVerificationBtn');
     const originalText = resendButton ? resendButton.innerHTML : '';
 
     if (resendButton) {
         resendButton.disabled = true;
-        resendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        resendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resending...';
     }
 
     try {
@@ -346,13 +320,20 @@ async function resendVerificationEmail() {
             body: JSON.stringify({ email })
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        let data;
+        try {
+            data = await response.json();
+        } catch (jsonErr) {
+            // Not valid JSON
         }
 
-        const data = await response.json();
+        if (!response.ok) {
+            const message = data?.message || data?.error || `HTTP error! status: ${response.status}`;
+            showToast(message, 'error');
+            return;
+        }
 
-        if (response.ok && data.success !== false) {
+        if (data.success !== false) {
             showToast(data.message || 'Verification email sent. Check your inbox.', 'success');
             return;
         }
@@ -360,7 +341,11 @@ async function resendVerificationEmail() {
         showToast(data.message || 'Could not resend verification email.', 'error');
     } catch (error) {
         console.error('Resend verification error:', error);
-        showToast('Could not resend verification email right now.', 'error');
+        if (error instanceof TypeError) {
+            showToast('Network error. Please check your connection.', 'error');
+        } else {
+            showToast('Could not resend verification email right now.', 'error');
+        }
     } finally {
         if (resendButton) {
             resendButton.disabled = false;
@@ -404,11 +389,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (currentPage.includes('login.html')) {
         const queryParams = new URLSearchParams(window.location.search);
+        const resendContainer = document.getElementById('resendVerificationContainer');
+        const emailInput = document.getElementById('email');
+        
+        // Initialize: hide resend verification container by default
+        if (resendContainer) {
+            resendContainer.style.display = 'none';
+        }
+        
+        // If coming from registration with verification required, show the resend container
         if (queryParams.get('verification') === 'required') {
-            showToast('Your account was created. Please verify your email before logging in.', 'warning');
+            showToast('Please verify your email to continue.', 'warning');
             const notice = document.getElementById('verificationNotice');
             if (notice) {
                 notice.classList.remove('hidden');
+            }
+            if (resendContainer) {
+                resendContainer.style.display = 'block';
+            }
+        }
+        
+        // Pre-fill email if provided in query params
+        const emailParam = queryParams.get('email');
+        if (emailParam && emailInput) {
+            emailInput.value = decodeURIComponent(emailParam);
+            if (queryParams.get('verification') === 'required' && resendContainer) {
+                resendContainer.style.display = 'block';
             }
         }
     }
@@ -417,9 +423,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if ((currentPage.includes('login.html') || currentPage.includes('register.html')) && isLoggedIn()) {
         const user = JSON.parse(localStorage.getItem('user'));
         if (user && user.role === 'ADMIN') {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'admin-dashboard.html';
         } else {
-            window.location.href = 'my-campaigns.html';
+            window.location.href = 'user-dashboard.html#campaigns';
         }
     }
 
@@ -438,4 +444,119 @@ document.addEventListener('DOMContentLoaded', () => {
             updatePasswordRequirements(profilePasswordInput.value);
         });
     }
+    
+    // Auto-verify email logic on verify.html
+    if (currentPage.includes('verify.html')) {
+        const queryParams = new URLSearchParams(window.location.search);
+        const token = queryParams.get('token');
+        const statusDiv = document.getElementById('verifyStatus');
+        
+        const renderStatus = (html, toastMessage, toastType = 'info') => {
+            if (statusDiv) statusDiv.innerHTML = html;
+            if (toastMessage) showToast(toastMessage, toastType);
+        };
+
+        if (!token) {
+            renderStatus(
+                '<div class="alert alert-danger">Invalid or missing verification token. Please open the link from your email again.</div>',
+                'Invalid verification token',
+                'error',
+            );
+            return;
+        }
+
+        fetch(`${API.VERIFY_EMAIL}?token=${encodeURIComponent(token)}`)
+            .then(async (res) => {
+                const data = await res.json().catch(() => ({}));
+
+                if (!res.ok || data.success === false) {
+                    const message = data.message || 'Verification failed or token expired.';
+                    renderStatus(
+                        `<div class="alert alert-danger">${message}</div>`,
+                        message,
+                        'error',
+                    );
+                    return;
+                }
+
+                renderStatus(
+                    '<div class="alert alert-success">Email verified successfully! Redirecting to login...</div>',
+                    'Email verified successfully!',
+                    'success',
+                );
+
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 3000);
+            })
+            .catch((err) => {
+                console.error('Verification request failed:', err);
+                renderStatus(
+                    '<div class="alert alert-danger">Unable to verify your account right now. Please try again later.</div>',
+                    'Network error during verification.',
+                    'error',
+                );
+            });
+    }
 });
+
+// Reset Password Form Handler
+const resetPasswordForm = document.getElementById('resetPasswordForm');
+if (resetPasswordForm) {
+    resetPasswordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const btn = document.getElementById('resetBtn');
+        const originalText = btn.innerHTML;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (password !== confirmPassword) {
+            showToast('Passwords do not match!', 'error');
+            return;
+        }
+
+        if (!isPasswordValid(password)) {
+            showToast('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.', 'error');
+            return;
+        }
+        
+        const queryParams = new URLSearchParams(window.location.search);
+        const token = queryParams.get('token');
+        
+        if (!token) {
+            showToast('Invalid password reset token.', 'error');
+            return;
+        }
+
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting...';
+        btn.disabled = true;
+        
+        try {
+            const response = await fetch(`${API.RESET_PASSWORD}/${token}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok || data.success === false) {
+                showToast(data?.message || 'Reset failed', 'error');
+                return;
+            }
+            
+            showToast('Password reset successfully! Redirecting to login...', 'success');
+            setTimeout(() => {
+                const loginUrl = new URL('login.html', window.location.href).href;
+                window.location.href = loginUrl;
+            }, 2500);
+        } catch (error) {
+            showToast('An error occurred during password reset.', 'error');
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    });
+}
+

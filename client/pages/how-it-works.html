@@ -8,62 +8,107 @@
     <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @media (max-width: 768px) {
+            /* Hero Section Adjustments */
+            .how-it-works-hero {
+                padding: 4rem 0 !important;
+            }
+            .hero-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .hero-copy {
+                text-align: center !important;
+            }
+            .hero-copy .subtitle,
+            .hero-copy p {
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            .hero-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .hero-card {
+                text-align: center !important;
+            }
+            
+            .hero-stat-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Steps Section Adjustments */
+            .steps-grid {
+                gap: 2rem !important; /* Reduce gap slightly */
+            }
+            
+            .step-card .step-icon {
+                margin: 1.5rem auto 1rem !important; /* Adjust icon margin */
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
             <div class="nav-wrapper">
-                <div class="logo">
-                    <a href="../index.html" class="logo-header-link">
-                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img">
-                        <span>KindHeart</span>
-                    </a>
-                </div>
-                <ul class="nav-links">
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="campaigns.html">Campaigns</a></li>
-                    <li><a href="how-it-works.html" class="active">How It Works</a></li>
-                    <li><a href="about.html">About</a></li>
-                </ul>
-                <div class="nav-actions">
-                    <a href="login.html" class="btn-link">Login</a>
-                    <a href="register.html" class="btn btn-primary">Get Started</a>
-                </div>
+                <div class="logo"><a href="../index.html" class="logo-header-link"><img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img"><span>KindHeart</span></a></div>
+                <ul class="nav-links"><li><a href="../index.html">Home</a></li><li><a href="campaigns.html">Campaigns</a></li><li><a href="how-it-works.html" class="active">How It Works</a></li><li><a href="about.html">About</a></li></ul>
+                <div class="nav-actions"><a href="login.html" class="btn-link">Login</a><a href="register.html" class="btn btn-primary">Get Started</a></div>
             </div>
         </div>
     </nav>
 
-    <section class="page-hero">
-        <div class="container">
-            <h1>How KindHeart Works</h1>
-            <p>Create a campaign, share it, and start raising support in a few simple steps.</p>
+    <section class="page-header how-it-works-hero" style="background-image: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('../assets/image/how-it-works-hero.jpg');">
+        <div class="container hero-grid">
+            <div class="hero-copy">
+                <span class="subtitle">Simple & Transparent</span>
+                <h1>Your journey from idea to impact</h1>
+                <p>KindHeart makes it easy to launch campaigns, inspire donors, and track every donation with total transparency.</p>
+                <div class="hero-actions">
+                    <a href="user-dashboard.html#create" class="btn btn-primary">Start a Campaign</a>
+                    <a href="#how-it-works" class="btn btn-outline">Learn the Steps</a>
+                </div>
+            </div>
+            <div class="hero-card">
+                <span>The Process</span>
+                <h2>Crowdfunding made simple</h2>
+                <p>A streamlined four-step process to help you start raising funds for your cause in no time.</p>
+                <div class="hero-stat-grid">
+                    <div><strong>4 Steps</strong><span>to start</span></div>
+                    <div><strong>5%</strong><span>Platform fee</span></div>
+                    <div><strong>2min</strong><span>Setup time</span></div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <main class="steps">
-        <section class="step-card">
-            <div class="step-number">1</div>
-            <div>
-                <h2>Create an account</h2>
-                <p>Register as a user so you can create campaigns, manage your profile, and track your activity in one place.</p>
+    <main class="container content-wrap">
+        <section class="content-card feature-grid">
+            <article class="feature-card"><div class="feature-icon green"><i class="fas fa-bullhorn"></i></div><h3>Fast campaign setup</h3><p>Create your fundraiser quickly with an intuitive campaign builder and clear guidance.</p></article>
+            <article class="feature-card"><div class="feature-icon blue"><i class="fas fa-hand-holding-heart"></i></div><h3>Secure giving</h3><p>Supporters donate confidently using secure payment processing and transparent tracking.</p></article>
+            <article class="feature-card"><div class="feature-icon purple"><i class="fas fa-chart-line"></i></div><h3>Impact insights</h3><p>Monitor donation progress, share updates, and keep your supporters engaged.</p></article>
+        </section>
+
+        <section class="content-card">
+            <div class="section-header"><h2>How it works</h2><p>A simple four-step process to start raising funds for your cause.</p></div>
+            <div class="steps-grid">
+                <div class="step-card"><div class="step-number">1</div><div class="step-icon"><i class="fas fa-user-plus"></i></div><h3>Create your account</h3><p>Register in minutes and access the tools you need to launch your campaign.</p></div>
+                <div class="step-card"><div class="step-number">2</div><div class="step-icon"><i class="fas fa-lightbulb"></i></div><h3>Tell your story</h3><p>Share your campaign goal, images, and the impact your project will make.</p></div>
+                <div class="step-card"><div class="step-number">3</div><div class="step-icon"><i class="fas fa-share-alt"></i></div><h3>Share with supporters</h3><p>Promote your campaign through social media, email, and your network.</p></div>
+                <div class="step-card"><div class="step-number">4</div><div class="step-icon"><i class="fas fa-heart"></i></div><h3>Receive donations</h3><p>Track funds as they arrive and thank donors with updates and progress reports.</p></div>
             </div>
         </section>
-        <section class="step-card">
-            <div class="step-number">2</div>
-            <div>
-                <h2>Start a campaign</h2>
-                <p>Add your title, category, goal, description, and image. The campaign page gives supporters the context they need to help.</p>
-            </div>
-        </section>
-        <section class="step-card">
-            <div class="step-number">3</div>
-            <div>
-                <h2>Share and raise funds</h2>
-                <p>Share your campaign link with your network and monitor donations as support comes in.</p>
-            </div>
+
+        <section class="content-card text-center">
+            <h2>Ready to get started?</h2>
+            <p>Launch your campaign today and let KindHeart help you connect with people who care.</p>
+            <a href="user-dashboard.html#create" class="btn btn-primary">Create a Campaign</a>
         </section>
     </main>
 
     <script src="../assets/js/config.js"></script>
+    <script src="../assets/js/footer.js"></script>
 </body>
 </html>

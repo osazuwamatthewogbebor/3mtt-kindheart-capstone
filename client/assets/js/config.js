@@ -7,31 +7,21 @@
  * - FIX #7: Logout clears all sensitive data securely
  * 
  * ENVIRONMENT VARIABLES:
- * - REACT_APP_API_URL (React/Vite)
- * - VUE_APP_API_URL (Vue)
  * - API_URL (fallback in window.APP_CONFIG)
  */
 // API Configuration
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:'
-    ? 'http://localhost:3000/api'
-    : 'https://kindheart-api.onrender.com/api';
 
 // Get API URL from environment variables or config
 // Do NOT hardcode URLs - use environment-based configuration
 function getAPIUrl() {
-    // Check environment variables first
-    if (typeof process !== 'undefined' && process.env) {
-        if (process.env.REACT_APP_API_URL) {
-            console.log('Using REACT_APP_API_URL from environment');
-            return process.env.REACT_APP_API_URL;
-        }
-        if (process.env.VUE_APP_API_URL) {
-            console.log('Using VUE_APP_API_URL from environment');
-            return process.env.VUE_APP_API_URL;
-        }
+    // Check localhost first
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') {
+        return 'http://localhost:3000/api';
     }
+
+
     
-    // Check window config object (set in index.html)
+    // // Check window config object (set in index.html)
     if (window.APP_CONFIG && window.APP_CONFIG.API_URL) {
         console.log('Using API_URL from window.APP_CONFIG');
         return window.APP_CONFIG.API_URL;
@@ -43,10 +33,35 @@ function getAPIUrl() {
         console.log('Using custom API URL from localStorage');
         return customUrl;
     }
+
     
     // Fallback (set in production)
     console.warn('WARNING: Using fallback API URL. Set environment variables in production!');
     return 'https://kindheart-api.onrender.com/api';
+}
+
+// Helper to perform authenticated requests with automatic refresh-on-401 and retry
+async function authFetch(url, options = {}) {
+    options = options || {};
+    options.headers = Object.assign({}, options.headers || {}, getAuthHeaders());
+
+    // If sending FormData, remove Content-Type so the browser sets the correct multipart boundary
+    if (options.body instanceof FormData) {
+        if (options.headers && options.headers['Content-Type']) delete options.headers['Content-Type'];
+        if (options.headers && options.headers['content-type']) delete options.headers['content-type'];
+    }
+
+    let resp = await fetch(url, options);
+
+    if (resp.status !== 401) return resp;
+
+    // Try to refresh token once
+    const newToken = await refreshAccessToken();
+    if (!newToken) return resp; // return original 401 response
+
+    // Retry original request with fresh token
+    options.headers = Object.assign({}, options.headers || {}, getAuthHeaders());
+    return await fetch(url, options);
 }
 
 const API_URL = getAPIUrl();
@@ -61,22 +76,28 @@ const API = {
     RESEND_VERIFICATION: `${API_URL}/auth/resend-verification`,
     ME: `${API_URL}/auth/me`,
     FORGOT_PASSWORD: `${API_URL}/auth/forgot-password`,
-    RESEND_VERIFICATION: `${API_URL}/auth/resend-verification`,
     RESET_PASSWORD: `${API_URL}/auth/reset-password`,
     UPDATE_PROFILE: `${API_URL}/auth/update-profile`,
     CHANGE_PASSWORD: `${API_URL}/auth/change-password`,
+    VERIFY_EMAIL: `${API_URL}/auth/verify-email`,
+    GOOGLE_AUTH: `${API_URL}/auth/google`,
 
     // Campaigns
     CAMPAIGNS: `${API_URL}/campaigns`,
-    MY_CAMPAIGNS: `${API_URL}/campaigns/my-campaigns`,
+    MY_CAMPAIGNS: `${API_URL}/campaigns/me`,
 
     // Donations
     DONATIONS: `${API_URL}/donations`,
-    MY_DONATIONS: `${API_URL}/donations/my-donations`,
-    VERIFY_DONATION: `${API_URL}/donations/verify`,
+    MY_DONATIONS: `${API_URL}/donations/me`,
+    CONTACT: `${API_URL}/contact`,
 
     // Categories
     CATEGORIES: `${API_URL}/categories`,
+
+    // Public Stats (no auth required)
+    PUBLIC_STATS: `${API_URL}/stats`,
+	// Refresh token endpoint
+	REFRESH_TOKEN: `${API_URL}/auth/refresh-token`,
 
     // Admin
     ADMIN_STATS: `${API_URL}/admin/stats`,
@@ -132,6 +153,55 @@ function isLoggedIn() {
     return !!localStorage.getItem('token');
 }
 
+// Parse JWT expiry and return TTL in seconds (rounded)
+function parseJwtExpirySeconds(token) {
+    try {
+        const parts = token.split('.');
+        if (parts.length < 2) return null;
+        const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+        if (!payload.exp) return null;
+        const ttl = Math.max(0, Math.floor(payload.exp - (Date.now() / 1000)));
+        return ttl;
+    } catch (e) {
+        return null;
+    }
+}
+
+// Attempt to refresh access token using refresh-token endpoint (server should set refresh cookie)
+async function refreshAccessToken() {
+    try {
+        const resp = await fetch(API.REFRESH_TOKEN, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!resp.ok) {
+            console.warn('refreshAccessToken: refresh failed', resp.status);
+            return null;
+        }
+
+        const body = await resp.json();
+        const newToken = body.accessToken || body.token || null;
+        if (!newToken) return null;
+
+        const ttl = parseJwtExpirySeconds(newToken) || SessionManager.DEFAULT_TTL;
+        if (typeof SessionManager !== 'undefined') {
+            SessionManager.setToken(newToken, ttl);
+        } else {
+            localStorage.setItem('token', newToken);
+            const expiry = Date.now() + (ttl * 1000);
+            localStorage.setItem('tokenExpiry', expiry.toString());
+        }
+
+        console.log('refreshAccessToken: obtained new access token');
+        return newToken;
+    } catch (err) {
+        console.error('refreshAccessToken error', err);
+        return null;
+    }
+}
+
 /**
  * SECURITY FIX #7: Secure Logout - Clears ALL sensitive data
  */
@@ -147,7 +217,7 @@ function logout() {
     sessionStorage.clear();
     localStorage.removeItem('password');
     localStorage.removeItem('creditCard');
-    window.location.href = 'login.html';
+    window.location.href = '/pages/login.html';
 }
 
 /**
@@ -174,18 +244,41 @@ function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('en-US', options);
 }
 
+// Helper function to derive a friendly user display name
+function getDisplayName(user) {
+  if (!user || typeof user !== 'object') return 'User';
+  const rawName = String(user.name || user.fullName || user.full_name || user.username || user.email || '').trim();
+  const lowerName = rawName.toLowerCase();
+  const isRoleOnly = /^(admin|user|member|donor|supporter|campaigner|superadmin|moderator|guest)$/i.test(lowerName);
+    if (rawName && !isRoleOnly) return rawName.split(/\s+/)[0];
+
+  if (user.email) {
+      const email = String(user.email).trim();
+      const localPart = email.split('@')[0].trim();
+      if (localPart) return localPart;
+  }
+
+  if (user.username && String(user.username).trim()) {
+      return String(user.username).trim();
+  }
+
+  if (user.role && String(user.role).trim()) {
+      return String(user.role).trim();
+  }
+
+  return 'User';
+}
+
 // Helper function to calculate progress percentage
 function calculateProgress(raised, goal) {
-    if (goal === 0) return 0;
-    return Math.min(Math.round((raised / goal) * 100), 100);
+    const r = Number(raised) || 0;
+    const g = Number(goal) || 0;
+    if (!Number.isFinite(g) || g <= 0) return 0;
+    const percentage = (r / g) * 100;
+    return Math.min(Math.round(percentage), 100);
 }
 
 // ===== INPUT VALIDATION UTILITIES =====
-// Email validation
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email) && email.length <= 254;
-}
 
 // Name validation (2-100 characters, letters and spaces only)
 function isValidName(name) {
@@ -330,7 +423,7 @@ function inferToastType(message) {
     return 'info';
 }
 
-function showToast(message, type = 'info') {
+function showToast(message, type = 'info', duration = 8000) {
     const text = String(message || '').trim();
     if (!text) return;
 
@@ -350,53 +443,28 @@ function showToast(message, type = 'info') {
     toast.textContent = text;
     container.appendChild(toast);
 
-    window.setTimeout(() => {
+    const timeoutId = window.setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(-6px)';
         toast.style.transition = 'opacity 140ms ease, transform 140ms ease';
         window.setTimeout(() => toast.remove(), 140);
-    }, 3200);
+    }, duration);
+
+    toast.addEventListener('mouseover', () => {
+        window.clearTimeout(timeoutId);
+    });
+
+    toast.addEventListener('mouseleave', () => {
+        window.setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-6px)';
+            toast.style.transition = 'opacity 140ms ease, transform 140ms ease';
+            window.setTimeout(() => toast.remove(), 140);
+        }, 2000);
+    });
 }
 
-// Backward compatibility for existing pages still using alert().
-window.alert = function (message) {
-    showToast(message, inferToastType(message));
-    let container = document.getElementById('toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        container.className = 'toast-container';
-        document.body.appendChild(container);
-    }
 
-    const toast = document.createElement('div');
-    toast.className = `toast-item toast-${type}`;
-    
-    let iconClass = 'fa-info-circle';
-    if (type === 'success') iconClass = 'fa-check-circle';
-    else if (type === 'error') iconClass = 'fa-exclamation-circle';
-    else if (type === 'warning') iconClass = 'fa-exclamation-triangle';
-
-    toast.innerHTML = `
-        <div class="toast-icon">
-            <i class="fas ${iconClass}"></i>
-        </div>
-        <div class="toast-message">${message}</div>
-        <button class="toast-close" onclick="this.parentElement.style.animation='toastSlideOut 0.3s forwards'; setTimeout(() => this.parentElement.remove(), 300);">&times;</button>
-    `;
-
-    container.appendChild(toast);
-
-    // Auto remove
-    setTimeout(() => {
-        if (toast.parentNode) {
-            toast.style.animation = 'toastSlideOut 0.3s forwards';
-            setTimeout(() => {
-                if (toast.parentNode) toast.remove();
-            }, 300);
-        }
-    }, 4500);
-}
 
 // Seamlessly override default alert to use beautiful premium Toast notifications!
 window.alert = function(message) {

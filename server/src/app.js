@@ -6,7 +6,9 @@ import passport from 'passport';
 import './config/passport.js';
 import authRoutes from './routes/authRoutes.js';
 import adminCategoryRoutes from './routes/adminCategoryRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 import adminStatsRoutes from './routes/adminStatsRoutes.js';
+import publicStatsRoutes from './routes/publicStatsRoutes.js';
 import campaignRoutes from './routes/campaignRoutes.js';
 
 import userRoutes from './routes/userRoutes.js';
@@ -15,9 +17,11 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import notFoundMiddleware from './middlewares/notFoundMiddleware.js';
 import errorMiddleware from './middlewares/errorMiddleware.js';
 import donationRoutes from './routes/donationRoutes.js'
+import contactRoutes from './routes/contactRoutes.js';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
 import { gatekeeper } from './middlewares/gatekeeperMiddleware.js';
+import { healthcare } from 'googleapis/build/src/apis/healthcare/index.js';
 
 const app = express();
 
@@ -40,7 +44,7 @@ app.use(helmet({
 // CORS configuration - allow production origins via env var
 const allowedOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
-  : ['http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:3000'];
+  : ['http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:3000', 'https://kindheartfund.vercel.app'];
 
 app.use(cors({
   origin: allowedOrigins,
@@ -83,7 +87,7 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: "Server is awake and running" })
 })
 
-app.use('/api', limiter);
+// app.use('/api', limiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 app.use('/api/auth/forgot-password', authLimiter);
@@ -103,14 +107,17 @@ app.get('/api/health', (req, res) => {
 app.use('/api-docs', gatekeeper, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/stats', publicStatsRoutes);
 app.use('/api/admin', adminLimiter);
 app.use('/api/admin/categories', adminCategoryRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/admin', adminStatsRoutes);
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/donations', donationRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Error Handlers
 app.use(notFoundMiddleware);

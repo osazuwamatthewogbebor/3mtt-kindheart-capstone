@@ -200,6 +200,13 @@
     background-position: center !important;
 }
 
+/* Forgot password page auth-side background */
+.auth-side.forgot-bg {
+    background-image: linear-gradient(rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8)), url('https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?auto=format&fit=crop&q=80&w=1000') !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
 .testimonial {
     max-width: 500px;
 }
@@ -315,6 +322,50 @@
 
 .hidden {
     display: none !important;
+}
+
+#resendVerificationContainer {
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.12), rgba(236, 253, 245, 0.95));
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    box-shadow: 0 24px 80px rgba(16, 185, 129, 0.08);
+    border-radius: 1rem;
+    padding: 1.4rem 1.5rem;
+    margin-top: 1.75rem;
+    text-align: left;
+    display: grid;
+    gap: 1rem;
+}
+
+#resendVerificationContainer p {
+    color: #0f5132;
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.75;
+}
+
+#resendVerificationContainer p i {
+    color: #16a34a;
+    background: rgba(16, 163, 127, 0.1);
+    border-radius: 50%;
+    padding: 0.45rem;
+    margin-right: 0.65rem;
+}
+
+#resendVerificationContainer button {
+    min-width: 100%;
+    font-size: 0.95rem;
+    padding: 0.85rem 1rem;
+    border-radius: 0.85rem;
+    border: 1px solid rgba(6, 95, 70, 0.2);
+    background: #ffffff;
+    color: #065f46;
+    transition: all 180ms ease-in-out;
+}
+
+#resendVerificationContainer button:hover {
+    background: #065f46;
+    color: #ffffff;
+    border-color: transparent;
 }
 
 .error-message.show {

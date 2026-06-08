@@ -11,14 +11,16 @@ if (mobileToggle) {
 // Load dashboard stats
 async function loadStats() {
     try {
-        const response = await fetch(API.ADMIN_STATS);
+        const response = await fetch(API.PUBLIC_STATS);
         const result = await response.json();
         const data = result.data || result;
         
-        if (result.success || data.donations !== undefined) {
-            document.getElementById('totalDonations').textContent = formatCurrency(data.donations || data.totalDonations || 0);
-            document.getElementById('totalCampaigns').textContent = data.campaigns || data.totalCampaigns || 0;
-            document.getElementById('totalUsers').textContent = data.users || data.totalUsers || 0;
+        if (result.success) {
+            // API returns aggregated sums as `totalAmountRaised` and `totalAmountDonated`.
+            const totalRaised = data.totalAmountRaised || data.totalAmountDonated || 0;
+            const td = document.getElementById('totalDonations'); if (td) td.textContent = formatCurrency(totalRaised);
+            const tc = document.getElementById('totalCampaigns'); if (tc) tc.textContent = data.totalCampaigns || 0;
+            const tu = document.getElementById('totalUsers'); if (tu) tu.textContent = data.totalUsers || 0;
         }
     } catch (error) {
         console.error('Error loading stats:', error);
@@ -28,11 +30,12 @@ async function loadStats() {
 // Load featured campaigns
 async function loadFeaturedCampaigns() {
     try {
-        const response = await fetch(`${API.CAMPAIGNS}?status=ACTIVE&limit=6`);
+        const response = await fetch(`${API.CAMPAIGNS}?limit=6`);
         const result = await response.json();
         const data = result.data || result.campaigns || result;
         
         const container = document.getElementById('featuredCampaigns');
+        if (!container) return;
         
         const campaigns = Array.isArray(data) ? data : (data.campaigns || []);
         
@@ -87,7 +90,7 @@ async function loadFeaturedCampaigns() {
         
     } catch (error) {
         console.error('Error loading campaigns:', error);
-        document.getElementById('featuredCampaigns').innerHTML = `
+        const fallback = document.getElementById('featuredCampaigns'); if (fallback) fallback.innerHTML = `
             <div class="loading-state">
                 <i class="fas fa-exclamation-triangle"></i>
                 <p>Error loading campaigns. Please try again later.</p>
@@ -96,8 +99,52 @@ async function loadFeaturedCampaigns() {
     }
 }
 
+// Update nav actions based on login status for index page
+function updateNavActions() {
+    const navActions = document.getElementById('navActions');
+    if (!navActions) return;
+    
+    if (isLoggedIn()) {
+        const user = JSON.parse(localStorage.getItem('user'));
+        navActions.innerHTML = `
+            <a href="pages/user-dashboard.html#campaigns" class="btn-link">My Campaigns</a>
+            <a href="pages/user-dashboard.html#create" class="btn btn-primary">Create Campaign</a>
+            <div class="user-menu">
+                <button class="user-btn" onclick="toggleUserMenu()">
+                    <i class="fas fa-user-circle"></i> ${user.name}
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                ${user.role === 'ADMIN' ? '<a href="pages/admin-dashboard.html"><i class="fas fa-tachometer-alt"></i>Admin Dashboard</a>' : '<a href="pages/user-dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a>'}
+                <a href="pages/user-dashboard.html#donations"><i class="fas fa-heart"></i> My Donations</a>
+                    <a href="pages/user-dashboard.html#profile"><i class="fas fa-user"></i> Profile</a>
+                    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        `;
+    } else {
+        navActions.innerHTML = `
+            <a href="pages/login.html" class="btn-link">Login</a>
+            <a href="pages/register.html" class="btn btn-primary">Get Started</a>
+        `;
+    }
+}
+
+function toggleUserMenu() {
+    const dropdown = document.getElementById('userDropdown');
+    if (dropdown) dropdown.classList.toggle('show');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.user-menu')) {
+        const dropdown = document.getElementById('userDropdown');
+        if (dropdown) dropdown.classList.remove('show');
+    }
+});
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
+    updateNavActions();
     loadStats();
     loadFeaturedCampaigns();
 });

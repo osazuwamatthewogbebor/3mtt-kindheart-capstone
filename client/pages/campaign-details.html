@@ -78,24 +78,24 @@
                     </button>
 
                     <div class="donors-count">
-                        <strong id="donorsCount">0</strong>
-                        <span class="color-gray">donors</span>
+                        <strong id="donationsCountHero">0</strong>
+                        <span class="color-gray">donations</span>
                     </div>
 
                     <div class="share-section">
                         <h4>Share this campaign</h4>
                         <div class="share-buttons">
-                            <button class="share-btn facebook" id="shareFacebook" title="Share on Facebook">
-                                <i class="fab fa-facebook"></i>
+                            <button class="share-btn facebook" id="shareFacebook" title="Share on Facebook" aria-label="Share campaign on Facebook">
+                                <i class="fab fa-facebook" aria-hidden="true"></i>
                             </button>
-                            <button class="share-btn twitter" id="shareTwitter" title="Share on Twitter">
-                                <i class="fab fa-twitter"></i>
+                            <button class="share-btn twitter" id="shareTwitter" title="Share on Twitter" aria-label="Share campaign on Twitter (X)">
+                                <i class="fab fa-twitter" aria-hidden="true"></i>
                             </button>
-                            <button class="share-btn whatsapp" id="shareWhatsapp" title="Share on WhatsApp">
-                                <i class="fab fa-whatsapp"></i>
+                            <button class="share-btn whatsapp" id="shareWhatsapp" title="Share on WhatsApp" aria-label="Share campaign on WhatsApp">
+                                <i class="fab fa-whatsapp" aria-hidden="true"></i>
                             </button>
-                            <button class="share-btn copy" id="shareCopy" title="Copy link">
-                                <i class="fas fa-link"></i>
+                            <button class="share-btn copy" id="shareCopy" title="Copy link" aria-label="Copy campaign link to clipboard">
+                                <i class="fas fa-link" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
@@ -108,33 +108,56 @@
     <section class="p-3">
         <div class="container">
             <div class="campaign-content">
-                <div class="campaign-tabs">
-                    <button class="tab active" id="storyTab-btn" data-tab="story">Story</button>
-                    <button class="tab" id="donationsTab-btn" data-tab="donations">Donations (<span id="donationsCount">0</span>)</button>
-                    <button class="tab" id="updatesTab-btn" data-tab="updates">Updates</button>
+                <div class="campaign-tabs tabs-container">
+                    <button class="tab pill active" id="storyTab-btn" data-tab="story">Story</button>
+                    <button class="tab pill" id="donationsTab-btn" data-tab="donations">Donations (<span id="donationsCount">0</span>)</button>
+                    <button class="tab pill" id="updatesTab-btn" data-tab="updates">Updates</button>
                 </div>
-
+               
                 <!-- STORY TAB -->
                 <div class="tab-content active" id="storyTab">
-                    <div class="creator-info">
-                        <div class="creator-avatar" id="creatorAvatar">A</div>
-                        <div class="creator-details">
-                            <h4 id="creatorNameFull">Campaign Creator</h4>
-                            <p>Campaign Organizer</p>
+                    <div class="creator-panel">
+                        <div class="creator-left">
+                            <div class="creator-avatar" id="creatorAvatar">EA</div>
+                        </div>
+                        <div class="creator-right">
+                            <div class="creator-header">
+                                <h4 id="creatorNameFull">Editorial Admin <span id="verifiedBadge" class="verified-badge" style="display:none;"><i class="fas fa-check-circle"></i> Verified</span></h4>
+                                <p class="muted">Campaign Organizer</p>
+                            </div>
+                            <div class="creator-stats">
+                                <div class="stat">
+                                    <strong id="donationsCountSmall">3</strong>
+                                    <span class="muted">donors</span>
+                                </div>
+                                <div class="stat">
+                                    <strong id="amountRaisedSmall">₦42,321</strong>
+                                    <span class="muted">raised</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="campaignDescription" class="campaign-description-text">
-                        Loading campaign details...
-                    </div>
+                    <div id="campaignDescription" class="campaign-description-text" style="white-space: pre-wrap;">Providing clean drinking water to remote communities.</div>
                 </div>
 
                 <!-- DONATIONS TAB -->
                 <div class="tab-content" id="donationsTab">
-                    <div id="donationsList">
-                        <div class="loading-state">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <p>Loading donations...</p>
+                    <div id="donationsList" class="donation-list">
+                        <div class="donation-item">
+                            <div class="donation-left"><div class="donor-avatar">A</div></div>
+                            <div class="donation-body"><div class="donor-name">Anonymous</div><div class="donation-meta">Jun 1, 2026</div></div>
+                            <div class="donation-amount">₦12,321</div>
+                        </div>
+                        <div class="donation-item">
+                            <div class="donation-left"><div class="donor-avatar">A</div></div>
+                            <div class="donation-body"><div class="donor-name">Anonymous</div><div class="donation-meta">Jun 1, 2026</div></div>
+                            <div class="donation-amount">₦10,000</div>
+                        </div>
+                        <div class="donation-item">
+                            <div class="donation-left"><div class="donor-avatar">A</div></div>
+                            <div class="donation-body"><div class="donor-name">Anonymous</div><div class="donation-meta">Jun 1, 2026</div></div>
+                            <div class="donation-amount">₦20,000</div>
                         </div>
                     </div>
                 </div>
@@ -149,18 +172,22 @@
             </div>
         </div>
     </section>
-
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-bottom">
-                <p>&copy; 2024 KindHeart. All rights reserved.</p>
+    <!-- SUPPORT CTA (modernized section before footer) -->
+    <section class="support-cta p-3 bg-white">
+        <div class="container flex-gap-lg align-center" style="justify-content:space-between;">
+            <div>
+                <h3 style="margin:0;">Support this campaign</h3>
+                <p style="margin:0.25rem 0 0; color:var(--gray);">Every gift helps. Secure payments and transparent impact reporting.</p>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="ctaDonateBtn"><i class="fas fa-heart"></i> Donate Now</button>
             </div>
         </div>
-    </footer>
+    </section>
 
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/campaign-details.js"></script>
 
+  <script src="../assets/js/footer.js"></script>
 </body>
 </html>

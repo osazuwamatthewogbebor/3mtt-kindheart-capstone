@@ -1,244 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service - KindHeart</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/terms-of-service.css">
-    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service - KindHeart</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/terms-of-service.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @media (max-width: 768px) {
+      /* Hero Section Adjustments */
+      .hero-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .hero-copy {
+        text-align: center !important;
+      }
+      .hero-copy .subtitle,
+      .hero-copy p {
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      .hero-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      /* Content Grids Stacking */
+      .tos-metrics {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .tos-grid-2 {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .tos-cta-buttons {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
-
-    <!-- NAVIGATION -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <div class="logo">
-                    <a href="../index.html" class="logo-header-link">
-                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img">
-                        <span>KindHeart</span>
-                    </a>
-                </div>
-                
-                <ul class="nav-links" id="navLinks">
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="campaigns.html">Campaigns</a></li>
-                    <li><a href="how-it-works.html">How It Works</a></li>
-                    <li><a href="about.html">About</a></li>
-                </ul>
-
-                <div class="nav-actions" id="navActions">
-                    <!-- Will be populated by JavaScript -->
-                </div>
-
-                <button class="mobile-toggle" id="mobileToggle" title="Toggle navigation menu" aria-label="Toggle navigation menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-wrapper">
+        <div class="logo">
+          <a href="../index.html" class="logo-header-link">
+            <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img">
+            <span>KindHeart</span>
+          </a>
         </div>
-    </nav>
+        <ul class="nav-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="campaigns.html">Campaigns</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+        <div class="nav-actions"><a href="user-dashboard.html#create" class="btn btn-primary">Start a Campaign</a></div>
+      </div>
+    </div>
+  </nav>
 
-    <!-- PAGE HEADER -->
-    <section class="page-header">
-        <div class="container">
-            <span class="tos-header-label">Legal Disclaimer</span>
-            <h1>Terms of Service</h1>
-            <p>Effective Date: October 24, 2024. These terms outline our mutual commitment to transparency, safety, and the spirit of collective empathy.</p>
+  <section class="page-header tos-hero" style="background-image: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80');">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="subtitle">Transparency matters</span>
+        <h1>Terms of Service</h1>
+        <p>Guiding every user action on KindHeart with fairness, security, and accountability.</p>
+        <div class="hero-actions">
+          <a href="user-dashboard.html#create" class="btn btn-primary">Launch a Campaign</a>
+          <a href="contact.html" class="btn btn-outline">Contact Support</a>
         </div>
-    </section>
-
-    <!-- MAIN CONTENT -->
-    <section class="tos-section">
-        <div class="container">
-            <div class="tos-container">
-
-                <!-- 01. INTRODUCTION -->
-                <section style="margin-bottom: 3rem;">
-                    <div style="display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 2rem;">
-                        <div style="min-width: 60px; font-size: 1.5rem; font-weight: 800; color: var(--primary);">01</div>
-                        <div style="flex: 1;">
-                            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--dark); margin-bottom: 1rem;">Introduction</h2>
-                            <p style="color: var(--gray); line-height: 1.8;">Welcome to KindHeart. These Terms of Service ("Terms") govern your access to and use of our platform, including our website, mobile applications, and any services we provide. By accessing KindHeart, you agree to be bound by these Terms.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 02. USER RESPONSIBILITIES -->
-                <section style="margin-bottom: 3rem;">
-                    <div style="display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 2rem;">
-                        <div style="min-width: 60px; font-size: 1.5rem; font-weight: 800; color: var(--primary);">02</div>
-                        <div style="flex: 1;">
-                            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--dark); margin-bottom: 1rem;">User Responsibilities</h2>
-                            
-                            <div class="mb-1-5">
-                                <h3 style="font-weight: 700; color: var(--dark); margin-bottom: 0.75rem;">
-                                    <i class="fas fa-user-shield" style="color: var(--primary); margin-right: 0.5rem;"></i>Account Integrity
-                                </h3>
-                                <p style="color: var(--gray); line-height: 1.8;">You must provide accurate, complete, and current information when creating your account. You are responsible for maintaining the confidentiality of your password and account credentials.</p>
-                            </div>
-
-                            <div class="mb-1-5">
-                                <h3 style="font-weight: 700; color: var(--dark); margin-bottom: 0.75rem;">
-                                    <i class="fas fa-shield-alt" style="color: var(--primary); margin-right: 0.5rem;"></i>Platform Conduct
-                                </h3>
-                                <p style="color: var(--gray); line-height: 1.8;">You agree not to engage in any activity that is fraudulent, deceptive, or harmful to others. This includes harassment, false information, and the distribution of malware.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 03. CAMPAIGN RULES -->
-                <section style="margin-bottom: 3rem;">
-                    <div style="display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 2rem;">
-                        <div style="min-width: 60px; font-size: 1.5rem; font-weight: 800; color: var(--primary);">03</div>
-                        <div style="flex: 1;">
-                            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--dark); margin-bottom: 1rem;">Campaign Rules</h2>
-                            <p style="color: var(--gray); line-height: 1.8; margin-bottom: 1.5rem;">Every campaign on KindHeart must fit for a specific, clear purpose. Our guidelines review campaigns to ensure they meet our ethical guidelines.</p>
-                            
-                            <div style="background: var(--gray-lightest); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                                <h4 style="font-weight: 700; color: var(--primary); margin-bottom: 0.75rem;">
-                                    <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>Veracity
-                                </h4>
-                                <p style="color: var(--gray); margin: 0;">Campaign creators must ensure their content is accurate and not misleading.</p>
-                            </div>
-
-                            <div style="background: var(--gray-lightest); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                                <h4 style="font-weight: 700; color: var(--primary); margin-bottom: 0.75rem;">
-                                    <i class="fas fa-eye" style="margin-right: 0.5rem;"></i>Transparency
-                                </h4>
-                                <p style="color: var(--gray); margin: 0;">You must provide regular updates to your donors regarding the progress of your project.</p>
-                            </div>
-
-                            <div style="background: var(--gray-lightest); padding: 1.5rem; border-radius: var(--radius-md);">
-                                <h4 style="font-weight: 700; color: var(--primary); margin-bottom: 0.75rem;">
-                                    <i class="fas fa-ban" style="margin-right: 0.5rem;"></i>Prohibited Content
-                                </h4>
-                                <p style="color: var(--gray); margin: 0;">We strictly prohibit campaigns involving illegal activities, false claims, or the distribution of violence.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 04. PAYMENT TERMS -->
-                <section style="margin-bottom: 3rem;">
-                    <div style="display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 2rem;">
-                        <div style="min-width: 60px; font-size: 1.5rem; font-weight: 800; color: var(--primary);">04</div>
-                        <div style="flex: 1;">
-                            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--dark); margin-bottom: 1rem;">Payment Terms</h2>
-                            
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-                                <div style="background: var(--gray-lightest); padding: 1.5rem; border-radius: var(--radius-md);">
-                                    <h4 style="font-weight: 700; color: var(--dark); margin-bottom: 0.75rem;">Transaction Fees</h4>
-                                    <p style="color: var(--gray); font-size: 0.95rem; line-height: 1.6;">Standard credit card processing fees (typically 2-3%) apply to all donations. KindHeart also charges a 5% platform fee to support our operations.</p>
-                                </div>
-
-                                <div style="background: var(--gray-lightest); padding: 1.5rem; border-radius: var(--radius-md);">
-                                    <h4 style="font-weight: 700; color: var(--dark); margin-bottom: 0.75rem;">Refund Policy</h4>
-                                    <p style="color: var(--gray); font-size: 0.95rem; line-height: 1.6;">Donations are generally not refundable. In cases of campaign cancellation or legal requirements, refunds may be processed within 7-14 business days.</p>
-                                </div>
-                            </div>
-
-                            <p style="color: var(--gray); line-height: 1.8;">We reserve the right to update our pricing structure with 30 days notice to all active campaign creators.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 05. INTELLECTUAL PROPERTY -->
-                <section style="margin-bottom: 3rem;">
-                    <div style="display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 2rem;">
-                        <div style="min-width: 60px; font-size: 1.5rem; font-weight: 800; color: var(--primary);">05</div>
-                        <div style="flex: 1;">
-                            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--dark); margin-bottom: 1rem;">Intellectual Property</h2>
-                            <p style="color: var(--gray); line-height: 1.8;">You retain ownership of the content you post however; by posting on KindHeart, you grant us a license to use, distribute, and reproduce your work in promoting our platform and the editorial experience.</p>
-                            
-                            <div style="background: var(--danger); color: var(--white); padding: 1.5rem; border-radius: var(--radius-md); margin-top: 1.5rem;">
-                                <h4 style="margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="fas fa-exclamation-triangle"></i>We respect copyright
-                                </h4>
-                                <p style="margin: 0; font-size: 0.95rem;">If you believe your work has been used without permission, contact our legal team immediately. False & frivolous claims may result in account suspension.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 06. LIABILITY & LAW -->
-                <section style="margin-bottom: 3rem;">
-                    <div style="display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 2rem;">
-                        <div style="min-width: 60px; font-size: 1.5rem; font-weight: 800; color: var(--primary);">06</div>
-                        <div style="flex: 1;">
-                            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--dark); margin-bottom: 1rem;">Liability & Law</h2>
-                            
-                            <div class="mb-1-5">
-                                <h4 style="font-weight: 700; color: var(--dark); margin-bottom: 0.75rem;">LIMITATION OF LIABILITY</h4>
-                                <p style="color: var(--gray); line-height: 1.8;">"To the maximum extent permitted by law, Kindred shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the platform."</p>
-                            </div>
-
-                            <div class="mb-1-5">
-                                <h4 style="font-weight: 700; color: var(--dark); margin-bottom: 0.75rem;">GOVERNING LAW</h4>
-                                <p style="color: var(--gray); line-height: 1.8;">These Terms shall be governed by the laws of the State of Delaware. Any disputes arising under these terms will be resolved in the state and federal courts located in Wilmington, Delaware.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- FINAL CTA -->
-                <section style="background: var(--primary); color: var(--white); padding: 3rem; border-radius: var(--radius-md); text-align: center;">
-                    <h2 style="font-weight: 800; margin-bottom: 1rem; font-size: 1.5rem;">Ready to make an impact?</h2>
-                    <p style="margin-bottom: 1.5rem; opacity: 0.95; max-width: 500px; margin-left: auto; margin-right: auto;">By using KindHeart, you agree to these terms. Start a campaign today and tell your story of change.</p>
-                    <div style="display: flex; gap: 1rem; justify-content: center;">
-                        <a href="create-campaign.html" style="display: inline-block; padding: 0.75rem 2rem; background: var(--secondary-container); color: var(--dark); text-decoration: none; border-radius: var(--radius-md); font-weight: 700; transition: all 0.3s;">
-                            <i class="fas fa-plus" style="margin-right: 0.5rem;"></i>Get Started
-                        </a>
-                        <a href="contact-us.html" style="display: inline-block; padding: 0.75rem 2rem; background: transparent; color: var(--white); text-decoration: none; border-radius: var(--radius-md); font-weight: 700; border: 2px solid var(--white); transition: all 0.3s;">
-                            <i class="fas fa-headset" style="margin-right: 0.5rem;"></i>Learn More
-                        </a>
-                    </div>
-                </section>
-            </div>
+      </div>
+      <div class="hero-card">
+        <span>Trusted and secure</span>
+        <h2>We keep your fundraising safe</h2>
+        <p>KindHeart ensures all campaigns and transactions comply with clear policies, helping donors and creators trust every step.</p>
+        <div class="hero-stat-grid">
+          <div><strong>5%</strong><span>Platform fee</span></div>
+          <div><strong>24h</strong><span>Response time</span></div>
+          <div><strong>100%</strong><span>Verified campaigns</span></div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <div class="footer-logo">
-                        <i class="fas fa-heart"></i>
-                        <span>KindHeart</span>
-                    </div>
-                    <p>Making fundraising simple and accessible for everyone.</p>
-                </div>
+  <section class="tos-content">
+    <div class="container">
+      <div class="tos-metrics">
+        <article class="tos-card"><i class="fas fa-balance-scale"></i><h3>Fair use</h3><p>Everyone on KindHeart agrees to a shared standard of honesty and fairness.</p></article>
+        <article class="tos-card"><i class="fas fa-shield-alt"></i><h3>Secure payments</h3><p>We protect donations through trusted payment providers and verified transaction flows.</p></article>
+        <article class="tos-card"><i class="fas fa-users"></i><h3>Community standards</h3><p>Respect, transparency, and authenticity are required for all campaigns.</p></article>
+      </div>
 
-                <div class="footer-col">
-                    <h4>Support</h4>
-                    <ul>
-                        <li><a href="contact-us.html">Contact Us</a></li>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
+      <article class="tos-section-card">
+        <div class="tos-number">01</div>
+        <div class="tos-text"><h2>Introduction</h2><p>By using KindHeart, you accept these terms and agree to uphold the standards that keep our platform safe and credible.</p></div>
+      </article>
+      <article class="tos-section-card">
+        <div class="tos-number">02</div>
+        <div class="tos-text"><h2>User Responsibilities</h2><p>Provide accurate personal details, use your account responsibly, and keep your credentials secure.</p></div>
+      </article>
+      <article class="tos-section-card">
+        <div class="tos-number">03</div>
+        <div class="tos-text"><h2>Campaign Conduct</h2><p>Campaigns must be honest, supported by verifiable details, and aligned with our fundraising policies.</p></div>
+      </article>
+      <article class="tos-section-card">
+        <div class="tos-number">04</div>
+        <div class="tos-text"><h2>Payment and Fees</h2><p>Payment processing fees apply. Refunds are available only as required by policy and law.</p></div>
+      </article>
+      <article class="tos-section-card">
+        <div class="tos-number">05</div>
+        <div class="tos-text"><h2>Liability</h2><p>KindHeart is not responsible for indirect losses or the content of campaigns. Use the platform with care.</p></div>
+      </article>
+      <article class="tos-section-card">
+        <div class="tos-number">06</div>
+        <div class="tos-text"><h2>Intellectual Property</h2><p>Creators keep ownership of their content, but grant KindHeart permission to promote their campaign on the platform.</p></div>
+      </article>
 
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="terms-of-service.html">Terms of Service</a></li>
-                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-                        <li><a href="contact-us.html">Contact Support</a></li>
-                    </ul>
-                </div>
-            </div>
+      <div class="tos-cta-panel">
+        <h2>Ready to fund your mission?</h2>
+        <p>Start a campaign with confidence and the support of a secure, purpose-built crowdfunding platform.</p>
+        <div class="cta-buttons"><a href="user-dashboard.html#create" class="btn btn-primary">Create a Campaign</a><a href="contact.html" class="btn btn-outline">Ask our team</a></div>
+      </div>
+    </div>
+  </section>
 
-            <div class="footer-bottom">
-                <p>&copy; 2024 KindHeart. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/footer.js"></script>
 </body>
 </html>
-

@@ -38,6 +38,7 @@ export const updateCampaignSchema = z
             .min(20, 'description must be at least 20 characters')
             .max(5000, 'description must be less than or equal to 5000 characters')
             .optional(),
+        categoryId: z.string().uuid({ message: "Invalid Category ID format" }).optional(),
     })
     .strict()
     .refine((data) => Object.keys(data).length > 0, 'At least one field is required');

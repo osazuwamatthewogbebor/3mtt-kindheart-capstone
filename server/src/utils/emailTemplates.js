@@ -74,12 +74,28 @@ export const getResetPasswordTemplate = (name, link) => baseTemplate(`
   <p>If you didn't request a password reset, please ignore this email or contact support if you have concerns.</p>
 `);
 
-export const getResetSuccessTemplate = (name) => baseTemplate(`
+export const getResetSuccessTemplate = (name) => {
+  const frontendUrl = process.env.CLIENT_URL || process.env.FRONTEND_URL || process.env.APP_URL || 'http://localhost:5500/client';
+  const loginLink = `${frontendUrl}/pages/login.html`;
+  return baseTemplate(`
   <h2 style="color: ${PRIMARY_COLOR};">Password Changed Successfully</h2>
   <p>Hi ${name},</p>
   <p>Your password for <strong>${APP_NAME}</strong> has been successfully updated.</p>
   <p>If you did not perform this change, please contact our security team immediately.</p>
   <div style="text-align: center;">
-    <a href="${process.env.FRONTEND_URL || '#'}" class="button">Login Now</a>
+    <a href="${loginLink}" class="button">Login Now</a>
   </div>
 `);
+};
+
+export const getContactTemplate = ({ name, email, subject, message }) => {
+  return baseTemplate(`
+  <h2 style="color: ${PRIMARY_COLOR};">New contact request</h2>
+  <p><strong>From:</strong> ${name} &lt;${email}&gt;</p>
+  <p><strong>Subject:</strong> ${subject}</p>
+  <div style="background: #f8fafc; padding: 1rem; border-radius: 12px; margin: 1.25rem 0;">
+    <p style="white-space: pre-wrap;">${message}</p>
+  </div>
+  <p style="font-size: 14px; color: #6b7280;">Please reply to the sender to follow up.</p>
+  `);
+};

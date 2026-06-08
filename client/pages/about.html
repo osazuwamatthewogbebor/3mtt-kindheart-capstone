@@ -1,56 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - KindHeart</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About KindHeart</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @media (max-width: 768px) {
+      /* Hero Section Adjustments */
+      .about-hero {
+        min-height: 350px !important;
+        padding: 4rem 0 !important;
+      }
+      .about-hero h1 {
+        font-size: 2.5rem !important;
+      }
+      .about-hero p {
+        font-size: 1rem !important;
+      }
+      .hero-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      /* Grid Stacking */
+      .content-grid {
+        grid-template-columns: 1fr !important;
+      }
+      
+      .metrics-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <div class="logo">
-                    <a href="../index.html" class="logo-header-link">
-                        <img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img">
-                        <span>KindHeart</span>
-                    </a>
-                </div>
-                <ul class="nav-links">
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="campaigns.html">Campaigns</a></li>
-                    <li><a href="how-it-works.html">How It Works</a></li>
-                    <li><a href="about.html" class="active">About</a></li>
-                </ul>
-                <div class="nav-actions">
-                    <a href="login.html" class="btn-link">Login</a>
-                    <a href="register.html" class="btn btn-primary">Get Started</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-wrapper">
+        <div class="logo"><a href="../index.html" class="logo-header-link"><img src="../assets/image/favicon.svg" alt="KindHeart" width="32" height="32" class="logo-header-img"><span>KindHeart</span></a></div>
+        <ul class="nav-links"><li><a href="../index.html">Home</a></li><li><a href="campaigns.html">Campaigns</a></li><li><a href="how-it-works.html">How It Works</a></li><li><a href="about.html" class="active">About</a></li></ul>
+        <div class="nav-actions"><a href="login.html" class="btn-link">Login</a><a href="register.html" class="btn btn-primary">Get Started</a></div>
+      </div>
+    </div>
+  </nav>
+  <section class="page-header about-hero" style="background-image: linear-gradient(180deg, rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('../assets/image/about-hero.jpg'); min-height: 500px; display: flex; align-items: center;">
+    <div class="container text-center">
+      <span class="subtitle" style="color: var(--primary-light); margin-bottom: 1rem; display: block;">Our Story</span>
+      <h1 style="color: var(--white); font-size: 3.5rem; margin-bottom: 1.5rem;">Empowering kindness through crowdfunding</h1>
+      <p style="color: var(--white); opacity: 0.9; margin: 0 auto 2.5rem; max-width: 800px; font-size: 1.25rem;">We build the tools that connect passionate creators with a community of donors dedicated to making a difference.</p>
+      <div class="hero-actions" style="justify-content: center;">
+        <a href="user-dashboard.html#create" class="btn btn-primary btn-lg">Start a Campaign</a>
+        <a href="campaigns.html" class="btn btn-white btn-lg">Explore Causes</a>
+      </div>
+    </div>
+  </section>
+  <main class="container content-wrap">
+    <section class="content-card"><h2>Our mission</h2><p>We exist to give every fundraiser a trustworthy place to share their story and every donor a secure way to support causes they care about.</p></section>
+    <section class="content-card feature-grid"><article class="feature-card"><i class="fas fa-hands-helping"></i><h3>People-first support</h3><p>Campaigns are reviewed for authenticity, and donors are kept up to date with progress.</p></article><article class="feature-card"><i class="fas fa-shield-alt"></i><h3>Secure payments</h3><p>We partner with trusted payment providers to keep contributions safe.</p></article><article class="feature-card"><i class="fas fa-chart-line"></i><h3>Real impact</h3><p>Track results, share updates, and celebrate the difference your community makes.</p></article></section>
+    <section class="content-card content-grid"><div><h2>Why choose KindHeart?</h2><p>We value honest storytelling, responsible fund management, and easy campaign management so every creator can focus on what matters.</p></div><div class="metrics-grid"><div><strong>1,250+</strong><span>Campaigns launched</span></div><div><strong>34,000+</strong><span>Donors supported</span></div><div><strong>₦420M+</strong><span>Funds raised</span></div><div><strong>24/7</strong><span>Support hours</span></div></div></section>
+    <section class="content-card text-center"><h2>Bring your story to life</h2><p>Join our community and start raising funds for a cause that matters.</p><a href="user-dashboard.html#create" class="btn btn-primary">Create a Campaign</a></section>
+  </main>
 
-    <section class="page-hero">
-        <div class="container">
-            <h1>About KindHeart</h1>
-            <p>We help people create and support meaningful fundraising campaigns.</p>
-        </div>
-    </section>
-
-    <main class="content-wrap">
-        <section class="content-card">
-            <h2>Our Mission</h2>
-            <p>KindHeart is built to make fundraising simple, transparent, and accessible. Whether you are raising support for health, education, community, or emergency needs, the platform gives you a clean place to tell your story and reach supporters.</p>
-        </section>
-        <section class="content-card">
-            <h2>What We Do</h2>
-            <p>We provide campaign creation, donation tracking, and user accounts for creators and supporters. The goal is to keep the experience straightforward while giving every campaign a professional presence.</p>
-        </section>
-    </main>
-
-    <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/footer.js"></script>
 </body>
 </html>

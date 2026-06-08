@@ -103,28 +103,7 @@ export const createCampaign = async (req, res, next) => {
 		const parsedGoalAmount = Number(goalAmount);
 		const parsedEndDate = new Date(endDate);
 
-		// if (
-		// 	title === undefined ||
-		// 	title === null ||
-		// 	title === '' ||
-		// 	description === undefined ||
-		// 	description === null ||
-		// 	description === '' ||
-		// 	categoryId === undefined ||
-		// 	categoryId === null ||
-		// 	categoryId === '' ||
-		// 	goalAmount === undefined ||
-		// 	goalAmount === null ||
-		// 	goalAmount === '' ||
-		// 	endDate === undefined ||
-		// 	endDate === null ||
-		// 	endDate === ''
-		// ) {
-		// 	const error = new Error('title, description, categoryId, goalAmount, and endDate are required');
-		// 	error.statusCode = 400;
-		// 	throw error;
-		// }
-
+		
 		const requiredFields = { title, description, categoryId, goalAmount, endDate };
 		for (const [key, value] of Object.entries(requiredFields)) {
 			if (!value || value.toString().trim() === '') {
@@ -286,7 +265,15 @@ export const listCampaigns = getCampaigns;
 
 export const getCampaignById = async (req, res, next) => {
 	try {
-		const id = req.params.id.trim();
+		const rawId = req.params.id;
+		if (!rawId) {
+		  console.warn('getCampaignById: missing id parameter');
+		  const error = new Error('Campaign id is required');
+		  error.statusCode = 400;
+		  throw error;
+		}
+		const id = rawId.trim();
+		console.debug('Fetching campaign with id:', id);
 
 		const campaign = await prisma.campaign.findUnique({
 			where: { id },
@@ -348,10 +335,23 @@ export const updateCampaign = async (req, res, next) => {
 		}
 
 		const updateData = {
-			// users shouldn't be able to update the title after creating it
-			// ...(req.body.title ? { title: req.body.title } : {}), 
-			...(req.body.description ? { description: req.body.description } : {}),
+			...(req.body.title ? { title: req.body.title.trim() } : {}),
+			...(req.body.description ? { description: req.body.description.trim() } : {}),
+			...(req.body.categoryId ? { categoryId: req.body.categoryId } : {}),
 		};
+
+		// If categoryId is provided, verify it exists
+		if (req.body.categoryId) {
+			const category = await prisma.category.findUnique({
+				where: { id: req.body.categoryId },
+				select: { id: true },
+			});
+			if (!category) {
+				const error = new Error('Invalid category');
+				error.statusCode = 400;
+				throw error;
+			}
+		}
 
 		const updatedCampaign = await prisma.campaign.update({
 			where: { id },
@@ -443,6 +443,46 @@ export const updateCampaignImage = async (req, res, next) => {
 			success: true,
 			message: 'Campaign image updated successfully',
 			campaign: formatCampaign(updatedCampaign),
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const getMyCampaigns = async (req, res, next) => {
+	try {
+		const userId = req.user.id;
+		const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
+		const limit = Math.min(100, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
+		const skip = (page - 1) * limit;
+
+		const [campaigns, total] = await Promise.all([
+			prisma.campaign.findMany({
+				where: {
+					userId,
+				},
+				orderBy: {
+					createdAt: 'desc',
+				},
+				include: {
+					user: { select: publicUserSelect },
+					category: { select: { id: true, name: true } },
+				},
+				skip,
+				take: limit,
+			}),
+			prisma.campaign.count({ where: { userId } }),
+		]);
+
+		const paginatedCampaigns = campaigns.map(formatCampaign);
+
+		res.status(200).json({
+			success: true,
+			count: paginatedCampaigns.length,
+			total,
+			page,
+			limit,
+			data: paginatedCampaigns,
 		});
 	} catch (error) {
 		next(error);

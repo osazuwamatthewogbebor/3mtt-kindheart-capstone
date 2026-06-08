@@ -1,6 +1,58 @@
 import prisma from '../config/db.js';
 import { logAdminAction } from '../services/auditLogService.js';
 
+export const getPublicStats = async (req, res, next) => {
+	try {
+		// Fetch all required statistics in parallel
+		const [
+			totalUsersResult,
+			totalCampaignsResult,
+			totalDonationsResult,
+			totalAmountDonatedResult,
+			totalAmountRaisedResult,
+		] = await Promise.all([
+			// Count total users
+			prisma.user.count(),
+
+			// Count total campaigns
+			prisma.campaign.count(),
+
+			// Count total donations
+			prisma.donation.count(),
+
+			// Sum of successful donations
+			prisma.donation.aggregate({
+				where: {
+					status: 'SUCCESS',
+				},
+				_sum: {
+					amount: true,
+				},
+			}),
+
+			// Sum of campaign amountRaised
+			prisma.campaign.aggregate({
+				_sum: {
+					amountRaised: true,
+				},
+			}),
+		]);
+
+		res.status(200).json({
+			success: true,
+			data: {
+				totalUsers: totalUsersResult,
+				totalCampaigns: totalCampaignsResult,
+				totalDonations: totalDonationsResult,
+				totalAmountDonated: totalAmountDonatedResult._sum.amount || 0,
+				totalAmountRaised: totalAmountRaisedResult._sum.amountRaised || 0,
+			},
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
 export const getStats = async (req, res, next) => {
 	try {
 		// Fetch all required statistics in parallel
@@ -56,7 +108,7 @@ export const getStats = async (req, res, next) => {
 export const getUsers = async (req, res, next) => {
 	try {
 		const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
-		const limit = Math.min(100, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
+		const limit = Math.min(1000, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
 		const skip = (page - 1) * limit;
 
 		const [users, total] = await Promise.all([
@@ -163,6 +215,7 @@ export const getCampaigns = async (req, res, next) => {
 					title: true,
 					goalAmount: true,
 					amountRaised: true,
+					imageUrl: true,
 					campaignStatus: true,
 					endDate: true,
 					createdAt: true,
@@ -192,6 +245,7 @@ export const getCampaigns = async (req, res, next) => {
 			title: campaign.title,
 			goalAmount: campaign.goalAmount,
 			amountRaised: campaign.amountRaised,
+			imageUrl: campaign.imageUrl,
 			campaignStatus: campaign.campaignStatus,
 			endDate: campaign.endDate,
 			createdAt: campaign.createdAt,

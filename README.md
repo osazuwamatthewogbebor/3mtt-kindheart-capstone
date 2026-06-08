@@ -55,7 +55,7 @@ kindheart/
 ### 3. Frontend Setup (Client)
 1. Open `client/index.html` in VS Code.
 2. Right-click and select **"Open with Live Server"**.
-   The frontend will typically run on `http://localhost:5500`.
+   The frontend will typically run on `http://localhost:5500/client`.
 
 ## 🛠 Tech Stack
 - **Frontend**: Vanilla HTML5, CSS3, JavaScript (ES Modules planned)

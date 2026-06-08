@@ -6,39 +6,89 @@ if (!isLoggedIn()) {
     window.location.href = 'login.html';
 }
 
-const urlParams = new URLSearchParams(window.location.search);
-const campaignId = urlParams.get('id');
+let campaignId = null;
 
-if (!campaignId) {
-    showToast('Campaign not found', 'error');
-    window.location.href = 'my-campaigns.html';
+// Global state for categories
+let categories = [];
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    loadUserName();
+    initializeDragAndDrop();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const idFromUrl = urlParams.get('id');
+    if (idFromUrl) {
+        campaignId = idFromUrl;
+        await initializePage();
+    }
+});
+
+window.openEditCampaign = async function(id) {
+    if (!id) return;
+    campaignId = id;
+
+    const editForm = document.getElementById('editCampaignForm');
+    const noSelection = document.getElementById('editCampaignNoSelection');
+    const formContainer = document.getElementById('editCampaignFormContainer');
+    const listContainer = document.getElementById('editCampaignsGrid');
+    if (editForm) editForm.classList.remove('hidden');
+    if (noSelection) noSelection.classList.add('hidden');
+    if (formContainer) formContainer.classList.remove('hidden');
+    if (listContainer) listContainer.classList.add('hidden');
+
+    // Switch to the edit tab to display the form
+    if (typeof switchTab === 'function') {
+        switchTab('edit');
+    }
+
+    await initializePage();
+};
+
+async function initializePage() {
+    const updateBtn = document.getElementById('updateBtn');
+    updateBtn.disabled = true;
+    updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Initializing...';
+
+    try {
+        // Load categories first
+        await loadCategories();
+        // Then load campaign data
+        await loadCampaign();
+    } catch (error) {
+        console.error('Initialization error:', error);
+        showToast('Error initializing page. Some data may be missing.', 'error');
+    } finally {
+        if (updateBtn) {
+            updateBtn.disabled = false;
+            updateBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+        }
+    }
 }
 
-// Load categories
+// Load categories from API
 async function loadCategories() {
     try {
         const response = await fetch(API.CATEGORIES);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
+        if (!response.ok) throw new Error('Failed to load categories');
         
-        if (data.success) {
+        const data = await response.json();
+        categories = data?.data || data?.categories || (Array.isArray(data) ? data : []);
+
+        if (Array.isArray(categories)) {
             const select = document.getElementById('category');
             select.innerHTML = '<option value="">Select a category</option>';
             
-            data.data.forEach(cat => {
+            categories.forEach(cat => {
                 const option = document.createElement('option');
                 option.value = cat.id;
                 option.textContent = cat.name;
                 select.appendChild(option);
             });
-        } else {
-            showToast('Failed to load categories', 'error');
         }
     } catch (error) {
         console.error('Error loading categories:', error);
-        showToast('Error loading categories. Please refresh the page.', 'error');
+        throw error;
     }
 }
 
@@ -49,151 +99,169 @@ async function loadCampaign() {
             headers: getAuthHeaders()
         });
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error('Failed to fetch campaign details');
         
         const data = await response.json();
-
         if (!data.success) {
             showToast('Campaign not found', 'error');
-            window.location.href = 'my-campaigns.html';
+                    window.location.href = 'user-dashboard.html#campaigns';
             return;
         }
 
-        const campaign = data.data;
+        const campaign = data.data || data.campaign;
 
-        // Populate form
+        // Populate fields
         document.getElementById('title').value = campaign.title;
-        document.getElementById('goal').value = campaign.goalAmount || campaign.goal_amount;
-        document.getElementById('status').value = campaign.status;
         document.getElementById('description').value = campaign.description;
+        document.getElementById('goal').value = campaign.goalAmount || campaign.goal_amount;
+        document.getElementById('status').value = campaign.status || 'ACTIVE';
+        
+        // Match category
+        const categoryId = campaign.categoryId || campaign.category_id;
+        if (categoryId) {
+            document.getElementById('category').value = categoryId;
+        }
 
-        // Set category after categories are loaded
-        setTimeout(() => {
-            document.getElementById('category').value = campaign.categoryId || campaign.category_id;
-        }, 500);
-
-        // Show current image
+        // Preview current image
         if (campaign.imageUrl || campaign.image) {
-            document.getElementById('currentImage').innerHTML = `
-                <p class="color-gray mb-1">Current image:</p>
-                <img src="${campaign.imageUrl || campaign.image}" alt="Current" class="img-preview">
+            const previewContainer = document.getElementById('currentImageDisplay');
+            previewContainer.innerHTML = `
+                <div class="mt-1" style="opacity: 0.8;">
+                    <p class="text-small mb-1">Current Image:</p>
+                    <img src="${campaign.imageUrl || campaign.image}" alt="Current" class="img-preview" style="max-height: 180px; border: 2px solid var(--gray-lighter);">
+                </div>
             `;
         }
 
     } catch (error) {
         console.error('Error loading campaign:', error);
-        if (error.message.includes('HTTP error')) {
-            showToast('Server error. Please try again later.', 'error');
-        } else if (error instanceof TypeError) {
-            showToast('Network error. Please check your connection.', 'error');
-        } else {
-            showToast('Error loading campaign. Please try again.', 'error');
-        }
+        throw error;
     }
 }
 
+// Drag and drop for image update
+function initializeDragAndDrop() {
+    const uploadArea = document.getElementById('imageUploadArea');
+    const fileInput = document.getElementById('image');
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = 'var(--primary)';
+        uploadArea.style.background = 'rgba(16, 185, 129, 0.05)';
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = 'var(--gray-lighter)';
+        uploadArea.style.background = 'transparent';
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = 'var(--gray-lighter)';
+        if (e.dataTransfer.files.length > 0) {
+            fileInput.files = e.dataTransfer.files;
+            handleImagePreview(e.dataTransfer.files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleImagePreview(e.target.files[0]);
+        }
+    });
+}
+
+function handleImagePreview(file) {
+    if (!isValidImageFile(file)) {
+        showToast('Invalid image. Please use JPG, PNG, or WebP (max 5MB).', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const previewContainer = document.getElementById('currentImageDisplay');
+        previewContainer.innerHTML = `
+            <div class="mt-1">
+                <p class="text-small mb-1" style="color: var(--primary); font-weight: 600;">New Image Selected:</p>
+                <img src="${e.target.result}" alt="New Preview" class="img-preview" style="max-height: 180px; border: 2px solid var(--primary);">
+            </div>
+        `;
+    };
+    reader.readAsDataURL(file);
+}
+
 // Handle form submission
-document.getElementById('editCampaignForm').addEventListener('submit', async (e) => {
+const editFormElement = document.getElementById('editCampaignForm');
+if (editFormElement) {
+    editFormElement.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const title = document.getElementById('title').value.trim();
     const categoryId = document.getElementById('category').value;
-    const goalAmount = document.getElementById('goal').value;
-    const status = document.getElementById('status').value;
     const description = document.getElementById('description').value.trim();
     const imageFile = document.getElementById('image').files[0];
     
-    // Validate campaign title
+    // Validation
     if (!isValidCampaignTitle(title)) {
-        showToast('Campaign title must be 5-200 characters', 'error');
+        showToast('Title must be between 5-200 characters', 'error');
         return;
     }
-    
-    // Validate category
     if (!categoryId) {
         showToast('Please select a category', 'error');
         return;
     }
-    
-    // Validate goal amount
-    if (!isValidGoalAmount(goalAmount)) {
-        showToast('Goal amount must be between 1,000 and 1,000,000,000', 'error');
-        return;
-    }
-    
-    // Validate status
-    if (!['ACTIVE', 'PAUSED', 'COMPLETED'].includes(status)) {
-        showToast('Please select a valid status', 'error');
-        return;
-    }
-    
-    // Validate description
     if (!isValidDescription(description)) {
-        showToast('Description must be 20-5000 characters', 'error');
+        showToast('Description must be between 20-5000 characters', 'error');
         return;
     }
-    
-    // Validate image if provided
-    if (imageFile && !isValidImageFile(imageFile)) {
-        showToast('Image must be JPG, PNG, GIF, or WebP format (max 5MB)', 'error');
-        return;
-    }
-    
+
     const btn = document.getElementById('updateBtn');
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving Changes...';
     btn.disabled = true;
 
     try {
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('categoryId', categoryId);
-        formData.append('goalAmount', Number(goalAmount));
-        formData.append('status', status);
-        formData.append('description', description);
-        
-        if (imageFile) {
-            formData.append('image', imageFile);
-        }
-
+        // 1. Update basic information
         const response = await fetch(`${API.CAMPAIGNS}/${campaignId}`, {
             method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${getToken()}`,
-                'X-CSRF-Token': getCSRFToken() || ''
-            },
-            body: formData
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ title, categoryId, description })
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
         const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Update failed');
 
-        if (data.success) {
-            showToast('Campaign updated successfully!', 'success');
-            window.location.href = 'my-campaigns.html';
-        } else {
-            showToast(data.message || 'Failed to update campaign', 'error');
+        // 2. Update image if selected
+        if (imageFile) {
+            const imageFormData = new FormData();
+            imageFormData.append('image', imageFile);
+            
+            const imageResponse = await fetch(`${API_URL}/campaigns/${campaignId}/image`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${getToken()}`,
+                    'X-CSRF-Token': getCSRFToken() || ''
+                },
+                body: imageFormData
+            });
+            
+            if (!imageResponse.ok) {
+                showToast('Campaign info updated, but image upload failed.', 'warning');
+            }
         }
+
+        showToast('🎉 Campaign updated successfully!', 'success');
+        setTimeout(() => {
+            window.location.href = 'user-dashboard.html#campaigns';
+        }, 1500);
+
     } catch (error) {
-        console.error('Error updating campaign:', error);
-        if (error.message.includes('HTTP error')) {
-            showToast('Server error. Please try again later.', 'error');
-        } else if (error instanceof TypeError) {
-            showToast('Network error. Please check your connection.', 'error');
-        } else {
-            showToast('Error updating campaign. Please try again.', 'error');
-        }
+        console.error('Update error:', error);
+        showToast(error.message || 'An error occurred during update', 'error');
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
     }
-});
-
-// Initialize
-loadCategories();
-loadCampaign();
+})};
