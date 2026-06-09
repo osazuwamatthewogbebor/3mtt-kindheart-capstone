@@ -26,6 +26,11 @@
                     </a>
                 </div>
                 
+                <!-- Mobile Sidebar Toggle Button -->
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
                 <ul class="nav-links">
                     <li><a href="../index.html">Home</a></li>
                     <li><a href="campaigns.html">Campaigns</a></li>
@@ -56,6 +61,9 @@
     <!-- MAIN DASHBOARD CONTENT -->
     <section class="dashboard-section">
         <div class="container">
+            <!-- Mobile Sidebar Overlay -->
+            <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
+            
             <div class="dashboard-grid">
                 
                 <!-- LEFT SIDEBAR: PROFILE & QUICK NAV -->
