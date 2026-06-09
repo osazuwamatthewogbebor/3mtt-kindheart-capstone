@@ -69,26 +69,34 @@ async function initializePage() {
 // Load categories from API
 async function loadCategories() {
     try {
-        const response = await fetch(API.CATEGORIES);
-        if (!response.ok) throw new Error('Failed to load categories');
-        
-        const data = await response.json();
-        categories = data?.data || data?.categories || (Array.isArray(data) ? data : []);
-
-        if (Array.isArray(categories)) {
-            const select = document.getElementById('category');
-            select.innerHTML = '<option value="">Select a category</option>';
-            
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat.id;
-                option.textContent = cat.name;
-                select.appendChild(option);
-            });
-        }
+        // CacheUtils shows cached categories immediately, then refreshes in the background.
+        await CacheUtils.getCategoriesCached(
+            (cached) => renderCategoryOptions(cached),
+            (fresh) => renderCategoryOptions(fresh),
+            (error) => {
+                console.error('Error loading categories:', error);
+                throw error;
+            }
+        );
     } catch (error) {
         console.error('Error loading categories:', error);
         throw error;
+    }
+}
+
+function renderCategoryOptions(payload) {
+    categories = payload?.data || payload?.categories || (Array.isArray(payload) ? payload : []);
+    const select = document.getElementById('category');
+    if (!select) return;
+
+    if (Array.isArray(categories) && categories.length > 0) {
+        select.innerHTML = '<option value="">Select a category</option>';
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            select.appendChild(option);
+        });
     }
 }
 
@@ -233,6 +241,9 @@ if (editFormElement) {
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || 'Update failed');
 
+        // Clear cached campaign data so the UI refreshes with the updated backend state.
+        CacheUtils.clearCampaignCaches(campaignId);
+
         // 2. Update image if selected
         if (imageFile) {
             const imageFormData = new FormData();
@@ -250,6 +261,7 @@ if (editFormElement) {
             if (!imageResponse.ok) {
                 showToast('Campaign info updated, but image upload failed.', 'warning');
             }
+            CacheUtils.clearCampaignCaches(campaignId);
         }
 
         showToast('🎉 Campaign updated successfully!', 'success');

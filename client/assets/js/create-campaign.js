@@ -22,34 +22,39 @@ document.addEventListener('DOMContentLoaded', () => {
 // Load categories from API
 async function loadCategories() {
     try {
-        const response = await fetch(API.CATEGORIES);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-
-        // Support different response shapes: { data: [] } or { categories: [] }
-        const categories = data?.data || data?.categories || (Array.isArray(data) ? data : []);
-
-        if (Array.isArray(categories) && categories.length > 0) {
-            const select = document.getElementById('category');
-            select.innerHTML = '<option value="">Select a category</option>';
-
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat.id;
-                option.textContent = cat.name;
-                select.appendChild(option);
-            });
-        } else {
-            const select = document.getElementById('category');
-            select.innerHTML = '<option value="">No categories available</option>';
-            showToast('No categories found', 'warning');
-        }
+        // CacheUtils shows cached categories immediately, then refreshes in the background.
+        await CacheUtils.getCategoriesCached(
+            (cached) => renderCategoryOptions(cached),
+            (fresh) => renderCategoryOptions(fresh),
+            (error) => {
+                console.error('Error loading categories:', error);
+                showToast('Error loading categories. Please refresh the page.', 'error');
+            }
+        );
     } catch (error) {
         console.error('Error loading categories:', error);
         showToast('Error loading categories. Please refresh the page.', 'error');
     }
+}
+
+function renderCategoryOptions(payload) {
+    const data = payload?.data || payload?.categories || (Array.isArray(payload) ? payload : []);
+    const select = document.getElementById('category');
+    if (!select) return;
+
+    if (Array.isArray(data) && data.length > 0) {
+        select.innerHTML = '<option value="">Select a category</option>';
+        data.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            select.appendChild(option);
+        });
+        return;
+    }
+
+    select.innerHTML = '<option value="">No categories available</option>';
+    showToast('No categories found', 'warning');
 }
 
 // Initialize form listeners
@@ -344,6 +349,8 @@ async function submitForm(e) {
         
         if (data.success) {
             submissionSuccess = true;
+            // Clear cached campaign list data so the new campaign appears in list views immediately.
+            CacheUtils.clearCampaignCaches();
             // Show success modal with feedback
             const successMessage = data.message || 'Campaign created successfully!';
             showSuccessModal(successMessage);
