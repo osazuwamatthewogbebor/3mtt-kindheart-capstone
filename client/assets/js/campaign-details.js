@@ -30,56 +30,37 @@ function updateNav() {
 // Load campaign details
 async function loadCampaign() {
     try {
-        const response = await fetch(`${API.CAMPAIGNS}/${campaignId}`);
-        const result = await response.json();
- 
-        const campaign = result.data?.campaign || result.campaign;
- 
-        if (!response.ok || !result.success || !campaign) {
-            console.error('Failed to load campaign', {
-                status: response.status,
-                url: `${API.CAMPAIGNS}/${campaignId}`,
-                responseBody: result
-            });
-            showToast('Campaign not found', 'error');
-            window.location.href = 'campaigns.html';
-            return;
-        }
+        // CacheUtils renders cached campaign data immediately, then refreshes it in the background.
+        const campaign = await CacheUtils.cacheFirst({
+            key: CacheUtils.getCampaignKey(campaignId),
+            ttl: 2 * 60 * 1000,
+            fetcher: async () => {
+                const response = await fetch(`${API.CAMPAIGNS}/${campaignId}`);
+                const result = await response.json();
+                if (!response.ok || !result.success || !(result.data?.campaign || result.campaign)) {
+                    throw new Error('Failed to load campaign');
+                }
+                return result.data?.campaign || result.campaign;
+            },
+            renderCached: (cached) => renderCampaign(cached),
+            renderFresh: (fresh) => renderCampaign(fresh),
+            onError: () => {
+                showToast('Campaign not found', 'error');
+                window.location.href = 'campaigns.html';
+            }
+        });
 
-        const progress = calculateProgress(campaign.amountRaised, campaign.goalAmount);
+        if (campaign) {
+            loadDonations();
 
-        // Update page
-        document.getElementById('campaignTitle').textContent = campaign.title;
-        document.getElementById('campaignCategory').textContent = campaign?.category?.name || campaign?.categoryName || 'General';
-        document.getElementById('creatorName').textContent = campaign?.user?.name || campaign?.creatorName || 'Creator';
-        document.getElementById('creatorNameFull').textContent = campaign?.user?.name || campaign?.creatorName || 'Creator';
-        document.getElementById('createdDate').textContent = formatDate(campaign.createdAt || campaign.created_at);
-        document.getElementById('campaignImage').src = campaign.imageUrl || campaign.image || 'https://via.placeholder.com/800x500';
-        document.getElementById('amountRaised').textContent = formatCurrency(campaign.amountRaised || campaign.raised_amount || 0);
-        document.getElementById('goalAmount').textContent = formatCurrency(campaign.goalAmount || campaign.goal_amount || 0);
-        document.getElementById('progressBar').style.width = progress + '%';
-        // Sanitize campaign description - use textContent instead of innerHTML
-        const descElement = document.getElementById('campaignDescription');
-        descElement.textContent = campaign.description;
-        descElement.style.whiteSpace = 'pre-wrap';
-        
-        // Creator avatar
-        const creatorNameStr = campaign?.user?.name || campaign?.creatorName || 'Creator';
-        const initials = creatorNameStr.split(' ').map(n => n[0]).join('').toUpperCase();
-        document.getElementById('creatorAvatar').textContent = initials;
-
-        // Load donations
-        loadDonations();
-
-            // Render updates if present on campaign object. If not, skip fetching from a non‑existent endpoint.
             if (Array.isArray(campaign.updates) && campaign.updates.length > 0) {
                 window.__campaignHasUpdates = true;
                 renderUpdates(campaign.updates);
             } else {
                 window.__campaignHasUpdates = false;
-                // No dedicated updates endpoint; render empty updates section.
                 renderUpdates([]);
             }
+        }
 
     } catch (error) {
         console.error('Error:', error);
@@ -92,6 +73,30 @@ async function loadCampaign() {
         const imageEl = document.getElementById('campaignImage');
         if (imageEl) imageEl.src = 'https://via.placeholder.com/800x500?text=Unavailable';
     }
+}
+
+function renderCampaign(campaign) {
+    if (!campaign) return;
+
+    const progress = calculateProgress(campaign.amountRaised, campaign.goalAmount);
+
+    // Update page
+    document.getElementById('campaignTitle').textContent = campaign.title;
+    document.getElementById('campaignCategory').textContent = campaign?.category?.name || campaign?.categoryName || 'General';
+    document.getElementById('creatorName').textContent = campaign?.user?.name || campaign?.creatorName || 'Creator';
+    document.getElementById('creatorNameFull').textContent = campaign?.user?.name || campaign?.creatorName || 'Creator';
+    document.getElementById('createdDate').textContent = formatDate(campaign.createdAt || campaign.created_at);
+    document.getElementById('campaignImage').src = campaign.imageUrl || campaign.image || 'https://via.placeholder.com/800x500';
+    document.getElementById('amountRaised').textContent = formatCurrency(campaign.amountRaised || campaign.raised_amount || 0);
+    document.getElementById('goalAmount').textContent = formatCurrency(campaign.goalAmount || campaign.goal_amount || 0);
+    document.getElementById('progressBar').style.width = progress + '%';
+    const descElement = document.getElementById('campaignDescription');
+    descElement.textContent = campaign.description;
+    descElement.style.whiteSpace = 'pre-wrap';
+
+    const creatorNameStr = campaign?.user?.name || campaign?.creatorName || 'Creator';
+    const initials = creatorNameStr.split(' ').map(n => n[0]).join('').toUpperCase();
+    document.getElementById('creatorAvatar').textContent = initials;
 }
 
 function renderUpdates(updates) {
@@ -149,8 +154,8 @@ async function loadDonations() {
         }
 
         const donationsCount = data.count || 0;
-        const donorsHeroEl = document.getElementById('donorsCountHero');
-        const donorsSmallEl = document.getElementById('donorsCountSmall');
+        const donorsHeroEl = document.getElementById('donationsCountHero');
+        const donorsSmallEl = document.getElementById('donationsCountSmall');
         const donationsCountEl = document.getElementById('donationsCount');
         if (donorsHeroEl) donorsHeroEl.textContent = donationsCount;
         if (donorsSmallEl) donorsSmallEl.textContent = donationsCount;
@@ -262,6 +267,8 @@ async function handleDonationReturn() {
 
         if (response.ok && result.status === 'success') {
             showToast(result.message || 'Donation verified successfully!', 'success');
+            // Clear campaign caches so totals and donation counts refresh with backend state.
+            CacheUtils.clearDonationCaches(campaignId);
             cleanPaymentQueryParams();
             // Refresh donations and campaign data
             loadDonations();
@@ -432,6 +439,9 @@ async function handleDonateFormSubmit(e) {
             showToast(msg, 'error');
             return;
         }
+
+        // Invalidate caches after a donation write so totals and campaign detail refresh.
+        CacheUtils.clearDonationCaches(campaignId);
 
         const checkoutUrl = payload.authorization_url || payload.authorizationUrl || payload.checkoutUrl || payload.checkout_url || payload.paymentUrl || payload.payment_url || payload.url;
 

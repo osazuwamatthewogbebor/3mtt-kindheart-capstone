@@ -156,109 +156,129 @@ async function loadCampaigns() {
                 <p>Loading campaigns...</p>
             </div>
         `;
+        // Build API params string including search so cache keys are per-query
+        let params = '?limit=100&page=1';
+        if (filters.search) params += `&search=${encodeURIComponent(filters.search)}`;
 
-        // Build API URL with search parameter
-        let url = `${API.CAMPAIGNS}?limit=100&page=1`;
-        if (filters.search) {
-            url += `&search=${encodeURIComponent(filters.search)}`;
-        }
-
-        const response = await fetch(url);
-        if (!response.ok) {
-            let errMsg = `Failed to fetch campaigns (status ${response.status})`;
+        // Helper to parse response and render list (shared by cached and fresh flows)
+        const renderFromResult = (result) => {
             try {
-                const errBody = await response.json();
-                if (errBody && errBody.message) errMsg += `: ${errBody.message}`;
-            } catch (e) {
-                // ignore json parse error
+                // Parse campaigns from response (multiple possible shapes)
+                let allCampaigns = [];
+                if (!result) result = {};
+                if (Array.isArray(result.campaigns)) {
+                    allCampaigns = result.campaigns;
+                } else if (Array.isArray(result.data)) {
+                    allCampaigns = result.data;
+                } else if (Array.isArray(result)) {
+                    allCampaigns = result;
+                } else if (result.success && result.data && Array.isArray(result.data.campaigns)) {
+                    allCampaigns = result.data.campaigns;
+                } else if (result.data && Array.isArray(result.data)) {
+                    allCampaigns = result.data;
+                }
+
+                // Apply client-side filters and sorting
+                let filtered = filterCampaigns(allCampaigns);
+                let sorted = sortCampaignList(filtered, filters.sortBy);
+
+                // Paginate
+                const totalItems = sorted.length;
+                const totalPages = Math.ceil(totalItems / LIMIT);
+                const startIdx = (filters.page - 1) * LIMIT;
+                const paginatedCampaigns = sorted.slice(startIdx, startIdx + LIMIT);
+
+                const container = document.getElementById('campaignsGrid');
+                if (!container) return;
+
+                if (paginatedCampaigns.length === 0) {
+                    container.innerHTML = `
+                        <div class="loading-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No campaigns found</p>
+                        </div>
+                    `;
+                    updatePagination(0);
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                paginatedCampaigns.forEach(campaign => {
+                    const raised = Number(campaign.amountRaised || campaign.raised_amount || 0);
+                    const goal = Number(campaign.goalAmount || campaign.goal_amount || 0);
+                    const progress = goal > 0 ? Math.min(100, Math.round((raised / goal) * 100)) : 0;
+                    const categoryName = campaign.categoryName || campaign.category?.name || 'General';
+
+                    const card = document.createElement('div');
+                    card.className = 'campaign-card';
+                    card.innerHTML = `
+                        <img src="${campaign.imageUrl || campaign.image || 'https://via.placeholder.com/400x200?text=Campaign+Image'}" 
+                             alt="${campaign.title}" 
+                             class="campaign-image"
+                             onerror="this.src='https://via.placeholder.com/400x200?text=Campaign+Image'">
+                        <div class="campaign-content">
+                            <span class="campaign-category">${categoryName}</span>
+                            <h3 class="campaign-title">${campaign.title}</h3>
+                            <p class="campaign-description">${(campaign.description || '').substring(0, 100)}${(campaign.description || '').length > 100 ? '...' : ''}</p>
+                            <div class="campaign-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progress}%"></div>
+                                </div>
+                                <div class="campaign-stats">
+                                    <div class="stat">
+                                        <span class="stat-value">${formatCurrency(raised)}</span>
+                                        <span class="stat-label">Raised of ${formatCurrency(goal)}</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="stat-value">${progress}%</span>
+                                        <span class="stat-label">Funded</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="campaign-actions">
+                                <a href="campaign-details.html?id=${campaign.id || campaign._id}" class="btn btn-outline btn-sm" style="flex: 1;">
+                                    <i class="fas fa-eye"></i> See More
+                                </a>
+                                <a href="campaign-details.html?id=${campaign.id || campaign._id}" class="btn btn-primary btn-sm" style="flex: 1;">
+                                    <i class="fas fa-heart"></i> Donate
+                                </a>
+                            </div>
+                        </div>
+                    `;
+
+                    container.appendChild(card);
+                });
+
+                updatePagination(totalPages);
+            } catch (err) {
+                console.error('Error rendering campaigns result', err);
             }
-            throw new Error(errMsg);
-        }
+        };
 
-        const result = await response.json();
-        
-        // Parse campaigns from response
-        let allCampaigns = [];
-        if (Array.isArray(result.campaigns)) {
-            allCampaigns = result.campaigns;
-        } else if (Array.isArray(result.data)) {
-            allCampaigns = result.data;
-        } else if (Array.isArray(result)) {
-            allCampaigns = result;
-        } else if (result.success && result.data && Array.isArray(result.data.campaigns)) {
-            allCampaigns = result.data.campaigns;
-        }
-
-        // Apply client-side filters
-        let filtered = filterCampaigns(allCampaigns);
-        let sorted = sortCampaignList(filtered, filters.sortBy);
-
-        // Paginate
-        const totalItems = sorted.length;
-        const totalPages = Math.ceil(totalItems / LIMIT);
-        const startIdx = (filters.page - 1) * LIMIT;
-        const paginatedCampaigns = sorted.slice(startIdx, startIdx + LIMIT);
-
-        if (paginatedCampaigns.length === 0) {
-            container.innerHTML = `
-                <div class="loading-state">
-                    <i class="fas fa-inbox"></i>
-                    <p>No campaigns found</p>
-                </div>
-            `;
-            updatePagination(0);
-            return;
-        }
-
-        container.innerHTML = '';
-
-        paginatedCampaigns.forEach(campaign => {
-            const raised = Number(campaign.amountRaised || campaign.raised_amount || 0);
-            const goal = Number(campaign.goalAmount || campaign.goal_amount || 0);
-            const progress = goal > 0 ? Math.min(100, Math.round((raised / goal) * 100)) : 0;
-            const categoryName = campaign.categoryName || campaign.category?.name || 'General';
-
-            const card = document.createElement('div');
-            card.className = 'campaign-card';
-            card.innerHTML = `
-                <img src="${campaign.imageUrl || campaign.image || 'https://via.placeholder.com/400x200?text=Campaign+Image'}" 
-                     alt="${campaign.title}" 
-                     class="campaign-image"
-                     onerror="this.src='https://via.placeholder.com/400x200?text=Campaign+Image'">
-                <div class="campaign-content">
-                    <span class="campaign-category">${categoryName}</span>
-                    <h3 class="campaign-title">${campaign.title}</h3>
-                    <p class="campaign-description">${(campaign.description || '').substring(0, 100)}${(campaign.description || '').length > 100 ? '...' : ''}</p>
-                    <div class="campaign-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${progress}%"></div>
+        // Use CacheUtils cache-first loader. If cached data exists, it's rendered immediately via renderCached.
+        await CacheUtils.loadCampaignsCached({
+            params: params,
+            renderCached: (cached) => {
+                try { renderFromResult(cached); } catch (e) { console.warn('renderCached campaigns error', e); }
+            },
+            renderFresh: (fresh) => {
+                try { renderFromResult(fresh); } catch (e) { console.warn('renderFresh campaigns error', e); }
+            },
+            onError: (err) => {
+                console.error('Unable to load campaigns', err);
+                // If no cached data existed, show error state
+                const container = document.getElementById('campaignsGrid');
+                if (container && (!CacheUtils.getLocalCache(CacheUtils.CAMPAIGNS_KEY_BASE + ':' + params) && !CacheUtils.getLocalCache(CacheUtils.CAMPAIGNS_KEY_BASE))) {
+                    container.innerHTML = `
+                        <div class="loading-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Error loading campaigns. Please try again later.</p>
                         </div>
-                        <div class="campaign-stats">
-                            <div class="stat">
-                                <span class="stat-value">${formatCurrency(raised)}</span>
-                                <span class="stat-label">Raised of ${formatCurrency(goal)}</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-value">${progress}%</span>
-                                <span class="stat-label">Funded</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="campaign-actions">
-                                    <a href="campaign-details.html?id=${campaign.id || campaign._id}" class="btn btn-outline btn-sm" style="flex: 1;">
-                                        <i class="fas fa-eye"></i> See More
-                                    </a>
-                        <a href="campaign-details.html?id=${campaign.id || campaign._id}" class="btn btn-primary btn-sm" style="flex: 1;">
-                            <i class="fas fa-heart"></i> Donate
-                        </a>
-                    </div>
-                </div>
-            `;
-
-            container.appendChild(card);
+                    `;
+                }
+            }
         });
-
-        updatePagination(totalPages);
 
     } catch (error) {
         console.error('Error loading campaigns:', error);

@@ -46,18 +46,42 @@ export const handlePaymentRedirect = async (req, res) => {
 
         if (!donation) {
             const frontendUrl = process.env.CLIENT_URL || "http://localhost:5173";
-            return res.redirect(`${frontendUrl}/client/pages/donations-failure.html?ref=${reference}`);
+            return res.redirect(`${frontendUrl}/pages/donations-failure.html?ref=${reference}`);
         }
 
         if (donation) {
             // Redirect back to success screen
-            res.redirect(`${frontendUrl}/client/pages/donation-success.html?status=success&ref=${reference}`);
+            res.redirect(`${frontendUrl}/pages/donation-success.html?status=success&ref=${reference}`);
         }
         
     } catch (error) {
         res.status(500).json({ status: "error", message: error.message });
     }
 }
+
+export const getAllDonations = async (req, res) => {
+    try {
+        const { limit, page, sort, status } = req.query;
+
+        const result = await donationService.getAllDonations({
+            limit,
+            page,
+            sort,
+            status
+        });
+
+        res.status(200).json({
+            status: "success",
+            meta: result.meta,
+            data: result.donations
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            status: "error", 
+            message: error.message 
+        });
+    }
+};
 
 export const getMyDonations = async (req, res) => {
     try {

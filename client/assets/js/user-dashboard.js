@@ -52,6 +52,9 @@ window.addEventListener('hashchange', () => {
  * Switch Dashboard Tabs
  */
 function switchTab(tabName) {
+    // Close mobile sidebar when tab is switched
+    closeMobileSidebar();
+    
     // Update URL hash
     window.location.hash = tabName;
 
@@ -795,11 +798,73 @@ function redirectToLogin() {
 }
 
 /**
+ * Mobile Sidebar Functions
+ * Handles sidebar toggle, overlay interaction, and body scroll control
+ */
+
+function toggleMobileSidebar() {
+    const sidebar = document.querySelector('.sidebar-wrapper');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (sidebar && overlay) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        
+        if (sidebar.classList.contains('active')) {
+            document.body.classList.add('sidebar-open');
+            disableBodyScroll();
+        } else {
+            document.body.classList.remove('sidebar-open');
+            enableBodyScroll();
+        }
+    }
+}
+
+function closeMobileSidebar() {
+    const sidebar = document.querySelector('.sidebar-wrapper');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (sidebar && overlay) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.classList.remove('sidebar-open');
+        enableBodyScroll();
+    }
+}
+
+function disableBodyScroll() {
+    document.body.style.overflow = 'hidden';
+}
+
+function enableBodyScroll() {
+    document.body.style.overflow = '';
+}
+
+/**
  * Event Listeners
  */
 
 // Initialize dashboard when page loads
-document.addEventListener('DOMContentLoaded', initDashboard);
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize mobile sidebar event listeners
+    const quickNavItems = document.querySelectorAll('.quick-nav-item');
+    quickNavItems.forEach(item => {
+        item.addEventListener('click', function() {
+            closeMobileSidebar();
+        });
+    });
+    
+    // Close sidebar when clicking on profile action buttons
+    const profileActions = document.querySelectorAll('.profile-actions a, .profile-actions button');
+    profileActions.forEach(action => {
+        action.addEventListener('click', function() {
+            closeMobileSidebar();
+        });
+    });
+    
+    // Initialize dashboard
+    initDashboard();
+});
 
 // Handle hash changes for tab navigation
 window.addEventListener('hashchange', function() {
@@ -824,5 +889,6 @@ window.addEventListener('click', function(e) {
 window.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeDeleteModal();
+        closeMobileSidebar();
     }
 });

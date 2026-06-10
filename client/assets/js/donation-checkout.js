@@ -33,21 +33,27 @@ async function loadCampaign() {
   }
 
   try {
-    const response = await fetch(`${API.CAMPAIGNS}/${campaignId}`);
-    const data = await response.json();
-    if (!response.ok || !data.campaign) {
-      throw new Error(data.message || 'Campaign data not available');
-    }
-
-    const campaign = data.campaign;
-    // Update the campaign summary title element
-    campaignSummaryTitle.textContent = campaign.title;
-    campaignCategory.textContent = campaign.category?.name || 'General';
-    campaignEnds.textContent = campaign.endDate ? `${new Date(campaign.endDate).toLocaleDateString()} • Open` : 'Open';
-    campaignRaised.value = formatCurrency(campaign.amountRaised || 0);
-    campaignGoal.value = formatCurrency(campaign.goalAmount || 0);
-    campaignImage.src = campaign.imageUrl || campaign.image || 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1000&q=80';
-    campaignImage.alt = campaign.title;
+    // CacheUtils renders cached campaign data immediately, then refreshes in the background.
+    await CacheUtils.cacheFirst({
+      key: CacheUtils.getCampaignKey(campaignId),
+      ttl: 2 * 60 * 1000,
+      fetcher: async () => {
+        const response = await fetch(`${API.CAMPAIGNS}/${campaignId}`);
+        const data = await response.json();
+        if (!response.ok || !data.campaign) {
+          throw new Error(data.message || 'Campaign data not available');
+        }
+        return data.campaign;
+      },
+      renderCached: (cached) => renderCampaignSummary(cached),
+      renderFresh: (fresh) => renderCampaignSummary(fresh),
+      onError: () => {
+        const container = document.querySelector('.checkout-form-container');
+        if (container) {
+          container.innerHTML = '<div class="empty-state"><h3>Unable to load campaign</h3><p>Please try again later or browse other campaigns.</p><a href="campaigns.html" class="btn btn-primary">Browse Campaigns</a></div>';
+        }
+      }
+    });
   } catch (error) {
     console.error(error);
     const container = document.querySelector('.checkout-form-container');
@@ -55,6 +61,17 @@ async function loadCampaign() {
       container.innerHTML = '<div class="empty-state"><h3>Unable to load campaign</h3><p>Please try again later or browse other campaigns.</p><a href="campaigns.html" class="btn btn-primary">Browse Campaigns</a></div>';
     }
   }
+}
+
+function renderCampaignSummary(campaign) {
+  if (!campaign) return;
+  campaignSummaryTitle.textContent = campaign.title;
+  campaignCategory.textContent = campaign.category?.name || 'General';
+  campaignEnds.textContent = campaign.endDate ? `${new Date(campaign.endDate).toLocaleDateString()} • Open` : 'Open';
+  campaignRaised.value = formatCurrency(campaign.amountRaised || 0);
+  campaignGoal.value = formatCurrency(campaign.goalAmount || 0);
+  campaignImage.src = campaign.imageUrl || campaign.image || 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1000&q=80';
+  campaignImage.alt = campaign.title;
 }
 
 checkoutForm.addEventListener('submit', async event => {
@@ -75,6 +92,10 @@ checkoutForm.addEventListener('submit', async event => {
     if (!response.ok || !data.authorization_url) {
       throw new Error(data.message || 'Unable to initialize payment session.');
     }
+
+    // Invalidate caches after a donation write so the next view reflects backend updates.
+    CacheUtils.clearDonationCaches(campaignId);
+
     // Show redirect modal before navigating to payment gateway
     const redirectModal = document.getElementById('redirectModal');
     if (redirectModal) {

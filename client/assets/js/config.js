@@ -27,7 +27,7 @@ function getAPIUrl() {
         return window.APP_CONFIG.API_URL;
     }
     
-    // // Check localStorage for custom URL (admin configuration)
+    // Check localStorage for custom URL (admin configuration)
     const customUrl = localStorage.getItem('customApiUrl');
     if (customUrl) {
         console.log('Using custom API URL from localStorage');
@@ -217,7 +217,7 @@ function logout() {
     sessionStorage.clear();
     localStorage.removeItem('password');
     localStorage.removeItem('creditCard');
-    window.location.href = 'login.html';
+    window.location.href = '/pages/login.html';
 }
 
 /**

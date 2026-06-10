@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KindHeart Admin Portal</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
-    <link rel="stylesheet" href="../assets/css/dashboard.css">
 </head>
 <body>
 
@@ -53,17 +54,17 @@
                 </a>
             </nav>
             
-            <button class="btn-spotlight" onclick="window.location.href='user-dashboard.html#create'">
+            <!-- <button class="btn-spotlight" onclick="window.location.href='user-dashboard.html#create'">
                 <span class="material-symbols-outlined">add</span>
                 <span>New Spotlight</span>
-            </button>
+            </button> -->
         </div>
         
         <div class="sidebar-footer">
-            <a class="footer-link" href="#">
+            <!-- <a class="footer-link" href="#">
                 <span class="material-symbols-outlined">help_outline</span>
                 <span>Help Center</span>
-            </a>
+            </a> -->
             <a class="footer-link" href="#" onclick="logout(); return false;">
                 <span class="material-symbols-outlined">logout</span>
                 <span>Log Out</span>
@@ -185,41 +186,7 @@
                     <h4 class="panel-title">Recent Activity</h4>
                     
                     <div class="activity-feed">
-                        <div class="activity-card activity-secondary">
-                            <div class="activity-flex">
-                                <img class="activity-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Elena Vance">
-                                <div class="activity-content">
-                                    <p>Elena Vance <span class="activity-normal">donated</span> ₦25,000</p>
-                                    <div class="activity-campaign-title">Ocean Cleanup Project</div>
-                                    <div class="activity-time-stamp">Just Now</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="activity-card activity-tertiary">
-                            <div class="activity-flex">
-                                <div class="activity-icon-wrap">
-                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified</span>
-                                </div>
-                                <div class="activity-content">
-                                    <p>New Campaign <span class="activity-normal">Verified</span></p>
-                                    <div class="activity-campaign-title" style="color: var(--stone-800);">Solar Power for Rural Schools has been approved by Editorial.</div>
-                                    <div class="activity-time-stamp">12 Minutes Ago</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="activity-card activity-neutral">
-                            <div class="activity-flex">
-                                <img class="activity-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100" alt="David Miller">
-                                <div class="activity-content">
-                                    <p>David Miller <span class="activity-normal">reached a</span> Milestone</p>
-                                    <div class="activity-campaign-title" style="color: var(--stone-500); font-weight: 400;">Completed his 50th consecutive month of giving.</div>
-                                    <div class="activity-time-stamp">1 Hour Ago</div>
-                                </div>
-                            </div>
-                        </div>
-                        
+                        <!-- Added with js-->
                         <button class="btn-history">Show More History</button>
                     </div>
                 </section>
@@ -292,6 +259,7 @@
                 </div>
             </section>
         </div>
+        
 
         <!-- ==========================================
              TAB 3: USER MANAGEMENT TAB CONTENT
@@ -416,14 +384,14 @@
                     </div>
                 </div>
             </div>
-
+<!-- 
             <section class="panel-section" style="margin-top: 2rem;">
                 <div class="panel-header">
                     <h4 class="panel-title">System Fund Distribution Logs</h4>
                 </div>
-                
+                 -->
                 <!-- Fund Distributions Table -->
-                <div class="table-container">
+                <!-- <div class="table-container">
                     <table class="review-table">
                         <thead>
                             <tr>
@@ -455,7 +423,7 @@
                         </tbody>
                     </table>
                 </div>
-            </section>
+            </section> -->
         </div>
 
         <!-- ==========================================
@@ -480,9 +448,9 @@
                     <p class="footer-copy">&copy; <span class="footer-year"></span> KindHeart Editorial Crowdfunding. Built for Impact.</p>
                 </div>
                 <div class="footer-links-list">
-                    <a class="footer-link-item" href="#">Privacy Policy</a>
-                    <a class="footer-link-item" href="#">Terms of Service</a>
-                    <a class="footer-link-item" href="#">Editorial Guidelines</a>
+                    <a class="footer-link-item" href="privacy-policy.html">Privacy Policy</a>
+                    <a class="footer-link-item" href="terms-of-service.html">Terms of Service</a>
+                    <!-- <a class="footer-link-item" href="#">Editorial Guidelines</a> -->
                 </div>
             </div>
         </footer>
@@ -511,6 +479,6 @@
     <!-- CORE SCRIPTS -->
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/admin-dashboard.js"></script>
-  <script src="../assets/js/footer.js"></script>
+  <!-- <script src="../assets/js/footer.js"></script> -->
 </body>
 </html>
