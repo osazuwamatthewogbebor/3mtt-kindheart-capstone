@@ -15,9 +15,9 @@
 // Do NOT hardcode URLs - use environment-based configuration
 function getAPIUrl() {
     // Check localhost first
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') {
-        return 'http://localhost:3000/api';
-    }
+    // if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') {
+    //     return 'http://localhost:3000/api';
+    // }
 
 
     
@@ -231,6 +231,26 @@ function isValidEmail(email) {
 
 // Helper function to format currency
 function formatCurrency(amount) {
+    if (amount === undefined || amount === null) return '₦0';
+    
+    // Helper to format the base number (e.g., 1.50)
+    const formatBase = (num) => {
+        return num.toLocaleString('en-NG', {
+            minimumFractionDigits: 0, 
+            maximumFractionDigits: 2,
+        })
+    }
+
+    // Handle Millions, Billions, Trillions
+    if (amount >= 1_000_000_000_000) {
+        return `₦${formatBase(amount / 1_000_000_000_000)}T`;
+    } else if (amount >= 1_000_000_000) {
+        return `₦${formatBase(amount / 1_000_000_000)}B`;
+    } else if (amount >= 1_000_000) {
+        return `₦${formatBase(amount / 1_000_000)}M`;
+    }
+
+    // Default for numbers under 1 million
     return new Intl.NumberFormat('en-NG', {
         style: 'currency',
         currency: 'NGN',
