@@ -256,6 +256,7 @@ function formatCurrency(amount) {
         currency: 'NGN',
         minimumFractionDigits: 0
     }).format(amount);
+    
 }
 
 // Helper function to format date
