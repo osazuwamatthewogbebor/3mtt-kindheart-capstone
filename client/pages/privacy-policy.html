@@ -9,64 +9,6 @@
     <link rel="icon" type="image/svg+xml" href="../assets/image/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        @media (max-width: 768px) {
-            /* Page Header Adjustments */
-            .page-header h1 {
-                font-size: 2.5rem !important;
-            }
-            
-            /* Table of Contents (ToC) Adjustments */
-            .pp-wrapper {
-                display: block !important; /* Force single column layout */
-            }
-            
-            .pp-toc {
-                position: static !important; /* Remove sticky positioning */
-                top: auto !important;
-                margin-bottom: 2rem;
-            }
-            
-            .pp-toc ul {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-                justify-content: center;
-            }
-            
-            .pp-toc li {
-                flex: 1 1 auto;
-                min-width: 150px;
-                text-align: center;
-            }
-            
-            .pp-toc a {
-                border-left: none !important;
-                border: 1px solid var(--gray-lightest);
-                padding: 0.5rem;
-                border-radius: var(--radius-sm);
-            }
-            
-            .pp-toc a:hover {
-                background: var(--gray-lightest);
-            }
-
-            /* Main Content Stacking */
-            .grid-2-col {
-                grid-template-columns: 1fr !important;
-            }
-            
-            /* Cookies Grid Stacking */
-            .pp-cookies-grid {
-                grid-template-columns: 1fr !important;
-            }
-            
-            /* Contact Section */
-            .pp-section section[style*="background: var(--primary)"] {
-                padding: 2rem !important;
-            }
-        }
-    </style>
 </head>
 <body>
 
@@ -114,7 +56,7 @@
             
             <!-- TABLE OF CONTENTS -->
             <div class="pp-wrapper">
-                <aside style="position: sticky; top: 100px;">
+                <aside class="pp-toc" style="position: sticky; top: 100px;">
                     <h3 style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray); margin-bottom: 1.5rem;">Contents</h3>
                     <ul style="list-style: none;">
                         <li style="margin-bottom: 1rem;"><a href="#intro" style="color: var(--gray); text-decoration: none; transition: all 0.3s; border-left: 3px solid transparent;">Information We Collect</a></li>
