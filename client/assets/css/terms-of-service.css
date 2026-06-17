@@ -1,5 +1,9 @@
 /* Terms of Service Styles */
 
+.tos-hero {
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.6)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80');
+}
+
 /* Page Header */
 .tos-header-label {
     color: var(--secondary-container);
@@ -31,6 +35,46 @@
 
 .tos-container {
     max-width: 900px;
+}
+
+.tos-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.tos-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--gray-lightest);
+    transition: var(--transition);
+    text-align: center;
+}
+
+.tos-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+.tos-card i {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.tos-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--dark);
+}
+
+.tos-card p {
+    color: var(--gray);
+    line-height: 1.7;
+    margin: 0;
 }
 
 .tos-article {
@@ -223,7 +267,7 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
-.tos-cta-panel {
+.tos-cta {
     margin-top: 50px;
 }
 
