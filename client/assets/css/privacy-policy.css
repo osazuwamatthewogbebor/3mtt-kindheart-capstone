@@ -319,7 +319,7 @@
             }
             
             /* Contact Section */
-            .pp-section section[style*="background: var(--primary)"] {
+            .pp-cta {
                 padding: 2rem !important;
             }
         }
